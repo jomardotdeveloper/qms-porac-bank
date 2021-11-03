@@ -1,0 +1,21 @@
+
+  [41;1m Error [49;22m
+
+[39;1m  Class 'App\Console\Commands\IoServer' not found[39;22m
+
+  at [32mC:\laragon\www\queuing-management-system\app\Console\Commands\WebSocketServer.php[39m:[32m40[39m
+    [90m 36[0m[90m▕ [0m[90;3m     * @return int[0m
+    [90m 37[0m[90m▕ [0m[90;3m     */[0m
+    [90m 38[0m[90m▕ [0m[90;3m    [0m[35;1mpublic function [0m[39;1mhandle[0m[35;1m()[0m
+    [90m 39[0m[90m▕ [0m[35;1m    {[0m
+[31;1m  ➜ [0m[3;1m 40[0m[90m▕ [0m[35;1m        [0m[39;1m$server [0m[35;1m= [0m[39;1mIoServer[0m[35;1m::[0m[39;1mfactory[0m[35;1m([0m
+    [90m 41[0m[90m▕ [0m[35;1m        new [0m[39;1mHttpServer[0m[35;1m([0m
+    [90m 42[0m[90m▕ [0m[35;1m                new [0m[39;1mWsServer[0m[35;1m([0m
+    [90m 43[0m[90m▕ [0m[35;1m                    new [0m[39;1mWebSocketController[0m[35;1m()[0m
+    [90m 44[0m[90m▕ [0m[35;1m                )[0m
+
+  [33m1   [39m[39;1mC:\laragon\www\queuing-management-system\vendor\laravel\framework\src\Illuminate\Container\BoundMethod.php[39;22m:[39;1m36[39;22m
+  [37m    App\Console\Commands\WebSocketServer::handle()[39m
+
+  [33m2   [39m[39;1mC:\laragon\www\queuing-management-system\vendor\laravel\framework\src\Illuminate\Container\Util.php[39;22m:[39;1m40[39;22m
+  [37m    Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()[39m
