@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Auth;
 use GuzzleHttp\Client;
-use App\Models\Window;
-class ControlController extends Controller
+
+class SMSController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,10 +15,7 @@ class ControlController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
-        return view("admin.control.index", [
-            "windows" => Window::all()->where("branch_id", "=", $user->profile->branch->id)->where("id", "!=", $user->profile->window->id)->all()
-        ]);
+
     }
 
     /**
@@ -86,5 +82,19 @@ class ControlController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function message($to, $message){
+        $client = new Client;
+        $endpoint = 'https://www.itexmo.com/php_api/';
+
+        $res = $client->post($endpoint . 'api.php',["form_params" => [
+            '1' => $to,
+            '2' => $message,
+            '3' => "ST-JOMAR002958_J9U4Q",
+            "passwd" => "[v%cuk5nsx"
+        ]]);
+        
+        return $res->getBody()->getContents();
     }
 }

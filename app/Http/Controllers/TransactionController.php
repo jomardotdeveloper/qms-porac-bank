@@ -7,9 +7,12 @@ use App\Models\Transaction;
 use App\Models\Branch;
 use App\Models\Account;
 use App\Models\Service;
+use App\Models\Window;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
 
 class TransactionController extends Controller
 {
@@ -104,6 +107,7 @@ class TransactionController extends Controller
         //
     }
 
+
     public function export(Request $request){
         if($request->get("from") > $request->get("to")){
             return back()->withErrors([
@@ -156,8 +160,17 @@ class TransactionController extends Controller
             ]);
         }else{
             $last_token = $transactions_for_the_day[count($transactions_for_the_day) - 1];
+            $tokens = Transaction::all()->where("branch_id", "=", $request->get("branch_id"))->where("state", "=", "waiting")->where("window_id", "=", $request->get("window_id"))->all();
+            $token_format = $this->token_formatter($last_token->order + 1, $this->get_customer_type($request->get("account_number")) == "priority" );
+            if(isset($request->all()["mobile_number"])){
+                $estimated_waiting = (count($tokens) * 5);
+                $waiting_time = $estimated_waiting == 0 ? "5" : strval($estimated_waiting);
+                $message = "Dear customer, thank you for waiting. Your queue number " .  $token_format .  " will be called  in an estimated time of " .  $waiting_time. " minutes. Thank you.";
+                $this->send_message_time($request->all()["mobile_number"], $message);
+            }
+
             return Transaction::create([
-                "token" => $this->token_formatter($last_token->order + 1, $this->get_customer_type($request->get("account_number")) == "priority" ),
+                "token" =>$token_format,
                 "order" => $last_token->order + 1,
                 "account_id" => $this->get_account_id($request->get("account_number")),
                 "amount" => isset($request->all()["amount"]) ? $request->get("amount") : null,
@@ -168,6 +181,7 @@ class TransactionController extends Controller
                 "branch_id" => $request->get("branch_id"),
                 "profile_id" => $request->get("profile_id")
             ]);
+            
         }
 
 
@@ -193,7 +207,71 @@ class TransactionController extends Controller
 
     public function get_prev_token($branch_id){
         $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ?", [$branch_id])->get()->all();
-
         return $transactions;
+    }
+
+    public function get_transactions_now($branch_id, $window_id){
+        $transactions = Transaction::with([ "account", "service" ])->orderBy("order")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND window_id = ?", [$branch_id, $window_id])->get()->all();
+        return $transactions;
+    }
+
+    public function send_message_time($to, $message){
+
+        if(strlen($to) == 10){
+            $to = "0" . $to;
+        }
+        $client = new Client;
+        $endpoint = 'https://www.itexmo.com/php_api/';
+
+        $res = $client->post($endpoint . 'api.php',["form_params" => [
+            '1' => $to,
+            '2' => $message,
+            '3' => "ST-JOMAR002958_J9U4Q",
+            "passwd" => "[v%cuk5nsx"
+        ]]);
+        
+        return $res->getBody()->getContents();
+    }
+
+    public function update_state(Request $request){
+        $transaction = Transaction::find($request->get("id"));
+        $state = $request->get("to_state");
+        if($state == "serving"){
+            $transaction->state = "serving";
+            $transaction->serve = date('Y-m-d H:i:s');
+            $transaction->save();
+        }else if($state == "out"){
+            $transaction->state = "out";
+            $transaction->serve = date('Y-m-d H:i:s');
+            $transaction->save();
+        }else if($state == "drop"){
+            $transaction->state = "drop";
+            $transaction->serve = date('Y-m-d H:i:s');
+            $transaction->save();
+        }
+
+    }
+
+    public function update_holder(Request $request){
+        $transaction = Transaction::find($request->get("id"));
+        $transaction->window_id = $request->get("window_id");
+        $transaction->save();
+        $transaction->profile_id = $transaction->window->profile->id;
+        $transaction->save();
+    }
+
+
+    public function get_active_current($branch_id){
+        $all_windows = Window::with(["profile"])->where("branch_id", "=", $branch_id)->all();
+
+        foreach($all_windows as $window){
+            if($window == null)
+                $all_current_transactions = Transaction::all()->where("branch_id", "=", $branch_id)->where("window_id", "=", $window->id)->all();
+        }
+
+        
+
+
+
     }
 }

@@ -25,14 +25,7 @@ class WebsocketController extends Controller implements MessageComponentInterfac
      * @throws \Exception
      */
     function onClose(ConnectionInterface $conn){
-        $disconnectedId = $conn->resourceId;
-        unset($this->connections[$disconnectedId]);
-        foreach($this->connections as &$connection)
-            $connection['conn']->send(json_encode([
-                'offline_user' => $disconnectedId,
-                'from_user_id' => 'server control',
-                'from_resource_id' => null
-            ]));
+        
     }
     
      /**
@@ -43,10 +36,7 @@ class WebsocketController extends Controller implements MessageComponentInterfac
      * @throws \Exception
      */
     function onError(ConnectionInterface $conn, \Exception $e){
-        $userId = $this->connections[$conn->resourceId]['user_id'];
-        echo "An error has occurred with user $userId: {$e->getMessage()}\n";
-        unset($this->connections[$conn->resourceId]);
-        $conn->close();
+        
     }
     
      /**
