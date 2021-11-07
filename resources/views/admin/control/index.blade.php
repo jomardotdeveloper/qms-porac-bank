@@ -121,8 +121,8 @@
             </button>
         </div>
         <div class="col-2 ">
-            <button type="button" class="btn btn-warning btn-lg h-100 w-100 " data-toggle="modal" data-target="#notifyModal">
-                <span class="btn-label "  style="background:transparent;"><i class="las la-sms"></i></span>Notify
+            <button type="button" class="btn btn-warning btn-lg h-100 w-100 " id="ring">
+                <span class="btn-label "  style="background:transparent;"><i class="las la-bell"></i></span>Ring
             </button>
         </div>
         <div class="col-2">
@@ -164,6 +164,7 @@
                                 <th>Account Number</th>
                                 <th>Full Name</th>
                                 <th>Customer Type</th>
+                                <th class="no-content"></th>
                             </tr>
                         </thead>
                         <tbody>

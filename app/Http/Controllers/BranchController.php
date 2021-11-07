@@ -130,4 +130,8 @@ class BranchController extends Controller
         
         echo json_encode($data);
     }
+
+    public function all(){
+        echo json_encode(Branch::all());
+    }
 }

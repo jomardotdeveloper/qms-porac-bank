@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <title>QMS - @yield("title") </title>
-    <link rel="icon" type="image/x-icon" href="/admin/assets/img/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/admin/assets/img/logooriginal.ico">
     <link href="/admin/css2.css?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="/admin/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="/admin/assets/css/main.css" rel="stylesheet" type="text/css">
@@ -175,11 +175,11 @@
             <ul class="navbar-item theme-brand flex-row  text-center">
                 <li class="nav-item theme-logo">
                     <a href="index.html">
-                        <img src="/admin/assets/img/logo.png" class="navbar-logo" alt="logo">
+                        <img src="/admin/assets/img/logooriginal.png" style="margin-left:-1rem;" class="navbar-logo" alt="logo">
                     </a>
                 </li>
                 <li class="nav-item theme-text">
-                    <a href="index.html" class="nav-link"> Xato </a>
+                    <a href="#" class="nav-link">Porac Bank</a>
                 </li>
             </ul>
             <ul class="navbar-item flex-row ml-md-auto">
@@ -440,7 +440,7 @@
                 <ul class="list-unstyled menu-categories" id="accordionExample">
                     <li class="menu-title">Dashboard</li>
                     <li class="menu">
-                        <a href="{{route('branches.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'dashboards.index' ? 'true' : 'false' }}">
+                        <a href="{{route('dashboards.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'dashboards.index' ? 'true' : 'false' }}">
                             <div class="">
                                 <i class="las la-home"></i>
                                 <span>Dashboard</span>

@@ -32,6 +32,7 @@ var elm_start_queue = $("#startQueue");
 var elm_next_queue = $("#nextCustomer");
 var elm_drop_queue = $("#dropCustomer");
 var elm_switch_queue = $("#switch");
+var elm_ring_queue = $("#ring");
 
 var current = null;
 var next = null;
@@ -41,29 +42,26 @@ var waiting = [];
 var serving = null;
 var doneOrDrop = [];
 
-var socket  = new WebSocket('ws://192.168.100.10:8090');
+var socket  = new WebSocket('ws://127.0.0.1:8090');
     
 socket.onmessage = function(e){
     console.log(e.data);
     var jsonObject = jQuery.parseJSON(e.data);
+
+    if(jsonObject["message"]["message"] == "switchCustomer" && jsonObject["message"]["id"] == elm_window_id.val()){
+        Snackbar.show({
+            text: 'A new customer has been passed to you.',
+            pos: 'bottom-right'
+        });
+        loadData();          
+    }
     
-    var keys = Object.keys(jsonObject);
-
-
-    if(keys.length == 1 && $.isNumeric(keys[0])){
-        var object = jQuery.parseJSON(jsonObject[keys[0]]);
-        console.log(object);
-        if(object["message"] == "switchCustomer" && object["id"] == elm_window_id.val()){
-            Snackbar.show({
-                text: 'A new customer has been passed to you.',
-                pos: 'bottom-right'
-            });
-            loadData();
-            updateCurrentVar();
-            updateNextVar();
-            updatePrevVar();
-            
-        }
+    if(jsonObject["message"]["message"] == "newCustomer"){
+        Snackbar.show({
+            text: 'A new customer has been entered your queue.',
+            pos: 'bottom-right'
+        });
+        loadData();
     }
     
 }
@@ -89,6 +87,7 @@ function loadData(){
             waiting = [];
             serving = null;
             doneOrDrop = [];
+
             for(var i = 0; i < data.length; i++){
                 if(data[i].state == "waiting"){
                     waiting.push(data[i]);
@@ -132,12 +131,22 @@ function getTableRow(transaction){
     var status = opening_d + getStatus(transaction) + closing_d;
     var account_number = opening_d + transaction["account"]["account_number"] + closing_d;
     var full_name = opening_d + getFullname(transaction["account"]) + closing_d;
-    var customer_type = opening_d + transaction["account"]["customer_type"] + closing_d + closing_tr
-    return reference_no + token + status + account_number + full_name + customer_type;
+    var customer_type = opening_d + transaction["account"]["customer_type"] + closing_d;   
+    var smsLink = opening_d + getSmsLink(transaction["id"]) + closing_d + closing_tr;
+    
+    return reference_no + token + status + account_number + full_name + customer_type + smsLink;
+}
+
+function getSmsLink(id){
+    return  "<a href='#' title='Notify' onclick='notify( " + id + ")' class='font-20 text-primary'><i class='las la-envelope'></i></a>"
 }
 
 function getFullname(account){
     return account["last_name"] + ", " + account["first_name"] +  ", " +account["middle_name"];
+}
+
+function notify(id){
+    alert(id);
 }
 
 function getStatus(transaction){
@@ -310,6 +319,11 @@ elm_start_queue.on("click", function(){
             type: "success",
             padding: "2em"
         });
+        message = {
+            "message" : "nextCustomer"
+        };
+
+        socket.send(JSON.stringify(message));
     }
 });
 
@@ -350,7 +364,11 @@ elm_next_queue.on("click", function () {
             });
         }
         
-        
+        message = {
+            "message" : "nextCustomer"
+        };
+
+        socket.send(JSON.stringify(message));
     }
 });
 
@@ -459,6 +477,12 @@ elm_drop_queue.on("click", function () {
                     });
                 }
 
+                message = {
+                    "message" : "nextCustomer"
+                };
+        
+                socket.send(JSON.stringify(message));
+
                 
             }
         });
@@ -466,6 +490,13 @@ elm_drop_queue.on("click", function () {
     
 });
 
+elm_ring_queue.on("click", function(){
+    message = {
+        "message" : "ring"
+    };
+
+    socket.send(JSON.stringify(message));
+});
 
 
 

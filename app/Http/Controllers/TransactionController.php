@@ -262,16 +262,13 @@ class TransactionController extends Controller
 
 
     public function get_active_current($branch_id){
-        $all_windows = Window::with(["profile"])->where("branch_id", "=", $branch_id)->all();
+        $all_windows = Window::with(["profile"])->where("branch_id", "=", $branch_id)->get()->all();
+        $data = [];
 
         foreach($all_windows as $window){
-            if($window == null)
-                $all_current_transactions = Transaction::all()->where("branch_id", "=", $branch_id)->where("window_id", "=", $window->id)->all();
+            $data[$window["order"]] = Transaction::all()->where("branch_id", "=", $branch_id)->where("state", "=", "serving")->where("window_id", "=", $window->id)->first();
         }
 
-        
-
-
-
+        echo json_encode($data);
     }
 }

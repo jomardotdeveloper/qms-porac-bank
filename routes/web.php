@@ -14,6 +14,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ControlController;
 use App\Http\Controllers\CutoffController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WindowController;
 use App\Models\Attachment;
 use App\Models\Feedback;
@@ -68,6 +69,7 @@ Route::prefix("/backend")->middleware(["auth"])->group(function(){
     Route::resource("settings", SettingController::class)->middleware("checksetting");  
     Route::resource("cutoffs", CutoffController::class);
     Route::resource("windows", WindowController::class);
+    Route::resource("dashboards", DashboardController::class);
     Route::resource("controls", ControlController::class)->middleware("checkcontrol"); 
     Route::resource("notifications", NotificationController::class)->middleware("checkreport"); 
     Route::resource("transactions", TransactionController::class)->middleware("checkreport"); 

@@ -18,7 +18,7 @@ class CheckIfAuthenticated
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
-            return redirect('/backend/branches');
+            return redirect('/backend/dashboards');
         }
         return $next($request);
     }
