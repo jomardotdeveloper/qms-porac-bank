@@ -145,7 +145,7 @@ class TransactionController extends Controller
 
     public function make(Request $request){
         $transactions_for_the_day = $this->get_prev_token($request->get("branch_id"));
-
+        
         if(count($transactions_for_the_day) < 1){
             return Transaction::create([
                 "token" => $this->token_formatter(1, $this->get_customer_type($request->get("account_number"))  == "priority"),
@@ -254,10 +254,12 @@ class TransactionController extends Controller
 
     public function update_holder(Request $request){
         $transaction = Transaction::find($request->get("id"));
+        $transaction->state = "waiting";
         $transaction->window_id = $request->get("window_id");
         $transaction->save();
         $transaction->profile_id = $transaction->window->profile->id;
         $transaction->save();
+
     }
 
 

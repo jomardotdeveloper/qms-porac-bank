@@ -42,25 +42,30 @@ var waiting = [];
 var serving = null;
 var doneOrDrop = [];
 
-var socket  = new WebSocket('ws://127.0.0.1:8090');
+var socket  = new WebSocket('ws://192.168.254.101:8090');
     
 socket.onmessage = function(e){
     console.log(e.data);
     var jsonObject = jQuery.parseJSON(e.data);
-
-    if(jsonObject["message"]["message"] == "switchCustomer" && jsonObject["message"]["id"] == elm_window_id.val()){
+    jsonObject = jQuery.parseJSON(jsonObject["message"]);
+    console.log(jsonObject["id"]);
+    if(jsonObject["message"]== "switchCustomer" && jsonObject["id"] == elm_window_id.val()){
         Snackbar.show({
             text: 'A new customer has been passed to you.',
             pos: 'bottom-right'
         });
         loadData();          
     }
-    
-    if(jsonObject["message"]["message"] == "newCustomer"){
-        Snackbar.show({
-            text: 'A new customer has been entered your queue.',
-            pos: 'bottom-right'
-        });
+
+    console.log(jsonObject["message"]);
+    // console.log(jsonObject["message"]["message"]);
+    // console.log(jsonObject["message"] == "newCustomer");
+    if(jsonObject["message"] == "newCustomer"){
+        // alert("PUMASOK NAMAN DITO");
+        // Snackbar.show({
+        //     text: 'A new customer has been entered your queue.',
+        //     pos: 'bottom-right'
+        // });
         loadData();
     }
     
@@ -292,7 +297,7 @@ function updateStartButtonStart(){
 
 
 function queueIsEmpty(){
-    
+    1
 }
 
 elm_start_queue.on("click", function(){
@@ -423,6 +428,12 @@ elm_switch_queue.on("click", function(){
                         padding: "2em"
                     });
                 }
+
+                message = {
+                    "message" : "nextCustomer"
+                };
+        
+                socket.send(JSON.stringify(message));
 
                 $("#switchModal").modal("hide");
                 
