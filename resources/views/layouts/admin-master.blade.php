@@ -16,139 +16,12 @@
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <link rel="stylesheet" href="line-awesome.min.css">
     <link href="/admin/assets/css/loader.css" rel="stylesheet" type="text/css">  
-    <style>
-        .rotate {
-            float: left;
-            margin: 10px;
-        }
-        .rotate span {
-            float: left;
-            font-weight: bold;
-            height: 100px;
-            line-height: 100px;
-            position: relative;
-            width: 100px;
-            text-align: center;
-        }
-        .rotate span:before, .rotate span:after {
-            content: attr(letter);
-            bottom: 0;
-            height: inherit;
-            left: 0;
-            position: absolute;
-            right: 0;
-            text-transform: uppercase;
-            transform: rotateX(0deg) translate(0, 0);
-            top: 0;
-            width: inherit;
-        }
-        .rotate span:before {
-            font-size:100px;
-            background: #2262c6;
-            color: white;
-            transform-origin: 0 0;
-        }
-        .rotate span:after {
-            font-size:100px;
-            background: white;
-            color: #2262c6;
-            transform: rotateX(90deg) translate(0, 100%);
-            transform-origin: 0 100%;
-        }
-
-        .rotate.animate span:before {
-            animation: rotate1 1s infinite;
-        }
-        .rotate.animate span:after {
-            animation: rotate2 1s infinite;
-        }
-
-        .rotate.hover span:before, .rotate.hover span:after {
-            transition: 0.3s;
-        }
-        .rotate.hover:hover span:before {
-            transform: rotateX(90deg) translate(0, -100%);
-        }
-        .rotate.hover:hover span:after {
-            transform: rotateX(0deg) translate(0, 0);
-        }
-
-        div.rotate span:nth-child(1):before, div.rotate span:nth-child(1):after {
-            animation-delay: 0.1s;
-            transition-delay: 0.1s;
-        }
-
-        div.rotate span:nth-child(2):before, div.rotate span:nth-child(2):after {
-            animation-delay: 0.2s;
-            transition-delay: 0.2s;
-        }
-
-        div.rotate span:nth-child(3):before, div.rotate span:nth-child(3):after {
-            animation-delay: 0.3s;
-            transition-delay: 0.3s;
-        }
-
-        div.rotate span:nth-child(4):before, div.rotate span:nth-child(4):after {
-            animation-delay: 0.4s;
-            transition-delay: 0.4s;
-        }
-
-        div.rotate span:nth-child(5):before, div.rotate span:nth-child(5):after {
-            animation-delay: 0.5s;
-            transition-delay: 0.5s;
-        }
-
-        div.rotate span:nth-child(6):before, div.rotate span:nth-child(6):after {
-            animation-delay: 0.6s;
-            transition-delay: 0.6s;
-        }
-
-        div.rotate span:nth-child(7):before, div.rotate span:nth-child(7):after {
-            animation-delay: 0.7s;
-            transition-delay: 0.7s;
-        }
-
-        @keyframes rotate1 {
-            0% {
-                transform: rotateX(0deg) translate(0, 0);
-            }
-            25% {
-                transform: rotateX(90deg) translate(0, -100%);
-            }
-            50% {
-                transform: rotateX(90deg) translate(0, -100%);
-            }
-            75% {
-                transform: rotateX(0deg) translate(0, 0);
-            }
-            100% {
-                transform: rotateX(0deg) translate(0, 0);
-            }
-        }
-        @keyframes rotate2 {
-            0% {
-                transform: rotateX(90deg) translate(0, 100%);
-            }
-            25% {
-                transform: rotateX(0deg) translate(0, 0);
-            }
-            50% {
-                transform: rotateX(0deg) translate(0, 0);
-            }
-            75% {
-                transform: rotateX(90deg) translate(0, 100%);
-            }
-            100% {
-                transform: rotateX(90deg) translate(0, 100%);
-            }
-        }
-    </style>
     @yield("custom-styles")
     
 </head>
 <body>
     <!-- Loader Starts -->
-    <div id="load_screen"> 
+    <!-- <div id="load_screen"> 
         <div class="boxes">
             <div class="box">
                 <div></div><div></div><div></div><div></div>
@@ -162,12 +35,12 @@
             <div class="box">
                 <div></div><div></div><div></div><div></div>
             </div>
-        </div>
+        </div> -->
         <!-- <div class="rotate animate">
             <span letter="P"></span>
         </div> -->
-        <p class="xato-loader-heading">Xato</p>
-    </div>
+        <!-- <p class="xato-loader-heading">Xato</p>
+    </div> -->
     <!--  Loader Ends -->
     <!--  Navbar Starts  -->
     <div class="header-container fixed-top">
