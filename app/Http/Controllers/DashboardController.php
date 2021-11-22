@@ -2,7 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Account;
+use App\Models\Branch;
+use App\Models\Transaction;
+use App\Models\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Artisan;
 
 class DashboardController extends Controller
 {
@@ -13,7 +22,18 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view("admin.dashboard.index");
+        $user = auth()->user();
+        $data = ["quotes" => Inspiring::quote()];
+        
+        if($user->is_admin){
+            $data["transactions"] = Transaction::all();
+            $data["branches"] = Branch::all();
+            $data["profiles"] = Profile::all();
+            $data["accounts"] = Account::all();
+        }
+
+
+        return view("admin.dashboard.index", $data);
     }
 
     /**
@@ -81,4 +101,5 @@ class DashboardController extends Controller
     {
         //
     }
+
 }

@@ -46,6 +46,14 @@ class Profile extends Model
         return "$this->first_name $this->last_name";
     }
 
+    public function getSuccessfulTransactionsAttribute(){
+        return $this->transactions->where("state", "=", "out")->all();
+    }
+
+    public function getDropTransactionsAttribute(){
+        return $this->transactions->where("state", "=", "drop")->all();
+    }
+
     public function getServiceIdsAttribute()
     {
         return $this->services->pluck('id')->all();

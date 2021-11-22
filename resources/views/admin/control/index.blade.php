@@ -163,7 +163,7 @@
                                 <th>Status</th>
                                 <th>Account Number</th>
                                 <th>Full Name</th>
-                                <th>Customer Type</th>
+                                <!-- <th>Customer Type</th> -->
                                 <th class="no-content"></th>
                             </tr>
                         </thead>
@@ -272,7 +272,6 @@
                         @endforeach
                     </select>
                 </div>
-                
             </div>
             <div class="modal-footer">
                 <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i>Close</button>
@@ -289,5 +288,10 @@
 <script src="/admin/assets/js/basicui/sweet_alerts.js"></script>
 <script src="/admin/plugins/notification/snackbar/snackbar.min.js"></script>
 <script src="/admin/assets/js/basicui/notifications.js"></script>
-<script src="/admin/assets/js/control/control_v2.js"></script>
+<script src="/admin/assets/js/control/global_variable.js"></script>
+<script src="/admin/assets/js/control/updator.js"></script>
+<script src="/admin/assets/js/control/table.js"></script>
+<script src="/admin/assets/js/control/database_transactor.js"></script>
+<script src="/admin/assets/js/control/websocket.js"></script>
+<script src="/admin/assets/js/control/control_v3.js"></script>
 @endpush

@@ -44,7 +44,7 @@ class WebSocketServer extends Command
         $server = IoServer::factory(
         new HttpServer(
                 new WsServer(
-                    new WebSocketController()
+                    new WebsocketController()
                 )
             ),
             8090 

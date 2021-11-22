@@ -21,7 +21,7 @@ class checkIfAllowedControl
         if(!$user->is_admin){
             $access_rights = auth()->user()->profile->role->getPermissionCodenamesAttribute();
 
-            if(!in_array("CA", $access_rights)){
+            if(!in_array("CA", $access_rights) || $user->profile->window == null){
                 abort(404);
             }
         }else{
