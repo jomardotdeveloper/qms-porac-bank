@@ -147,7 +147,7 @@ img.single-story-bg {
 }
 .tab-horizontal-line .nav-tabs .nav-link.active, .tab-horizontal-line .nav-tabs .show>.nav-link {
     border-color: transparent;
-    color: #2262c6;
+    color: #0767A3;
     font-weight: 600;
 }
 .tab-horizontal-line .nav-tabs .nav-link:focus, .tab-horizontal-line .nav-tabs .nav-link:hover {  
@@ -163,7 +163,7 @@ img.single-story-bg {
     width: 100%;
     left: 0;
     bottom: 0;
-    background-color: #2262c6;
+    background-color: #0767A3;
     transform: scale(0);
     transition: all .3s;
 }
@@ -192,8 +192,8 @@ img.single-story-bg {
     transition: all ease 0.4s;
 }
 .make-post-tab .create-post-button.primary {
-    border: 1px solid#2262c6;
-    color: #2262c6 !important;
+    border: 1px solid#0767A3;
+    color: #0767A3 !important;
 }
 .make-post-tab .create-post-button.danger {
     border: 1px solid #e7515a;
@@ -210,7 +210,7 @@ img.single-story-bg {
 .make-post-tab .dropzone .dz-message .dz-button {
     font-size: 23px;
     font-weight: 300;
-    color: #2262c6;
+    color: #0767A3;
 }
 .make-post-tab .dropzone span.note.needsclick {
     font-weight: 300;

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <title>QMS - @yield("title") </title>
-    <link rel="icon" type="image/x-icon" href="/admin/assets/img/logooriginal.ico">
+    <link rel="icon" type="image/x-icon" href="/admin/assets/img/appicon-removebg-preview.ico">
     <link href="/admin/css2.css?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="/admin/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="/admin/assets/css/main.css" rel="stylesheet" type="text/css">
@@ -15,7 +15,6 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     @yield("custom-styles")
-    
 </head>
 <body>
     <!--  Navbar Starts  -->
@@ -24,7 +23,7 @@
             <ul class="navbar-item theme-brand flex-row  text-center">
                 <li class="nav-item theme-logo">
                     <a href="#">
-                        <img src="/admin/assets/img/pb-blue.png" class="navbar-logo" style="width:100%;margin-left:-1rem;" alt="logo">
+                        <img src="/admin/assets/img/poracbankq2.png" class="navbar-logo" style="width:100%;margin-left:-1rem;" alt="logo">
                     </a>
                 </li>
                 <!-- <li class="nav-item theme-text">

@@ -51,11 +51,11 @@
   height: 43px;
 }
 .login-two-inputs input[type="text"]:focus {
-  border-color: #2262c6;
+  border-color: #0767A3;
   transition: all ease 0.2s;
 }
 .login-two-inputs input[type="text"]:focus + .las{
-  color: #2262c6 !important;
+  color: #0767A3 !important;
   transition: all ease 0.2s;
 }
 .login-two-inputs input[type="text"]::placeholder{
@@ -74,11 +74,11 @@
   height: 43px;
 }
 .login-two-inputs input[type="password"]:focus {
-  border-color: #2262c6;
+  border-color: #0767A3;
   transition: all ease 0.2s;
 }
 .login-two-inputs input[type="password"]:focus + .las{
-  color: #2262c6 !important;
+  color: #0767A3 !important;
   transition: all ease 0.2s;
 }
 .login-two-inputs input[type="password"]::placeholder{
@@ -97,11 +97,11 @@
   height: 43px;
 }
 .login-two-inputs input[type="email"]:focus {
-  border-color: #2262c6;
+  border-color: #0767A3;
   transition: all ease 0.2s;
 }
 .login-two-inputs input[type="email"]:focus + .las{
-  color: #2262c6 !important;
+  color: #0767A3 !important;
   transition: all ease 0.2s;
 }
 .login-two-inputs input[type="email"]::placeholder{
@@ -115,7 +115,7 @@
   font-size: 0.81em;
 }
 .back-btn i {
-  color: #2262c6;
+  color: #0767A3;
   transition: all ease 0.2s;
 }
 /* Right Side */
@@ -179,8 +179,8 @@
   position: absolute;
 }
 .box input:checked ~ .check {
-  border-color: #2262c6;
-  box-shadow: 0px 0px 0px 15px #2262c6 inset;
+  border-color: #0767A3;
+  box-shadow: 0px 0px 0px 15px #0767A3 inset;
 }
 .box input:checked ~ .check::after {
   opacity: 1;
@@ -330,7 +330,7 @@ p.find-us {
   border: 1px solid #1761a0;
   border-radius: 20px;
   padding: 5px 0px;
-  color: #2262c6;
+  color: #0767A3;
   font-weight: 500;
   top: -6px;
   font-size: 13px;

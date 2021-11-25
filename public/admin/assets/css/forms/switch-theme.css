@@ -1,8 +1,8 @@
 /* Custom Switch 1 */
 .custom-switch-1 .switch {
-  --line: #2262c6;
-  --dot: #2262c6;
-  --circle: #2262c6;
+  --line: #0767A3;
+  --dot: #0767A3;
+  --circle: #0767A3;
   --duration: .3s;
   --text: #9EA0BE;
   cursor: pointer;
@@ -238,21 +238,21 @@
 .switch-outer-container .switch input:checked ~ span:after {
   opacity: 1;
   color: #ffffff;
-  background-color: #2262c6;
+  background-color: #0767A3;
 }
 .switch-outer-container .switch.switch-primary:not(.switch-outline) input:empty ~ span:before {
-  background-color: #2262c6;
+  background-color: #0767A3;
 }
 .switch-outer-container .switch.switch-primary:not(.switch-outline) input:empty ~ span:after {
   background-color: #ffffff;
   opacity: 0.7;
 }
 .switch-outer-container .switch.switch-primary:not(.switch-outline) input:checked ~ span:before {
-  background-color: #2262c6;
+  background-color: #0767A3;
 }
 .switch-outer-container .switch.switch-primary:not(.switch-outline) input:checked ~ span:after {
   opacity: 1;
-  color: #2262c6;
+  color: #0767A3;
   background-color: #ffffff;
 }
 .switch-outer-container .switch.switch-outline.switch-primary input:empty ~ span:before {
@@ -263,12 +263,12 @@
   background-color: #ebedf3;
 }
 .switch-outer-container .switch.switch-outline.switch-primary input:checked ~ span:before {
-  border: 2px solid #2262c6;
+  border: 2px solid #0767A3;
   background-color: transparent;
 }
 .switch-outer-container .switch.switch-outline.switch-primary input:checked ~ span:after {
   color: #ffffff;
-  background-color: #2262c6;
+  background-color: #0767A3;
 }
 .switch-outer-container .switch.switch-secondary:not(.switch-outline) input:empty ~ span:before {
   background-color: #e4e6ef;

@@ -138,7 +138,7 @@
     font-weight: 600;
     margin: 0px;
     cursor: pointer;
-    color: #2262c6;
+    color: #0767A3;
     position: absolute;
     font-size: 18px;
     top: 23px;
@@ -148,7 +148,7 @@
     border-radius: 30px;
     font-size: 12px;
     width: 100%;
-    color: #2262c6;
+    color: #0767A3;
     outline: none;
     padding: 0px 4px 0px 40px;
     height: 36px;
@@ -163,19 +163,19 @@
 }
 .chat-system .chat-box .chat-input input::-webkit-input-placeholder,
 .user-container .user-list-box .search input::-webkit-input-placeholder {
-    color: #2262c6;
+    color: #0767A3;
     font-weight: 500;
     font-size: 12px;
 }
 .chat-system .chat-box .chat-input input::-moz-placeholder,
 .user-container .user-list-box .search input::-moz-placeholder {
-    color: #2262c6;
+    color: #0767A3;
     font-weight: 500;
     font-size: 12px;
 }
 .chat-system .chat-box .chat-input input:-ms-input-placeholder,
 .user-container .user-list-box .search input::-moz-placeholder {
-    color: #2262c6;
+    color: #0767A3;
     font-weight: 500;
     font-size: 12px;
 }
@@ -310,7 +310,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background: #fff;
-    color: #2262c6;
+    color: #0767A3;
     padding: 0.5rem 1rem;
     font-weight: 500;
     border-radius: 5px;
@@ -324,7 +324,7 @@
     border-radius: 6px;
     font-size: 12px;
     width: 100%;
-    color: #2262c6;
+    color: #0767A3;
     outline: none;
     padding: 0px 4px 0px 40px;
     height: 40px;
@@ -342,7 +342,7 @@
     font-weight: 600;
     margin: 0px;
     cursor: pointer;
-    color: #2262c6;
+    color: #0767A3;
     position: absolute;
     font-size: 18px;
     top: 11px;
@@ -418,7 +418,7 @@
     margin-left: auto;
 }
 .own-chat-container .own-chat p {
-    color: #2262c6;
+    color: #0767A3;
     font-size: 11px;
     font-weight: 500;
     margin-bottom: 0px;
@@ -478,7 +478,7 @@
     margin-right: 10px;
     border-radius: 8px;
     font-size: 16px;
-    color: #2262c6;
+    color: #0767A3;
 }
 .own-chat-container.has-file .own-file-container .file-name {
     margin-bottom: 0px;
@@ -542,7 +542,7 @@ input.chat-text-input {
     color: #676767;
 }
 .chat-input-container a.send {
-    background: #2262c6;
+    background: #0767A3;
     height: 40px;
     width: 40px;
     display: inline-flex;
@@ -644,7 +644,7 @@ span.calling-info  {
     transition: all ease 0.4s;
 }
 .single-chat-option:hover a{
-    color: #2262c6;
+    color: #0767A3;
     cursor: pointer;
 }
 .single-chat-option:hover a.text-danger{
@@ -1044,7 +1044,7 @@ img.own-video-image {
         right: 10px;
         transform: translate(0px);
         background: #fff;
-        color: #2262c6;
+        color: #0767A3;
         padding: 0.5rem 1rem;
         font-weight: 500;
         border-radius: 5px;

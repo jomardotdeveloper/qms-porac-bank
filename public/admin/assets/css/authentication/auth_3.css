@@ -30,7 +30,7 @@
     align-items: center;
 }
 .login-three-social .social-btn {
-    background: #2262c6;
+    background: #0767A3;
     height: 30px;
     display: flex;
     align-items: center;
@@ -149,7 +149,7 @@
     content: "";
     width: 100%;
     height: 100%;
-    background: #2262c6;
+    background: #0767A3;
     display: block;
     transform: scale(0);
     opacity: 1;
@@ -159,11 +159,11 @@
     padding-left: 8px;
 }
 .cbx:hover span:first-child {
-    border-color: #2262c6;
+    border-color: #0767A3;
 }
 .inp-cbx:checked + .cbx span:first-child {
-    background: #2262c6;
-    border-color: #2262c6;
+    background: #0767A3;
+    border-color: #0767A3;
     animation: wave 0.4s ease;
 }
 .inp-cbx:checked + .cbx span:first-child svg {
@@ -182,7 +182,7 @@
 .captcha {
     text-align: center;
     background-color: #ffffff;
-    border: 1px dashed #2262c6;
+    border: 1px dashed #0767A3;
     padding: 10px 0px;
     width: 100%;
     border-radius: 4px;

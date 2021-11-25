@@ -8,7 +8,7 @@ body {
     flex-wrap: wrap;
 }
 .error-left-section{
-    background: linear-gradient(to right, #1a286c 50%, #2262c6 100%);
+    background: linear-gradient(to right, #1a286c 50%, #0767A3 100%);
     height: 100vh;
     position: relative;
 }
@@ -53,7 +53,7 @@ body {
     padding: 0 0;
     background-attachment: fixed;
     background-size: contain;  
-    background: linear-gradient(to left, #4291ff 0%, #2262c6 100%);
+    background: linear-gradient(to left, #4291ff 0%, #0767A3 100%);
     position: relative;
 }
 .error-header-wrapper h1 {
@@ -109,7 +109,7 @@ body {
         width: 100%;
     }
     .error-left-section {
-        background: linear-gradient(to right, #1a286c 50%, #2262c6 100%);
+        background: linear-gradient(to right, #1a286c 50%, #0767A3 100%);
         height: 100%;
         position: relative;
         padding-bottom: 30px;

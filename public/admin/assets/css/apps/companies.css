@@ -22,7 +22,7 @@
   -webkit-border-radius: 30px;
   -moz-border-radius: 30px;
   border-radius: 30px;
-  color: #2262c6;
+  color: #0767A3;
   letter-spacing: 0.5px;
   padding: 0px 4px 0px 40px;
   height: 36px;
@@ -32,7 +32,7 @@
   box-shadow: none;
   border: 1px solid #b0d0ff !important;
   border-color: #b0d0ff !important;
-  color: #2262c6;
+  color: #0767A3;
 }
 .filtered-list-search form i.la-search {
   position: absolute;
@@ -42,23 +42,23 @@
   font-size: 18px;
 }
 .filtered-list-search form input:focus::placeholder {
-  color: #2262c6;
+  color: #0767A3;
   font-size: 13px !important;
 }
 .filtered-list-search form input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-  color: #2262c6;
+  color: #0767A3;
   font-size: 13px !important;
 }
 .filtered-list-search form input::-moz-placeholder { /* Firefox 19+ */
-  color: #2262c6;
+  color: #0767A3;
   font-size: 13px !important;
 }
 .filtered-list-search form input:-ms-input-placeholder { /* IE 10+ */
-  color: #2262c6;
+  color: #0767A3;
   font-size: 13px !important;
 }
 .filtered-list-search form input:-moz-placeholder { /* Firefox 18- */
-  color: #2262c6;
+  color: #0767A3;
   font-size: 13px !important;
 }
 .searchable-container .switch {
@@ -87,7 +87,7 @@
   fill: rgba(0, 23, 55, 0.08);
 }
 .contact-options a.s-o {
-  color: #2262c6;
+  color: #0767A3;
   font-size: 19px;
   font-weight: 700;
   height: 33px;
@@ -277,7 +277,7 @@
   font-size: 21px;
   font-weight: 500;
   margin-bottom: 0;
-  color: #2262c6;
+  color: #0767A3;
   letter-spacing: 0.5px;
 }
 .searchable-container .searchable-items.grid .items .user-meta-info .user-work {
@@ -418,7 +418,7 @@
   font-size: 12px;
 }
 .company-info-right .social-media a{
-  color: #2262c6;
+  color: #0767A3;
   font-size: 28px;
   margin-left: 0.5rem;
 }
@@ -431,7 +431,7 @@
 .animated-underline-content .tab-content>.tab-pane { padding: 20px 0 0 0; }
 .animated-underline-content .nav-tabs .nav-link.active, .animated-underline-content .nav-tabs .show>.nav-link {
   border-color: transparent;
-  color: #2262c6;
+  color: #0767A3;
 }
 .animated-underline-content .nav-tabs .nav-link:focus, .animated-underline-content .nav-tabs .nav-link:hover { border-color: transparent; }
 .animated-underline-content .nav-tabs .nav-link.active:before {
@@ -445,7 +445,7 @@
   width: 100%;
   left: 0;
   bottom: 0;
-  background-color: #2262c6;
+  background-color: #0767A3;
   -webkit-transform: scale(0);
   transform: scale(0);
   transition: all .3s;
@@ -470,14 +470,14 @@
   color: #666;
 }
 .animated-underline-content .contact-info a:hover{
-  color: #2262c6;
+  color: #0767A3;
   transition: all ease 0.4s;
 }
 .animated-underline-content .contact-info i {
   width: 35px;
   font-size: 20px;
   vertical-align: middle;
-  color: #2262c6;
+  color: #0767A3;
 }
 .animated-underline-content .contact-info .skills-container span{
   background: #dfedff;
@@ -522,7 +522,7 @@
   margin-bottom: 5px;
   font-size: 12px;
   font-weight: 600;
-  color: #2262c6;
+  color: #0767A3;
 }
 .single-project .card-title {
   font-size: 15px;

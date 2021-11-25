@@ -65,7 +65,7 @@
 }
 .tab-title .nav-pills .nav-link.active, .tab-title .nav-pills .show>.nav-link {
     background-color: transparent;
-    color: #2262c6;
+    color: #0767A3;
     font-weight: 700;
 }
 .tab-title .nav-pills a.nav-link {
@@ -220,7 +220,7 @@
     justify-content: flex-end;
 }
 .note-container .note-options a.s-o{
-    color: #2262c6;
+    color: #0767A3;
     font-size: 19px;
     font-weight: 700;
     height: 33px;

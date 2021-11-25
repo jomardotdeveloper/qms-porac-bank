@@ -88,7 +88,7 @@ a.follow-area:hover {
 }
 .single-number span.number {
     font-size: 15px;
-    color: #2262c6;
+    color: #0767A3;
     font-weight: 600;
 }
 .single-number a {
@@ -118,7 +118,7 @@ a.follow-area:hover {
 /* HIGHLIGHT INFO */
 .profile-left .highlight-info {
     margin: 20px -20px 0px;
-    background-color: #2262c6;
+    background-color: #0767A3;
     display: flex;
     padding: 12px 15px;
 }
@@ -305,7 +305,7 @@ a.follow-area:hover {
     font-size: 21px;
     font-weight: 500;
     margin-bottom: 0;
-    color: #2262c6;
+    color: #0767A3;
     letter-spacing: 0.5px;
 }
 .searchable-items.grid .items .user-meta-info .product-category {
@@ -395,7 +395,7 @@ a.follow-area:hover {
     font-weight: 500;
 }
 .single-profile-info p a{
-    color: #2262c6;
+    color: #0767A3;
 }
 .single-profile-info.social a {
     font-size: 35px;

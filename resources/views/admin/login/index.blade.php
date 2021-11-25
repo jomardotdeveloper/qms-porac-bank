@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <!-- Common Icon Ends -->
     <!-- Page Level Plugin/Style Starts -->
-    <link href="/admin/assets/css/loader.css" rel="stylesheet" type="text/css">
+    <!-- <link href="/admin/assets/css/loader.css" rel="stylesheet" type="text/css"> -->
     <link href="/admin/plugins/owl-carousel/owl.carousel.min.css" rel="stylesheet" type="text/css">
     <link href="/admin/plugins/owl-carousel/owl.theme.default.min.css" rel="stylesheet" type="text/css">
     <link href="/admin/assets/css/authentication/auth_1.css" rel="stylesheet" type="text/css">
@@ -26,7 +26,7 @@
 </head>
 <body class="login-one">
     <!-- Loader Starts -->
-    <div id="load_screen"> 
+    <!-- <div id="load_screen"> 
         <div class="boxes">
             <div class="box">
                 <div></div><div></div><div></div><div></div>
@@ -42,7 +42,7 @@
             </div>
         </div>
         <p class="xato-loader-heading">Xato</p>
-    </div>
+    </div> -->
     <!--  Loader Ends -->
     <!-- Main Body Starts -->
     <div class="container-fluid login-one-container">
@@ -90,18 +90,18 @@
                             <div class="owl-carousel owl-theme">
                                 <div class="item">
                                     <i class="lar la-grin-alt font-45 text-white"></i>
-                                    <h2 class="font-30 text-white mt-2">Start your journey</h2>
-                                    <p class="summary-count text-white font-12 mt-2 slide-text">Everyone has been made for some particular work, and the desire for that work has been put in every heart</p>
+                                    <h2 class="font-30 text-white mt-2">User-Friendly</h2>
+                                    <p class="summary-count text-white font-12 mt-2 slide-text">Controls are easy to navigate.</p>
                                 </div>
                                 <div class="item">
-                                    <i class="lar la-clock font-45 text-white"></i>
-                                    <h2 class="font-30 text-white mt-2">Save your time</h2>
-                                    <p class="summary-count text-white font-12 mt-2 slide-text">Everyone has been made for some particular work, and the desire for that work has been put in every heart</p>
+                                    <i class="lar la-file-alt font-45 text-white"></i>
+                                    <h2 class="font-30 text-white mt-2">Usage Reports</h2>
+                                    <p class="summary-count text-white font-12 mt-2 slide-text">Provides reports to help in allocation and staffing of employees.</p>
                                 </div>
                                 <div class="item">
                                     <i class="las la-hand-holding-usd font-45 text-white"></i>
-                                    <h2 class="font-30 text-white mt-2">Save your money</h2>
-                                    <p class="summary-count text-white font-12 mt-2 slide-text">Everyone has been made for some particular work, and the desire for that work has been put in every heart</p>
+                                    <h2 class="font-30 text-white mt-2">Smooth Transactions</h2>
+                                    <p class="summary-count text-white font-12 mt-2 slide-text">The controls are well integrated</p>
                                 </div>
                             </div>
                         </div>
@@ -112,7 +112,7 @@
     </div>
     <!-- Main Body Ends -->
     <!-- Page Level Plugin/Script Starts -->
-    <script src="/admin/assets/js/loader.js"></script>
+    <!-- <script src="/admin/assets/js/loader.js"></script> -->
     <script src="/admin/assets/js/libs/jquery-3.1.1.min.js"></script>
     <script src="/admin/plugins/owl-carousel/owl.carousel.min.js"></script>
     <script src="/admin/plugins/owl-carousel/owl.carousel.js"></script>

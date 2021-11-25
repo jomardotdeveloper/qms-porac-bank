@@ -111,7 +111,7 @@
     margin-bottom: 8px;
 }
 .single-plan:hover .btn-primary{
-    color: #2262c6 !important;
+    color: #0767A3 !important;
     background-color: #fff!important;
     border-color: #fff;
 }
@@ -141,16 +141,16 @@
 nav .navbar-brand {
     font-size: 30px;
     font-weight: 700;
-    color: #2262c6;
+    color: #0767A3;
 }
 .navbar-expand .navbar-nav .nav-link {
-    color: #2262c6;
+    color: #0767A3;
     padding: 0 17px;
 }
 .pricing-header-wrapper h1 {
     font-size: 46px;
     font-weight: 700;
-    color: #2262c6;
+    color: #0767A3;
     margin-bottom: 8px;
 }
 .pricing-header-wrapper .pricing-input-group {
@@ -175,7 +175,7 @@ nav .navbar-brand {
     min-width: calc(100% - 55px);
 }
 .pricing-header-wrapper p {
-    color: #2262c6;
+    color: #0767A3;
     font-size: 14px;
     margin-bottom: 27px;
     line-height: 25px;
@@ -255,7 +255,7 @@ nav .navbar-brand {
     transition: color .5s .2s;
   }
    span.switcher.switcher-1 input:checked:after {
-    color: #2262c6;
+    color: #0767A3;
     -webkit-transition: color .5s;
     transition: color .5s;
     cursor: pointer;
@@ -263,7 +263,7 @@ nav .navbar-brand {
    span.switcher.switcher-1 input:checked + label {
     left: 12px;
     right: 89px;
-    background: #2262c6;
+    background: #0767A3;
     -webkit-transition: left .5s, right .4s .2s;
     transition: left .5s, right .4s .2s;
     margin-bottom: 0px;
@@ -274,7 +274,7 @@ nav .navbar-brand {
     transition: background .5s -.1s;
   }
    span.switcher.switcher-1 input:not(:checked):before {
-    color: #2262c6;
+    color: #0767A3;
     -webkit-transition: color .5s;
     transition: color .5s;
     cursor: pointer;
@@ -287,7 +287,7 @@ nav .navbar-brand {
    span.switcher.switcher-1 input:not(:checked) + label {
     left: 82px;
     right: 13px;
-    background: #2262c6;
+    background: #0767A3;
     -webkit-transition: left .4s .2s, right .5s, background .35s -.1s;
     transition: left .4s .2s, right .5s, background .35s -.1s;
     margin-bottom: 0px;
@@ -329,7 +329,7 @@ nav .navbar-brand {
     background-color: #ffffff;
     border-radius: 6px;
     transition: all ease 0.5s;
-    border: 2px solid #2262c6;
+    border: 2px solid #0767A3;
 }
 .pricing-2 .single-plan:hover {
     padding: 20px;
@@ -377,7 +377,7 @@ nav .navbar-brand {
     display: block;
     width: 225px;
     padding: 10px 0;
-    background-color: #2262c6;
+    background-color: #0767A3;
     box-shadow: 0 5px 10px rgba(0,0,0,.1);
     color: #fff;
     font-size: 13px;

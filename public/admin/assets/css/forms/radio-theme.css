@@ -28,7 +28,7 @@
     stroke: #C8CCD4;
 }
 .custom-radio-1 .btn-radio svg path {
-    stroke: #2262c6;
+    stroke: #0767A3;
 }
 .custom-radio-1 .btn-radio svg path.inner {
     stroke-width: 6;
@@ -197,7 +197,7 @@
     border: 1px solid transparent;
 }
 .radio > input:checked ~ span {
-    background-color: #2262c6;
+    background-color: #0767A3;
 }
 .radio > input:checked ~ span:after {
     background-color: #ffffff;
@@ -213,11 +213,11 @@
 }
 .radio.radio-outline > input:checked ~ span {
     background-color: transparent;
-    border-color: #2262c6;
+    border-color: #0767A3;
 }
 .radio.radio-outline > input:checked ~ span:after {
-    background-color: #2262c6;
-    border-color: #2262c6;
+    background-color: #0767A3;
+    border-color: #0767A3;
 }
 .radio.radio-primary > span {
     border: 1px solid transparent;
@@ -226,7 +226,7 @@
     border: 1px solid transparent;
 }
 .radio.radio-primary > input:checked ~ span {
-    background-color: #2262c6;
+    background-color: #0767A3;
 }
 .radio.radio-primary > input:checked ~ span:after {
     background-color: #ffffff;
@@ -240,7 +240,7 @@
     border: 1px solid transparent;
 }
 .radio.checkbox-light-primary > input:checked ~ span {
-    background-color: #2262c6;
+    background-color: #0767A3;
 }
 .radio.checkbox-light-primary > input:checked ~ span:after {
     border-color: #ffffff;
@@ -255,26 +255,26 @@
 }
 .radio.radio-outline.radio-primary > input:checked ~ span {
     background-color: transparent;
-    border-color: #2262c6;
+    border-color: #0767A3;
 }
 .radio.radio-outline.radio-primary > input:checked ~ span:after {
-    background-color: #2262c6;
-    border-color: #2262c6;
+    background-color: #0767A3;
+    border-color: #0767A3;
 }
 .radio.radio-accent.radio-primary > span:after {
-    background-color: #2262c6;
+    background-color: #0767A3;
 }
 .radio.radio-accent.radio-primary > input:focus ~ span {
     border-color: #e1f0ff;
 }
 .radio.radio-accent.radio-primary > input:focus ~ span:after {
-    background-color: #2262c6;
+    background-color: #0767A3;
 }
 .radio.radio-accent.radio-primary > input:checked ~ span {
     border-color: #e1f0ff;
 }
 .radio.radio-accent.radio-primary > input:checked ~ span:after {
-    background-color: #2262c6;
+    background-color: #0767A3;
 }
 .radio.radio-secondary > span {
     border: 1px solid transparent;

@@ -72,10 +72,10 @@
 }
 /* Custom Tag Color */
 .custom-tag-color .tagify {
-    --tag-bg: #2262c6;
+    --tag-bg: #0767A3;
     --tag-text-color: white;
     --tag-remove-btn-color: white;
     --tag-hover: #FF9800;
-    --tag-text-color--edit: #2262c6;
+    --tag-text-color--edit: #0767A3;
     --tag-remove-bg: #ff2929;
 }

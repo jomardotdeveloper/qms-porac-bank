@@ -68,24 +68,9 @@
                                                     </div>  
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label for="qrcode_interval">QR Code Interval</label>
-                                                        <input type="number" class="form-control mb-4" placeholder="QR Code Interval" value="{{ $branch->setting->qrcode_interval }}" name="qrcode_interval" />
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group mt-3">
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" class="custom-control-input" id="is_qrcode_automatic" name="is_qrcode_automatic"  {{ $branch->setting->is_qrcode_automatic  ? 'checked' : '' }}>
-                                                            <label class="custom-control-label" for="is_qrcode_automatic">Enable automatic qrcode generator</label>
-                                                        </div>
-                                                    </div>  
-                                                </div>
-
-                                                <div class="col-sm-6">
                                                     <input type="submit" value="Save Changes" class="btn btn-primary"/>
                                                 </div>
-                                                
+                                
                                                 <div class="col-xl-9 col-lg-12 col-md-12 mt-md-0 mt-4">
                                                     <div class="form">
                                                         <div class="row">

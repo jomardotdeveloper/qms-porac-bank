@@ -47,7 +47,7 @@
                                     <div class="row mb-3">
                                         <div class="col-xl-3 col-md-3 col-sm-3 col-3">
                                             <div class="upload text-center img-thumbnail">
-                                                <input type="file" id="input-file-max-fs" class="dropify" name="photo" data-default-file="/admin/assets/img/profile-16.jpg" data-max-file-size="2M">
+                                                <input type="file" id="input-file-max-fs" class="dropify" name="photo" data-default-file="/admin/assets/img/default.png" data-max-file-size="2M">
                                                 <p class="mt-2 text-primary font-weight-bold"><i class="flaticon-cloud-upload mr-1"></i> Upload Picture</p>
                                             </div>
                                         </div>

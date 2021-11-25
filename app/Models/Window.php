@@ -27,4 +27,17 @@ class Window extends Model
     public function transactions() {
         return $this->hasMany(Transaction::class, "window_id");
     }
+
+    public function getSuccessfulTransactionsAttribute(){
+        return $this->transactions->where("state", "=", "out")->all();
+    }
+
+    public function getDropTransactionsAttribute(){
+        return $this->transactions->where("state", "=", "drop")->all();
+    }
+
+    public function getUnsettledTransactionsAttribute(){
+        return $this->transactions->where("state", "!=", "drop")->where("state", "!=", "out")->all();
+    }
+
 }

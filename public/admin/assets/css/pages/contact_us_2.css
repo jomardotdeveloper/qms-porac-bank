@@ -37,7 +37,7 @@
 .contact-header h4{
     letter-spacing: 0px;
     margin: 0px;
-    color: #2262c6;
+    color: #0767A3;
 }
 .contact-input {
     position: relative;
@@ -91,7 +91,7 @@
     transition: all ease 0.4s;
 }
 button.form-submit {
-    background: #2262c6;
+    background: #0767A3;
     color: #fff;
     font-size: 30px;
     border: 0px;

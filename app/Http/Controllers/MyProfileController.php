@@ -27,6 +27,9 @@ class MyProfileController extends Controller
                 where("branch_id", "=", auth()->user()->profile->branch->id)->
                 where("id", "!=", auth()->user()->profile->id);
             $data["branch_data"] =  $this->getBranchData();
+
+            if(auth()->user()->profile->window != null)
+                $data["window_data"] = $this->getWindowData();
         }
 
         return view("admin.my-profile.index", $data);
@@ -139,11 +142,54 @@ class MyProfileController extends Controller
         $drop = count($branch->getDropTransactionsAttribute());
         $unsettled = count($branch->getUnsettledTransactionsAttribute());
 
+        if($success == 0){
+            $success_vals = [
+                "value" => 0,
+                "percentage" => 0
+            ];
+        }else{
+            $success_vals = ["value" => $success, "percentage" => intval(($success/$total) * 100)];
+        }
+
+        if($drop == 0){
+            $drop_vals = [
+                "value" => 0,
+                "percentage" => 0
+            ];
+        }else{
+            $drop_vals = ["value" => $drop, "percentage" => intval(($drop/$total) * 100)];
+        }
+
+        if($unsettled == 0){
+            $unsettled_vals = [
+                "value" => 0,
+                "percentage" => 0
+            ];
+        }else{
+            $unsettled_vals = ["value" => $unsettled, "percentage" => intval(($unsettled/$total) * 100)];
+        }
+
         $data = [
             "total" => $total,
-            "success" => ["value" => $success, "percentage" => intval(($success/$total) * 100)],
-            "drop" => ["value" => $drop, "percentage" => intval(($drop/$total) * 100)],
-            "unsettled" => ["value" => $unsettled, "percentage" => intval(($unsettled/$total) * 100)]
+            "success" => $success_vals,
+            "drop" => $drop_vals,
+            "unsettled" => $unsettled_vals
+        ];
+
+        
+        return $data;
+    }
+
+    public function getWindowData(){
+        $window = auth()->user()->profile->window;
+        $success = count($window->getSuccessfulTransactionsAttribute());
+        $drop = count($window->getDropTransactionsAttribute());
+        $unsettled = count($window->getUnsettledTransactionsAttribute());
+
+        $data = [
+            "success" => $success,
+            "drop" => $drop,
+            "unsettled" => $unsettled
         ];
         return $data;
     }

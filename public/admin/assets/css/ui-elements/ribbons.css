@@ -7,7 +7,7 @@
     border-radius: 0 3px 3px 0;
 }
 .ribbon-container .ribbon-primary {
-    background: #2262c6;
+    background: #0767A3;
 }
 .ribbon-container .ribbon-secondary {
     background: #5c1ac3;
@@ -196,7 +196,7 @@
     line-height: 1.875em;
     color: #fff;
     border-radius: 0 0.156em 0.156em 0;
-    background: #2262c6;
+    background: #0767A3;
     box-shadow: -1px 2px 3px rgba(0,0,0,0.5);
     max-width: 45%;
 }

@@ -46,17 +46,17 @@
     border-radius: 50%;
 }
 .ripple-checkbox-primary .cbx span:first-child:before {
-    background: #2262c6;
+    background: #0767A3;
 }
 .cbx span:last-child {
     padding-left: 8px;
 }
 .ripple-checkbox-primary .cbx:hover span:first-child {
-    border-color: #2262c6;
+    border-color: #0767A3;
 }
 .ripple-checkbox-primary .inp-cbx:checked + .cbx span:first-child {
-    background: #2262c6;
-    border-color: #2262c6;
+    background: #0767A3;
+    border-color: #0767A3;
     animation: wave 0.4s ease;
 }
 .inp-cbx:checked + .cbx span:first-child svg {

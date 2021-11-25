@@ -7,10 +7,10 @@ body {
 nav .navbar-brand {
     font-size: 30px;
     font-weight: 700;
-    color: #2262c6;
+    color: #0767A3;
 }
 .navbar-expand .navbar-nav .nav-link {
-    color: #2262c6;
+    color: #0767A3;
     padding: 0 17px;
 }
 .fq-header-wrapper {
@@ -26,11 +26,11 @@ nav .navbar-brand {
 .fq-header-wrapper h1 {
     font-size: 46px;
     font-weight: 700;
-    color: #2262c6;
+    color: #0767A3;
     margin-bottom: 8px;
 }
 .fq-header-wrapper p {
-    color: #2262c6;
+    color: #0767A3;
     font-size: 14px;
     margin-bottom: 27px;
     line-height: 25px;
@@ -80,9 +80,9 @@ nav .navbar-brand {
     transition: all ease 0.4s;
 }
 .faq .nav-pills li.nav-item a.active {
-    border: 2px solid #2262c6;
+    border: 2px solid #0767A3;
     transition: all ease 0.4s;
-    color: #2262c6;
+    color: #0767A3;
 }
 .faq .nav-pills li.nav-item a i {
     font-size: 32px;
@@ -91,7 +91,7 @@ nav .navbar-brand {
 }
 .faq .nav-pills li.nav-item a.active i {
     font-size: 32px;
-    color: #2262c6;
+    color: #0767A3;
     transition: all ease 0.4s;
 }
 .faq .tab-content .accordion .card {

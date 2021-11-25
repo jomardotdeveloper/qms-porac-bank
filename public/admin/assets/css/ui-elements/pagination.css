@@ -24,36 +24,36 @@
   border-radius: 50%;
 }
 .p1 a:hover{
-    background-color: #2262c6;
+    background-color: #0767A3;
     border-radius: 50%;
     color: #fff;
     transition: all ease 0.3s;
 }
 .p1 a.is-active{
-  background-color: #2262c6;
+  background-color: #0767A3;
   border-radius: 100%;
   color: #fff;
 }
 /* TWO */
 .p2 .is-active li{
   font-weight: bold;
-  border-bottom: 3px solid #2262c6;
+  border-bottom: 3px solid #0767A3;
 }
 .p2 .is-active{
   font-weight: bold;
-  color: #2262c6;
+  color: #0767A3;
 }
 .p2 a:hover{
   font-weight: bold;
-  color: #2262c6;
+  color: #0767A3;
 }
 /* THREE */
 .p3 .is-active{
-  background-color: #2262c6;
+  background-color: #0767A3;
   color: #fff;
 }
 .p3 a:hover{
-  background-color: #2262c6;
+  background-color: #0767A3;
   color: #fff;
   transition: all ease 0.3s;
 }
@@ -66,7 +66,7 @@
   padding: 0;
   text-align: center;
   position: relative;
-  border: 3px solid #2262c6;
+  border: 3px solid #0767A3;
   transition: all ease 0.3s;
 }
 .p4 a:hover{
@@ -74,7 +74,7 @@
   width: 40px;
   height: 40px;
   border-radius: 100%;
-  background-color: #2262c6;
+  background-color: #0767A3;
   transition: all ease 0.3s;
 }
 .p4 .is-active:before{
@@ -82,7 +82,7 @@
   width: 40px;
   height: 40px;
   border-radius: 100%;
-  background-color: #2262c6;
+  background-color: #0767A3;
   position: absolute;
   top: -3px;
   left: -3px;
@@ -97,11 +97,11 @@
   transition: all ease 0.3s;
 }
 .p5 a:hover{
-  background-color: #2262c6;
+  background-color: #0767A3;
   transition: all ease 0.3s;
 }
 .p5 .is-active{
-  background-color: #2262c6;
+  background-color: #0767A3;
 }
 /* SIX */
 .p6 a{
@@ -116,45 +116,45 @@
   transition: all ease 0.3s;
 }
 .p6 a:hover{
-  background-color: #2262c6;
+  background-color: #0767A3;
   transition: all ease 0.3s;
 }
 .p6 .is-active{
-  background-color: #2262c6;
+  background-color: #0767A3;
 }
 /* SEVEN */
 .p7 a{
-  border: 2px solid #2262c6;
+  border: 2px solid #0767A3;
   margin: auto 5px;
-  color: #2262c6;
+  color: #0767A3;
   font-weight: bold;
   transition: all ease 0.3s;
 }
 .p7 a:hover{
-  background-color: #2262c6;
+  background-color: #0767A3;
   color: #fff;
   transition: all ease 0.3s;
 }
 .p7 .is-active{
-  background-color: #2262c6;
+  background-color: #0767A3;
   color: #fff;
 }
 /* EIGHT */
 .p8 a{
-  background-color: #2262c6;
+  background-color: #0767A3;
   margin: auto 5px;
   color: #fff;
   font-weight: bold;
-  border: 2px solid #2262c6;
+  border: 2px solid #0767A3;
 }
 .p8 a:hover{
-  background-color: #2262c6;
+  background-color: #0767A3;
   color: #fff;
   transition: all ease 0.3s;
 }
 .p8 .is-active{
   background-color: #fff;
-  color: #2262c6;
+  color: #0767A3;
 }
 /* NINE */
 .p9 a{
@@ -168,12 +168,12 @@
   transition: all ease 0.3s;
 }
 .p9 a:hover{
-  border: 2px solid #2262c6;
+  border: 2px solid #0767A3;
   border-radius: 100%;
   transition: all ease 0.3s;
 }
 .p9 a.is-active{
-  border: 2px solid #2262c6;
+  border: 2px solid #0767A3;
   border-radius: 100%;
 }
 .p9 li {
@@ -192,11 +192,11 @@
   border: 2px solid transparent;
 }
 .p10 a:hover{
-  border: 2px solid #2262c6;
+  border: 2px solid #0767A3;
   transition: all ease 0.3s;
 }
 .p10 a.is-active{
-  border: 2px solid #2262c6;
+  border: 2px solid #0767A3;
 }
 .p10 li {
   height: 24px;
@@ -208,10 +208,10 @@
   padding-right: 20px;
 }
 .p11 a{
-  background-color: #2262c6;
+  background-color: #0767A3;
   margin: auto 5px;
   color: #fff;
-  border: 1px solid #2262c6;
+  border: 1px solid #0767A3;
   position: relative;
 }
 .p11 a:first-of-type:before{
@@ -221,7 +221,7 @@
   left: -23px;
   border-top: 22px solid transparent;
   border-bottom: 22px solid transparent;
-  border-right: 22px solid #2262c6;
+  border-right: 22px solid #0767A3;
 }
 .p11 a:last-of-type:after{
   content: "";
@@ -230,19 +230,19 @@
   right: -23px;
   border-top: 22px solid transparent;
   border-bottom: 22px solid transparent;
-  border-left: 22px solid #2262c6;
+  border-left: 22px solid #0767A3;
 }
 .p11 .is-active{
   font-weight: bold;
 }
 /* TWELVE */
 .p12 a:first-of-type, .p12 a:last-of-type, .p12 .is-active{
-  background-color: #2262c6;
+  background-color: #0767A3;
   color: #fff;
   font-weight: bold;
 }
 .p12 a:hover{
-  background-color: #2262c6;
+  background-color: #0767A3;
   color: #fff;
   font-weight: bold;
 }
@@ -257,7 +257,7 @@
   transition: all ease 0.2s;
 }
 .p13 a:hover, .p13 a.is-active{
-  background-color: #2262c6;
+  background-color: #0767A3;
   transition: all ease 0.2s;
 }
 .p13 a:hover li, .p13 a.is-active li{

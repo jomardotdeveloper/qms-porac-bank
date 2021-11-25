@@ -64,6 +64,25 @@
                                         <h5 class="mb-0">{{ count($transactions) }}</h5>
                                     </div>
                                 </div>
+                                @else
+                                <div class="col-3">
+                                    <div>
+                                        <p class="text-muted text-truncate mb-2">Users</p>
+                                        <h5 class="mb-0">{{ count($profiles) }}</h5>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div>
+                                        <p class="text-muted text-truncate mb-2">Accounts</p>
+                                        <h5 class="mb-0">{{ count($accounts) }}</h5>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div>
+                                        <p class="text-muted mb-2">Transactions</p>
+                                        <h5 class="mb-0">{{ count($transactions) }}</h5>
+                                    </div>
+                                </div>
                                 @endif
                             </div>
                         </div>
@@ -76,6 +95,8 @@
 
 <div class="row">
     @if(!auth()->user()->is_admin)
+    @if(in_array("CA", auth()->user()->profile->role->getPermissionCodenamesAttribute())) 
+    @if(auth()->user()->profile->window != null) 
     <div class="col-6">
         <div class="widget bg-gradient-success">
             <div class="f-100">
@@ -98,6 +119,8 @@
         </div>
     </div>
     @endif
+    @endif
+    @endif
     <div class="col-6">
         <div class="widget bg-gradient-danger">
             <div class="f-100">
@@ -118,7 +141,58 @@
             </div>
         </div>
     </div>
+    @if(!auth()->user()->is_admin)
+    @if(in_array("SA", auth()->user()->profile->role->getPermissionCodenamesAttribute())) 
+    <div class="col-6">
+        <div class="widget bg-gradient-info">
+            <div class="f-100">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="text-white">
+                            <h5 class="text-white">Announcement</h5>
+                            <p class="blink_me text-white mt-1">Title</p>
+                            <p class="text-white mt-1">
+                                Body
+                            </p>
+                        </div>
+                    </div>
+                    <div class="align-self-end col-md-5">
+                        <img src="/admin/assets/img/dashboard-image-uw.png" alt="" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+    @endif
 </div>
+
+@if(!auth()->user()->is_admin)
+@if(in_array("CA", auth()->user()->profile->role->getPermissionCodenamesAttribute())) 
+<div class="row mt-4">
+    <div class="col-6">
+        <div class="widget bg-gradient-info">
+            <div class="f-100">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="text-white">
+                            <h5 class="text-white">Announcement</h5>
+                            <p class="blink_me text-white mt-1">Title</p>
+                            <p class="text-white mt-1">
+                                Body
+                            </p>
+                        </div>
+                    </div>
+                    <div class="align-self-end col-md-5">
+                        <img src="/admin/assets/img/dashboard-image-uw.png" alt="" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
+@endif
 
 <div class="row mt-4">
     <div class="col-4">
@@ -132,7 +206,7 @@
                 <h5 class="font-size-14 mb-0">Day</h5>
             </div>
             <div class="text-muted mt-3">
-                <h5 class="mb-2">1,452 
+                <h5 class="mb-2">{{ $period["day"]["now"] }} 
                     <i class="las la-angle-up text-success-teal"></i>
                 </h5>
                 <div class="d-flex">

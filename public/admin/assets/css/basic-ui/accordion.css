@@ -20,7 +20,7 @@
 }
 .basic-accordion .card-header section > div.collapsed { color: #888ea8; }
 .basic-accordion .card-header section > div:not(.collapsed) {
-    color: #2262c6;
+    color: #0767A3;
     border-bottom: 2px solid #e2e2e2;
     font-weight: 600;
 }
@@ -64,11 +64,11 @@
     transition: all ease 0.3s;
 }
 .link-accordion .card-header a.collapsed:hover { 
-    color: #2262c6;
+    color: #0767A3;
     transition: all ease 0.3s;
 }
 .link-accordion .card-header a:not(.collapsed) {
-    color: #2262c6;
+    color: #0767A3;
     font-weight: 600;
     padding: 0px;
     cursor: pointer;
@@ -102,7 +102,7 @@
 }
 .basic-accordion-icon .card-header section > div.collapsed { color: #888ea8; }
 .basic-accordion-icon .card-header section > div:not(.collapsed) {
-    color: #2262c6;
+    color: #0767A3;
     border-bottom: 2px solid #e2e2e2;
     font-weight: 600;
 }
@@ -171,6 +171,6 @@
     fill: rgba(0, 23, 55, 0.08);
 }
 .accordion-icons div:not(.collapsed) .accordion-icon svg {
-    color: #2262c6;
+    color: #0767A3;
     fill: rgba(27, 85, 226, 0.23921568627450981);
 }

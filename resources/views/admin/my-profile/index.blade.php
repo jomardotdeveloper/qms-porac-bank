@@ -163,9 +163,32 @@
                                     (Priority Window)
                                     @endif
                                 </h6> 
-                                
-                                    
-
+                                <div class="row">
+                                    <div class="col-4">
+                                        <div class="card text-center">
+                                            <div class="card-body ">
+                                                <h5 class="card-title text-primary">Successful transaction</h5>
+                                                <h2>{{ $window_data["success"]  }}</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="card text-center">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-danger">Dropped transaction</h5>
+                                                <h2>{{ $window_data["drop"]  }}</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="card text-center">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-warning">Unsettled transaction</h5>
+                                                <h2>{{ $window_data["unsettled"]  }}</h2>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -194,7 +217,7 @@
                                     <div class="single-progress">
                                         <div class="progress-details">
                                             <div class="d-flex align-items-center justify-content-between">
-                                                <h6 class="mb-2 font-12 text-danger">Drop Transactions</h6>
+                                                <h6 class="mb-2 font-12 text-danger">Dropped Transactions</h6>
                                                 <p class="mb-2 font-12 text-danger strong">{{ $branch_data['drop']['value'] }}</p>
                                             </div>
                                             <div class="progress-stats">

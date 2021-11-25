@@ -59,7 +59,7 @@
     -webkit-border-radius: 30px;
     -moz-border-radius: 30px;
     border-radius: 30px;
-    color: #2262c6;
+    color: #0767A3;
     letter-spacing: 0.5px;
     padding: 0px 4px 0px 40px;
     height: 36px;
@@ -75,23 +75,23 @@
     font-weight: 600;
     margin: 0 12px;
     cursor: pointer;
-    color: #2262c6;
+    color: #0767A3;
     position: absolute;
     font-size: 18px;
     top: 29px;
     left: 26px;
 }
 .tab-title .search input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-    color: #2262c6;
+    color: #0767A3;
 }
 .tab-title .search input::-moz-placeholder { /* Firefox 19+ */
-    color: #2262c6;
+    color: #0767A3;
 }
 .tab-title .search input:-ms-input-placeholder { /* IE 10+ */
-    color: #2262c6;
+    color: #0767A3;
 }
 .tab-title .search input:-moz-placeholder { /* Firefox 18- */
-    color: #2262c6;
+    color: #0767A3;
 }
 .tab-title .inv-list-container {
     position: relative;
@@ -334,7 +334,7 @@
 }
 .invoice .content-section .inv--product-table-section th {
     border: none;
-    color: #2262c6;
+    color: #0767A3;
 }
 .invoice .content-section .inv--product-table-section td {
     border-top: 1px solid #e0e6ed;

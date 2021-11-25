@@ -26,8 +26,17 @@ class RoleController extends Controller
      */
     public function create()
     {
+        $branches = [];
+
+        if(auth()->user()->is_admin){
+            $branches =  Branch::all();
+        }else{
+            $branches = [auth()->user()->profile->branch];
+        }
+
+
         return view("admin.role.create", [
-            "branches" => Branch::all(),
+            "branches" => $branches,
             "permissions" => Permission::all()
         ]);
     }
@@ -65,9 +74,17 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
+        $branches = [];
+
+        if(auth()->user()->is_admin){
+            $branches =  Branch::all();
+        }else{
+            $branches = [auth()->user()->profile->branch];
+        }
+
         return view("admin.role.edit", [
             "role" => $role,
-            "branches" => Branch::all(),
+            "branches" => $branches,
             "permissions" => Permission::all()
         ]);
     }

@@ -54,7 +54,7 @@
 .profile-edit-left .nav-pills .nav-link.active{
     color: #fff;
     background: transparent;
-    color: #2262c6 !important;
+    color: #0767A3 !important;
     font-weight: 700;
     transition: all ease 0.1s;
 }
@@ -120,7 +120,7 @@
     vertical-align: middle;
 }
 .general-info .info label {
-    color: #2262c6;
+    color: #0767A3;
     font-size: 13px;
     letter-spacing: 1px;
     margin-bottom: 0px;

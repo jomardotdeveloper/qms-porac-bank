@@ -39,10 +39,21 @@ class ProfileController extends Controller
      */
     public function create()
     {
+        $branches = [];
+        $roles = [];
+
+        if(auth()->user()->is_admin){
+            $branches =  Branch::all();
+            $roles = Role::all();
+        }else{
+            $branches = [auth()->user()->profile->branch];
+            $roles = Role::all()->where("branch_id", "=", $branches[0]->id)->all();
+        }
+
         return view("admin.profile.create", [
-            "branches" => Branch::all(),
+            "branches" => $branches,
             "services" => Service::all(),
-            "roles" => Role::all()
+            "roles" => $roles
         ]);
     }
 
@@ -106,10 +117,22 @@ class ProfileController extends Controller
      */
     public function edit(Profile $profile)
     {
+
+        $branches = [];
+        $roles = [];
+
+        if(auth()->user()->is_admin){
+            $branches =  Branch::all();
+            $roles = Role::all();
+        }else{
+            $branches = [auth()->user()->profile->branch];
+            $roles = Role::all()->where("branch_id", "=", $branches[0]->id)->all();
+        }
+
         return view("admin.profile.edit", [
-            "branches" => Branch::all(),
+            "branches" => $branches,
             "services" => Service::all(),
-            "roles" => Role::all(),
+            "roles" => $roles,
             "profile" => $profile
         ]);
     }

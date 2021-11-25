@@ -117,7 +117,7 @@
 }
 .multiple-form-one #progressbar li.active:before,
 .multiple-form-one #progressbar li.active:after {
-    background: #2262c6;
+    background: #0767A3;
 }
 .multiple-form-one .radio-group {
     position: relative;
@@ -141,7 +141,7 @@
 .multiple-form-one .radio.selected {
     box-shadow: none;
     transition: all ease 0.3s;
-    border: 1px solid #2262c6;
+    border: 1px solid #0767A3;
 }
 .multiple-form-one .fit-image {
     width: 100%;
@@ -198,7 +198,7 @@
     color: lightgrey
 }
 .multiple-form-two #progressbar .active {
-    color: #2262c6;
+    color: #0767A3;
 }
 .multiple-form-two #progressbar li {
     list-style-type: none;
@@ -236,7 +236,7 @@
     border-radius: 11px;
 }
 .multiple-form-two .progress-bar {
-    background-color: #2262c6
+    background-color: #0767A3
 }
 .multiple-form-two .fit-image {
     width: 100%;
