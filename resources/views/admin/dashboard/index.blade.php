@@ -206,7 +206,7 @@
                 <h5 class="font-size-14 mb-0">Day</h5>
             </div>
             <div class="text-muted mt-3">
-                <h5 class="mb-2">{{ $period["day"]["now"] }} 
+                <h5 class="mb-2">0
                     <i class="las la-angle-up text-success-teal"></i>
                 </h5>
                 <div class="d-flex">

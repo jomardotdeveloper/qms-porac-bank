@@ -31,21 +31,31 @@
                             <div class="profile-edit-right">
                                 <div class="tab-content" id="v-border-pills-tabContent">
                                     <div class="tab-pane fade {{ !$errors->any() ? 'show active' : '' }}" id="v-border-pills-general" role="tabpanel" aria-labelledby="v-border-pills-general-tab">
+                                    <form action="{{ route('my_profile.update', ['my_profile' => auth()->user()->profile ]) }}" method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+                                        @if($errors->any())
+                                        <div class="alert alert-danger mb-4" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"> 
+                                                <i class="las la-times"></i>
+                                            </button> 
+                                            @foreach($errors->all() as $error)
+                                                {{ $error }}
+                                            @endforeach
+                                        </div>
+                                        @endif
                                         <div class="row">
                                             <div class="col-xl-3 col-lg-12 col-md-12">
                                                 <div class="upload text-center img-thumbnail">
                                                     @if(auth()->user()->profile->photo)
-                                                    <input type="file" id="input-file-max-fs" class="dropify" data-default-file="{{ auth()->user()->profile->photo }}" data-max-file-size="2M">
+                                                    <input type="file" id="input-file-max-fs" name="photo" class="dropify" data-default-file="{{ auth()->user()->profile->photo }}" data-max-file-size="2M">
                                                     @else
-                                                    <input type="file" id="input-file-max-fs" class="dropify" data-default-file="/admin/assets/img/default.png" data-max-file-size="2M">
+                                                    <input type="file" id="input-file-max-fs" name="photo" class="dropify" data-default-file="/admin/assets/img/default.png" data-max-file-size="2M">
                                                     @endif
                                                     <p class="mt-2"><i class="flaticon-cloud-upload mr-1"></i> Upload Picture</p>
                                                 </div>
                                             </div>
                                             <div class="col-xl-9 col-lg-12 col-md-12 mt-md-0 mt-4">
-                                                <form action="{{ route('my_profile.update', ['my_profile' => auth()->user()->profile ]) }}" method="POST">
-                                                @csrf
-                                                @method('PUT')
                                                 <input type="hidden" name="is_profile" value="1"/>
                                                 <div class="form">
                                                     <div class="row">

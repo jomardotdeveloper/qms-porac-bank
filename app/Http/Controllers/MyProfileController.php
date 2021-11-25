@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 class MyProfileController extends Controller
 {
     /**
@@ -92,6 +93,16 @@ class MyProfileController extends Controller
 
         if(isset($vals["is_profile"])){
             $profile = Profile::findOrFail($id);
+            $request->validate([
+                "photo" => "nullable|image"
+            ]);
+            
+            if(isset($vals["photo"])){
+                $path = Storage::putFile("public/images", $request->file("photo"));
+                $path = Storage::url($path);
+                $vals["photo"] = $path;
+            }
+
             $profile->fill($vals);
             $profile->save();   
         }else{
