@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <title>QMS - @yield("title") </title>
-    <link rel="icon" type="image/x-icon" href="/admin/assets/img/appicon-removebg-preview.ico">
+    <link rel="icon" type="image/x-icon" href="/admin/assets/img/appicon2.ico">
     <link href="/admin/css2.css?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="/admin/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="/admin/assets/css/main.css" rel="stylesheet" type="text/css">
@@ -23,7 +23,7 @@
             <ul class="navbar-item theme-brand flex-row  text-center">
                 <li class="nav-item theme-logo">
                     <a href="#">
-                        <img src="/admin/assets/img/poracbankq2.png" class="navbar-logo" style="width:100%;margin-left:-1rem;" alt="logo">
+                        <img src="/admin/assets/img/QMSPBUpdated.png" class="navbar-logo" style="width:100%;margin-left:-1rem;" alt="logo">
                     </a>
                 </li>
                 <!-- <li class="nav-item theme-text">

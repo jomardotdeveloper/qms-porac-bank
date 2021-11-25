@@ -6,7 +6,7 @@
         <meta name="description" content="" />
         <meta name="author" content="" />
         <title>QMS - Mobile Application</title>
-        <link rel="icon" type="image/x-icon" href="/admin/assets/img/appicon-removebg-preview.ico">
+        <link rel="icon" type="image/x-icon" href="/admin/assets/img/appicon2.ico">
         <!-- Bootstrap icons-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Google fonts-->
@@ -24,7 +24,7 @@
         <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow-sm" id="mainNav">
             <div class="container px-5">
                 <a class="navbar-brand fw-bold" href="#page-top">
-                    <img src="/admin/assets/img/poracbankq2.png" style="width:30%;" alt="logo">
+                    <img src="/admin/assets/img/QMSPBUpdated.png" style="width:30%;" alt="logo">
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     Menu
