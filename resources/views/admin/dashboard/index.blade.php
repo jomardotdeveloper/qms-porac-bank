@@ -65,24 +65,46 @@
                                     </div>
                                 </div>
                                 @else
-                                <div class="col-3">
-                                    <div>
-                                        <p class="text-muted text-truncate mb-2">Users</p>
-                                        <h5 class="mb-0">{{ count($profiles) }}</h5>
+                                    @if(in_array("SA", auth()->user()->profile->role->getPermissionCodenamesAttribute()) && in_array("RA", auth()->user()->profile->role->getPermissionCodenamesAttribute()) && in_array("AA", auth()->user()->profile->role->getPermissionCodenamesAttribute()))
+                                    <div class="col-4">
+                                        <div>
+                                            <p class="text-muted text-truncate mb-2">Users</p>
+                                            <h5 class="mb-0">{{ count($profiles) }}</h5>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-3">
-                                    <div>
-                                        <p class="text-muted text-truncate mb-2">Accounts</p>
-                                        <h5 class="mb-0">{{ count($accounts) }}</h5>
+                                    <div class="col-4">
+                                        <div>
+                                            <p class="text-muted text-truncate mb-2">Accounts</p>
+                                            <h5 class="mb-0">{{ count($accounts) }}</h5>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-3">
-                                    <div>
-                                        <p class="text-muted mb-2">Transactions</p>
-                                        <h5 class="mb-0">{{ count($transactions) }}</h5>
+                                    <div class="col-4">
+                                        <div>
+                                            <p class="text-muted mb-2">Transactions</p>
+                                            <h5 class="mb-0">{{ count($transactions) }}</h5>
+                                        </div>
                                     </div>
-                                </div>
+                                    @elseif(in_array("CA", auth()->user()->profile->role->getPermissionCodenamesAttribute()) && auth()->user()->profile->window != null)
+                                    <div class="col-4">
+                                        @php($timestamp = strtotime(auth()->user()->profile->created_at))
+                                        <div>
+                                            <p class="text-muted text-truncate mb-2">User since</p>
+                                            <h5 class="mb-0">{{ date("Y", $timestamp) }}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div>
+                                            <p class="text-muted text-truncate mb-2">My Transactions</p>
+                                            <h5 class="mb-0">{{ count(auth()->user()->profile->transactions) }}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div>
+                                            <p class="text-muted mb-2">Services</p>
+                                            <h5 class="mb-0">{{ count(auth()->user()->profile->services) }}</h5>
+                                        </div>
+                                    </div>
+                                    @endif
                                 @endif
                             </div>
                         </div>
@@ -103,12 +125,29 @@
                 <div class="row">
                     <div class="col-md-7">
                         <div class="text-white">
+                            @if($queue_data["priority"] < 1 && $queue_data["regular"] < 1)
+                            <h5 class="text-white">No Pending Tasks</h5>
+                            @else
                             <h5 class="text-white">Pending Tasks !</h5>
+                            @endif
+                            
+                            @if($queue_data["priority"] > 0 || $queue_data["regular"] > 0)
                             <p class="blink_me text-white mt-1">Waiting Customers</p>
+                            @endif
+                            
                             <ul class="pl-3 mb-0">
-                                <li class="py-1">Priority : 1</li>
-                                <li class="py-1">Regular : 3</li>
+                                @if($queue_data["priority"] > 0)
+                                <li class="py-1">Priority : {{ $queue_data["priority"] }}</li>
+                                @endif
+                                @if($queue_data["regular"] > 0)
+                                <li class="py-1">Regular : {{ $queue_data["regular"] }}</li>
+                                @endif
                             </ul>
+                            @if($queue_data["priority"] < 1 && $queue_data["regular"] < 1)
+                            <p class="text-white mt-1">
+                                Queue is empty.
+                            </p>
+                            @endif
                         </div>
                     </div>
                     <div class="align-self-end col-md-5">
@@ -148,11 +187,16 @@
             <div class="f-100">
                 <div class="row">
                     <div class="col-md-7">
+                        @php($cutoff_today =auth()->user()->profile->branch->cutoff->getDayToday())
                         <div class="text-white">
-                            <h5 class="text-white">Announcement</h5>
-                            <p class="blink_me text-white mt-1">Title</p>
+                            <h5 class="text-white">Cut off</h5>
+                            <p class="blink_me text-white mt-1">Today  <strong>({{ $cutoff_today[0] }})</strong></p>
                             <p class="text-white mt-1">
-                                Body
+                                @if($cutoff_today[1])
+                                {{ $cutoff_today[1] }}
+                                @else
+                                No cut off set for today
+                                @endif
                             </p>
                         </div>
                     </div>
@@ -166,33 +210,6 @@
     @endif
     @endif
 </div>
-
-@if(!auth()->user()->is_admin)
-@if(in_array("CA", auth()->user()->profile->role->getPermissionCodenamesAttribute())) 
-<div class="row mt-4">
-    <div class="col-6">
-        <div class="widget bg-gradient-info">
-            <div class="f-100">
-                <div class="row">
-                    <div class="col-md-7">
-                        <div class="text-white">
-                            <h5 class="text-white">Announcement</h5>
-                            <p class="blink_me text-white mt-1">Title</p>
-                            <p class="text-white mt-1">
-                                Body
-                            </p>
-                        </div>
-                    </div>
-                    <div class="align-self-end col-md-5">
-                        <img src="/admin/assets/img/dashboard-image-uw.png" alt="" class="img-fluid">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@endif
-@endif
 
 <div class="row mt-4">
     <div class="col-4">
@@ -200,17 +217,33 @@
             <div class="d-flex align-items-center mb-3">
                 <div class="mr-3">
                     <span class="quick-category-icon qc-primary rounded-circle">
-                        <i class="las la-shopping-cart"></i>
+                        <i class="las la-sun"></i>
                     </span>
                 </div>
                 <h5 class="font-size-14 mb-0">Day</h5>
             </div>
             <div class="text-muted mt-3">
-                <h5 class="mb-2">0
+                <h5 class="mb-2">{{$period["day"]["now"]}}
+                    @if($period["day"]["is_decreased"] == 1)
                     <i class="las la-angle-up text-success-teal"></i>
+                    @elseif($period["day"]["is_decreased"] == 0)
+                    <i class="las la-angle-down text-success-teal"></i>
+                    @endif
                 </h5>
                 <div class="d-flex">
-                    <span class="badge badge-success-teal font-size-12"> + 0.2% </span> 
+                    @if($period["day"]["is_decreased"] == 0)
+                    <span class="badge badge-danger font-size-12"> 
+                        - {{ $period["day"]["percent"] }} %
+                    </span> 
+                    @elseif($period["day"]["is_decreased"] == 1)
+                    <span class="badge badge-success-teal font-size-12"> 
+                        + {{ $period["day"]["percent"] }} %
+                    </span> 
+                    @else
+                    <span class="badge badge-secondary font-size-12"> 
+                         {{ $period["day"]["percent"] }} %
+                    </span> 
+                    @endif  
                     <span class="ml-2 text-truncate">From last day</span>
                 </div>
             </div>
@@ -221,17 +254,33 @@
             <div class="d-flex align-items-center mb-3">
                 <div class="mr-3">
                     <span class="quick-category-icon qc-primary rounded-circle">
-                        <i class="las la-shopping-cart"></i>
+                        <i class="las la-calendar"></i>
                     </span>
                 </div>
                 <h5 class="font-size-14 mb-0">Month</h5>
             </div>
             <div class="text-muted mt-3">
-                <h5 class="mb-2">1,452 
+                <h5 class="mb-2">{{$period["month"]["now"]}}
+                    @if($period["month"]["is_decreased"] == 1)
                     <i class="las la-angle-up text-success-teal"></i>
+                    @elseif($period["month"]["is_decreased"] == 0)
+                    <i class="las la-angle-down text-success-teal"></i>
+                    @endif
                 </h5>
                 <div class="d-flex">
-                    <span class="badge badge-success-teal font-size-12"> + 0.2% </span> 
+                    @if($period["month"]["is_decreased"] == 0)
+                    <span class="badge badge-danger font-size-12"> 
+                        - {{ $period["month"]["percent"] }} %
+                    </span> 
+                    @elseif($period["month"]["is_decreased"] == 1)
+                    <span class="badge badge-success-teal font-size-12"> 
+                        + {{ $period["month"]["percent"] }} %
+                    </span> 
+                    @else
+                    <span class="badge badge-secondary font-size-12"> 
+                            {{ $period["month"]["percent"] }} %
+                    </span> 
+                    @endif  
                     <span class="ml-2 text-truncate">From last month</span>
                 </div>
             </div>
@@ -242,17 +291,34 @@
             <div class="d-flex align-items-center mb-3">
                 <div class="mr-3">
                     <span class="quick-category-icon qc-primary rounded-circle">
-                        <i class="las la-shopping-cart"></i>
+                        <i class="las la-calendar-check"></i>
                     </span>
                 </div>
                 <h5 class="font-size-14 mb-0">Year</h5>
             </div>
             <div class="text-muted mt-3">
-                <h5 class="mb-2">1,452 
+                <h5 class="mb-2">
+                    {{$period["year"]["now"]}}
+                    @if($period["year"]["is_decreased"] == 1)
                     <i class="las la-angle-up text-success-teal"></i>
+                    @elseif($period["year"]["is_decreased"] == 0)
+                    <i class="las la-angle-down text-success-teal"></i>
+                    @endif
                 </h5>
                 <div class="d-flex">
-                    <span class="badge badge-success-teal font-size-12"> + 0.2% </span> 
+                    @if($period["year"]["is_decreased"] == 0)
+                    <span class="badge badge-danger font-size-12"> 
+                        - {{ $period["year"]["percent"] }} %
+                    </span> 
+                    @elseif($period["year"]["is_decreased"] == 1)
+                    <span class="badge badge-success-teal font-size-12"> 
+                        + {{ $period["year"]["percent"] }} %
+                    </span> 
+                    @else
+                    <span class="badge badge-secondary font-size-12"> 
+                            {{ $period["year"]["percent"] }} %
+                    </span> 
+                    @endif  
                     <span class="ml-2 text-truncate">From last year</span>
                 </div>
             </div>

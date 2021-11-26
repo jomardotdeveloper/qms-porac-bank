@@ -75,6 +75,7 @@ Route::prefix("/backend")->middleware(["auth"])->group(function(){
     Route::resource("controls", ControlController::class)->middleware("checkcontrol"); 
     Route::resource("notifications", NotificationController::class)->middleware("checkreport"); 
     Route::resource("transactions", TransactionController::class)->middleware("checkreport"); 
+    Route::post("transactions/generate_demo_data", [TransactionController::class, "generate_demo_data"])->name("transaction.generate_demo_data"); 
     Route::post("transactions/export", [TransactionController::class, "export"])->name("transaction.export"); 
     Route::post("accounts/import", [AccountController::class, "import"])->name("account.import");
     Route::get("attachments/{attachment}/download", [AttachmentController::class, "download"])->name("attachments.download");

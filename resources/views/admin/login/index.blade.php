@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <title>QMS - Login</title>
-    <link rel="icon" type="image/x-icon" href="/admin/assets/img/pb.ico">
+    <link rel="icon" type="image/x-icon" href="/admin/assets/img/appicon2.ico">
     <!-- Common Styles Starts -->
     <link href="/admin/css2.css?family=Poppins:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="/admin/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
@@ -60,6 +60,7 @@
                             @endforeach
                         </div>
                         @endif
+                        <img src="/admin/assets/img/appiconwo.png" style="width:40%;display: block;margin-left: auto; margin-right: auto;" alt="logo"/>
                         <h6 class="mt-2 text-primary text-center font-20">Log In</h6>
                         <p class="text-center text-muted mt-3 mb-3 font-14">Please Log into your account</p>
                         <form action="{{ route('login.store') }}" method="POST">

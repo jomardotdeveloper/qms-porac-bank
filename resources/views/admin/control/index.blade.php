@@ -257,7 +257,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Switch Current Customer</h5>
+                <h5 class="modal-title">Switching Customers</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="las la-times"></i>
                 </button>
@@ -270,6 +270,13 @@
                         @foreach($windows as $window)
                         <option value="{{ $window->id }}">{{ $window->name }}</option>
                         @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Customers
+                    <span class="text-danger">*</span></label>
+                    <select class="form-control multiple" multiple="multiple" name="transactions[]" id="transactions" required>
+                        
                     </select>
                 </div>
             </div>
@@ -288,10 +295,11 @@
 <script src="/admin/assets/js/basicui/sweet_alerts.js"></script>
 <script src="/admin/plugins/notification/snackbar/snackbar.min.js"></script>
 <script src="/admin/assets/js/basicui/notifications.js"></script>
-<script src="/admin/assets/js/control/global_variable.js"></script>
+<!-- <script src="/admin/assets/js/control/global_variable.js"></script>
 <script src="/admin/assets/js/control/updator.js"></script>
 <script src="/admin/assets/js/control/table.js"></script>
 <script src="/admin/assets/js/control/database_transactor.js"></script>
 <script src="/admin/assets/js/control/websocket.js"></script>
-<script src="/admin/assets/js/control/control_v3.js"></script>
+<script src="/admin/assets/js/control/control_v3.js"></script> -->
+<script src="/admin/assets/js/control/test.js"></script>
 @endpush

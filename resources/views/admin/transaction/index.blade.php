@@ -19,6 +19,9 @@
         <div class="row">
             <div class="container p-0">
                 <button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#fadeinModal">Export</button>
+                @if(auth()->user()->is_admin)
+                <button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#demoData">Generate Demo Data</button>
+                @endif
                 <div class="row layout-top-spacing date-table-container">
                     <!-- BASIC -->
                     <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
@@ -118,7 +121,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Import Accounts</h5>
+                <h5 class="modal-title">Export Reports</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="las la-times"></i>
                 </button>
@@ -162,6 +165,65 @@
         </div>
     </div>
 </div>
+@if(auth()->user()->is_admin)
+<!-- CREATE DEMO DATA -->
+<div id="demoData" class="modal animated fadeInDown" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Generate Demo Data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="las la-times"></i>
+                </button>
+            </div>
+            <form action="{{route('transaction.generate_demo_data')}}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label>Branch 
+                                <span class="text-danger">*</span></label>
+                                <select class="form-control basic" name="branch_id" required>
+                                    @foreach($branches as $branch)
+                                    <option value="{{ $branch->id }}">{{ $branch->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label>Number of transactions per day 
+                                <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" name="number_day" id="number_day" required/>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label>From 
+                                <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" name="from" id="from" required/>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label>To 
+                                <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" name="to" id="to" required/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Discard</button>
+                    <input type="submit" value="Generate" class="btn btn-primary"/>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
 @endsection
 
 @push("custom-scripts")

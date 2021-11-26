@@ -1,4 +1,4 @@
-var socket  = new WebSocket('ws://poracbankqms.com:8090');
+var socket  = new WebSocket('ws://74.63.204.84:8090');
 const socket_messages = {
     nextCustomer : {
         "message" : "nextCustomer",

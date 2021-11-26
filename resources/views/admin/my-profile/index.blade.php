@@ -59,10 +59,14 @@
                 </div>
             </div>
             <div class="highlight-info">
-                <img src="/admin/assets/img/logowithbg.jpg">
+                <img src="/admin/assets/img/appicon123.png">
                 <div class="highlight-desc">
-                    <p>Porac Bank</p>
-                    <p>Admin Area</p>
+                    <p>PORAC BANK QMS</p>
+                    @if(auth()->user()->is_admin)
+                    <p>Admin Profile</p>
+                    @else
+                    <p>{{ auth()->user()->profile->role->name }}&nbsp;Profile</p>
+                    @endif
                 </div>
             </div>
         </div>

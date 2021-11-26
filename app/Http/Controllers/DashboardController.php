@@ -27,11 +27,20 @@ class DashboardController extends Controller
         $data = ["quotes" => Inspiring::quote()];
         
         if($user->is_admin){
+            $data["period"] = $this->getNumberOfTransactionPerPeriod(true);
             $data["transactions"] = Transaction::all();
             $data["branches"] = Branch::all();
             $data["profiles"] = Profile::all();
             $data["accounts"] = Account::all();
         }else{
+
+            if(in_array("CA", $user->profile->role->getPermissionCodenamesAttribute()) && $user->profile->window != null){
+                $data["queue_data"] = [
+                    "priority" => count($this->getDayNowPriority()),
+                    "regular" => count($this->getDayNowRegular())
+                ];
+            }
+            
             $data["period"] = $this->getNumberOfTransactionPerPeriod();
             $data["transactions"] = Transaction::all()->where("branch_id", "=", $user->profile->branch->id)->all();
             $data["profiles"] = Profile::all()->where("branch_id", "=", $user->profile->branch->id)->where("id", "!=", $user->profile->id)->all();
@@ -107,7 +116,17 @@ class DashboardController extends Controller
     {
         //
     }
+    public function getDayNowPriority(){
+        $profile = auth()->user()->profile;
+        $transactions = DB::table("transactions")->join("accounts", "transactions.account_id", "=", "accounts.id")->select("transactions.*", "accounts.*")->whereRaw("DATE(transactions.in) = CURDATE() AND transactions.branch_id = ? AND transactions.window_id = ? AND accounts.customer_type = 'priority'", [$profile->branch->id, $profile->window->id])->get()->all();
+        return $transactions;
+    }
 
+    public function getDayNowRegular($is_admin = false){
+        $profile = auth()->user()->profile;
+        $transactions = DB::table("transactions")->join("accounts", "transactions.account_id", "=", "accounts.id")->select("transactions.*", "accounts.*")->whereRaw("DATE(transactions.in) = CURDATE() AND transactions.branch_id = ? AND transactions.window_id = ? AND accounts.customer_type = 'regular'", [$profile->branch->id, $profile->window->id])->get()->all();
+        return $transactions;
+    }
     // 2021-10-26
     public function getDayNow($is_admin = false){
         $transactions = null;
@@ -207,24 +226,154 @@ class DashboardController extends Controller
     public function getNumberOfTransactionPerPeriod($is_admin = false){
         $data = [];
 
-        $data["day"] = [
-            "now" => count($this->getDayNow($is_admin)),
-            "prev" => count($this->getDayPrev($is_admin)),
-            "percent" => ""
-        ];
+        $day_now = count($this->getDayNow($is_admin));
+        $day_prev = count($this->getDayPrev($is_admin));
 
-        $data["month"] = [
-            "now" => count($this->getMonthNow($is_admin)),
-            "prev" => count($this->getMonthPrev($is_admin)),
-            "percent" => ""
-        ];
+        $month_now = count($this->getMonthNow($is_admin));
+        $month_prev =count($this->getMonthPrev($is_admin));
 
-        $data["year"] = [
-            "now" => count($this->getYearNow($is_admin)),
-            "prev" => count($this->getYearPrev($is_admin)),
-            "percent" => ""
-        ];
+        $year_now = count($this->getYearNow($is_admin));
+        $year_prev = count($this->getYearPrev($is_admin));
 
+
+        if($day_now == 0 && $day_prev == 0){
+            $data["day"] = [
+                "now" => 0,
+                "prev" => 0,
+                "percent" => 0,
+                "is_decreased" => -1
+            ];
+        }else if($day_now == 0){
+            $data["day"] = [
+                "now" => 0,
+                "prev" => $day_prev,
+                "percent" => 100,
+                "is_decreased" => 1
+            ];
+        }else if($day_prev == 0){
+            $data["day"] = [
+                "now" => $day_now,
+                "prev" => 0,
+                "percent" => 100,
+                "is_decreased" => 0
+            ];
+        }else{
+            if($day_prev > $day_now){
+                $data["day"] = [
+                    "now" => $day_now,
+                    "prev" => $day_prev,
+                    "percent" => ($day_now / $day_prev) * 100,
+                    "is_decreased" => 1
+                ];
+            }else if($day_prev < $day_now){
+                $data["day"] = [
+                    "now" => $day_now,
+                    "prev" => $day_prev,
+                    "percent" => ($day_prev / $day_now) * 100,
+                    "is_decreased" => 0
+                ];
+            }else{
+                $data["day"] = [
+                    "now" => $day_now,
+                    "prev" => $day_prev,
+                    "percent" => 0,
+                    "is_decreased" => -1
+                ];
+            }
+        }
+
+        if($month_now == 0 && $month_prev == 0){
+            $data["month"] = [
+                "now" => 0,
+                "prev" => 0,
+                "percent" => 0,
+                "is_decreased" => -1
+            ];
+        }else if($month_now == 0){
+            $data["month"] = [
+                "now" => 0,
+                "prev" => $month_prev,
+                "percent" => 100,
+                "is_decreased" => 1
+            ];
+        }else if($month_prev == 0){
+            $data["month"] = [
+                "now" => $month_now,
+                "prev" => 0,
+                "percent" => 100,
+                "is_decreased" => 0
+            ];
+        }else{
+            if($month_prev > $month_now){
+                $data["month"] = [
+                    "now" => $month_now,
+                    "prev" => $month_prev,
+                    "percent" => ($month_now / $month_prev) * 100,
+                    "is_decreased" => 1
+                ];
+            }else if($month_prev < $month_now){
+                $data["month"] = [
+                    "now" => $month_now,
+                    "prev" => $month_prev,
+                    "percent" => ($month_prev / $month_now) * 100,
+                    "is_decreased" => 0
+                ];
+            }else{
+                $data["month"] = [
+                    "now" => $month_now,
+                    "prev" => $month_prev,
+                    "percent" => 0,
+                    "is_decreased" => -1
+                ];
+            }
+        }
+
+        if($year_now == 0 && $year_prev == 0){
+            $data["year"] = [
+                "now" => 0,
+                "prev" => 0,
+                "percent" => 0,
+                "is_decreased" => -1
+            ];
+        }else if($year_now == 0){
+            $data["year"] = [
+                "now" => 0,
+                "prev" => $year_prev,
+                "percent" => 100,
+                "is_decreased" => 1
+            ];
+        }else if($year_prev == 0){
+            $data["year"] = [
+                "now" => $year_now,
+                "prev" => 0,
+                "percent" => 100,
+                "is_decreased" => 0
+            ];
+        }else{
+            if($year_prev > $year_now){
+                $data["year"] = [
+                    "now" => $year_now,
+                    "prev" => $year_prev,
+                    "percent" => ($year_now / $year_prev) * 100,
+                    "is_decreased" => 1
+                ];
+            }else if($year_prev < $year_now){
+                $data["year"] = [
+                    "now" => $year_now,
+                    "prev" => $year_prev,
+                    "percent" => ($year_prev / $year_now) * 100,
+                    "is_decreased" => 0
+                ];
+            }else{
+                $data["year"] = [
+                    "now" => $year_now,
+                    "prev" => $year_prev,
+                    "percent" => 0,
+                    "is_decreased" => -1
+                ];
+            }
+        }
+        
         return $data;
     }
 

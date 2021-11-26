@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
+use DateTime;
 
 class TransactionController extends Controller
 {
@@ -105,6 +106,52 @@ class TransactionController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+    public function generate_demo_data(Request $request){
+        $date_from = new DateTime($request->get("from"));
+        $date_to = new DateTime($request->get("to"));
+        $interval = $date_from->diff($date_to);
+        $number_of_days = 0;
+
+        if($interval->y != 0){
+            $number_of_days += ($interval->y * 365);
+            $year_from = intval($date_from->format("Y"));
+            $year_to = intval($date_to->format("Y"));
+            while(true){
+                if($year_from > $year_to){
+                    break;
+                }
+    
+                for($x = 1; $x <= 12; $x++){
+                    $number_of_days += cal_days_in_month(CAL_GREGORIAN, $x, $year_from);
+                }
+    
+                $year_from++;
+            }
+            $number_of_days += $interval->d;
+        }
+
+
+        for($day = 0; $day < $number_of_days; $day++){
+            $your_date = strtotime("1 day", strtotime("2021-12-31"));
+            $sample_date = date("Y-m-d", $your_date);
+            
+
+
+        }
+
+        
+        dd($sample_date);
+        dd($number_of_days);
+        
+
+        
+
+
+
+
+        
     }
 
 

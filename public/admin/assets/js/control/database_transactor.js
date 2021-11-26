@@ -31,7 +31,7 @@ function loadData(donecallback = false){
             for(var i =0; i < doneOrDrop.length; i++){
                 elm_customer_table.find("tbody").append(getTableRow(doneOrDrop[i]));
             }
-            
+            // loadSwitchCustomers();
         },
         error: function() { 
             alert(data);
@@ -41,6 +41,25 @@ function loadData(donecallback = false){
             donecallback();
         }
     });
+}
+
+function loadSwitchCustomers(){
+    elm_multiple_customers.empty();
+
+    if(serving != null){
+        var opening_opt = "<option " + "value='" +  serving["id"]  + "' > " + serving["token"];
+        var closing_opt = "</option>"
+
+        elm_multiple_customers.append(opening_opt + closing_opt);
+    }
+
+
+    for(var i =0; i < waiting.length; i++){
+        var opening_opt = "<option " + "value='" +  waiting[i]["id"]  + "' > " + waiting[i]["token"];
+        var closing_opt = "</option>"
+
+        elm_multiple_customers.append(opening_opt + closing_opt);
+    }
 }
 
 function update_state(id, _tostate, donecallback = false){

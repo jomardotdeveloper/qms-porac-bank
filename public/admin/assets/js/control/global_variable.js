@@ -7,6 +7,7 @@ var elm_current_customer_type = $("#cur_customer_type");
 var elm_current_ref_number = $("#cur_ref_number");
 var elm_current_service = $("#cur_service");
 var elm_current_amount = $("#cur_amount");
+var elm_multiple_customers  = $("#transactions");
 
 // NEXT ELEMENTS
 var elm_next_fullname = $("#next_fullname");
