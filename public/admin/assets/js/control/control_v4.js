@@ -16,7 +16,10 @@ const socket_messages = {
 
     ring : {
         "message" : "ring",
-        "id" : $("#window_id").val()
+        "branch_id" : $("#branch_id").val(),
+        "window_id" : $("#window_id").val(),
+        "name" : $("#window_name").val(),
+        "window_order" : $("#window_order").val()
     }
 }
 
