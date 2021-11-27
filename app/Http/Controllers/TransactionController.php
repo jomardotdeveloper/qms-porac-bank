@@ -282,7 +282,7 @@ class TransactionController extends Controller
 
     public function update_state(Request $request){
         $transaction = Transaction::find($request->get("id"));
-        $state = $request->get("to_state");
+        $state = $request->get("toState");
         if($state == "serving"){
             $transaction->state = "serving";
             $transaction->serve = date('Y-m-d H:i:s');
@@ -300,13 +300,51 @@ class TransactionController extends Controller
     }
 
     public function update_holder(Request $request){
-        $transaction = Transaction::find($request->get("id"));
-        $transaction->state = "waiting";
-        $transaction->window_id = $request->get("window_id");
-        $transaction->save();
-        $transaction->profile_id = $transaction->window->profile->id;
-        $transaction->save();
+        $transaction_ids = $request->get("ids");
+        $window = Window::find($request->get("window_id"));
+        $window_services=  $window->profile->service_ids;
 
+        $data = [];
+
+        // CHECKER
+        foreach($transaction_ids as $id){
+            $transaction = Transaction::find($id);
+
+            if(!in_array($transaction->service->id, $window_services)){
+                $data = [
+                    "success" => 0,
+                    "message" =>"Failed to switch transaction " . $transaction->token . ". " . $window->name . " does not have the customer's service."
+                ];
+                break;
+            }
+        }
+
+        if(!isset($data["success"]) ){
+            foreach($transaction_ids as $id){
+                $transaction = Transaction::find($id);
+                
+                if($transaction->state == "serving"){
+                    $transaction->state = "waiting";
+                    $data["has_serving"] = 1;
+                }
+                
+                $transaction->window_id = $request->get("window_id");
+                $transaction->save();
+                $transaction->profile_id = $transaction->window->profile->id;
+                $transaction->save();
+            }
+
+            $data = [
+                "success" => 1,
+            ];
+        }
+
+        if(isset($data["has_serving"])){
+            $data["has_serving"] = 0;
+        }
+        
+
+        return $data;
     }
 
 

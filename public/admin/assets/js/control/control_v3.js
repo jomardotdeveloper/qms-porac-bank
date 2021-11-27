@@ -12,7 +12,7 @@ elm_start_queue.on("click", function(){
             updateNextVar();
             updatePrevVar();
             updateStartButtonOngoing();
-
+            
             swal({
                 title: "Queue Start",
                 text: "Ongoing Queue",
@@ -31,6 +31,13 @@ elm_next_queue.on("click", function () {
             type: 'error',
             title: 'Sorry!',
             text: 'Queue is empty!',
+            padding: '2em'
+        });
+    }else if(serving == null){
+        swal({
+            type: 'error',
+            title: 'Sorry!',
+            text: 'No customer is being served. Please click the start button to start the queue.',
             padding: '2em'
         });
     }else{
@@ -91,6 +98,7 @@ elm_next_queue.on("click", function () {
 });
 
 elm_switch_queue.on("click", function(){
+    // alert(elm_multiple_customers.val());
     if(waiting.length < 1 && serving == null){
         swal({
             type: 'error',
@@ -108,39 +116,38 @@ elm_switch_queue.on("click", function(){
             padding: "2em"
         }).then(function(result) {
             if (result.value) {
-
-                if(waiting.length > 0){
-                    update_state(next["id"],"serving");
-                }
-                switchCustomer(current["id"], elm_switch_to.val());
-                
-                
-                swal(
-                    "Switch!",
-                    "Customer " + current["token"] + " has been switched to " +  elm_switch_to.val(),
-                    "success"
-                );
-
-                loadData();
-                updateCurrentVar();
-                updateNextVar();
-                updatePrevVar();
-
-
-                socket.send(JSON.stringify(socket_messages["switchCustomer"]));
-                
-                if(current != null){
-                    swal({
-                        title: "Next Customer!",
-                        text: current["token"],
-                        type: "success",
-                        padding: "2em"
-                    });
-                }
-
-                socket.send(JSON.stringify(socket_messages["switchCustomer"]));
-
-                $("#switchModal").modal("hide");
+                switchCustomer(elm_multiple_customers.val(), elm_switch_to.val(), function(textStatus){
+                    var jsonObject = jQuery.parseJSON(textStatus);
+                    if(jsonObject["success"] == 0){
+                        swal({
+                            type: 'error',
+                            title: 'Sorry!',
+                            text: jsonObject["message"],
+                            padding: '2em'
+                        });
+                    }else{
+                        swal(
+                            "Switch!",
+                            "Succesfuly Switch Customers",
+                            "success"
+                        );
+                        loadData();
+                        updateCurrentVar();
+                        updateNextVar();
+                        updatePrevVar();
+                        socket.send(JSON.stringify(socket_messages["switchCustomer"]));
+                        if(current != null){
+                            swal({
+                                title: "Next Customer!",
+                                text: current["token"],
+                                type: "success",
+                                padding: "2em"
+                            });
+                            socket.send(JSON.stringify(socket_messages["nextCustomer"]));
+                        }
+                    }
+                    $("#switchModal").modal("hide");
+                });
                 
             }
         });
@@ -153,6 +160,13 @@ elm_drop_queue.on("click", function () {
             type: 'error',
             title: 'Sorry!',
             text: 'Queue is empty!',
+            padding: '2em'
+        });
+    }else if(serving == null){
+        swal({
+            type: 'error',
+            title: 'Sorry!',
+            text: 'No customer is being served. Please click the start button to start the queue.',
             padding: '2em'
         });
     }else{

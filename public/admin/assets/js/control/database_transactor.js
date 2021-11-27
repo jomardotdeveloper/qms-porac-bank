@@ -4,10 +4,14 @@ function loadData(donecallback = false){
         type: "GET",
         url: url,
         success: function (data) {
+            console.log(data);
             waiting = [];
             serving = null;
             doneOrDrop = [];
 
+            var s_total = 0;
+            var d_total = 0;
+            
             for(var i = 0; i < data.length; i++){
                 if(data[i].state == "waiting"){
                     waiting.push(data[i]);
@@ -15,11 +19,19 @@ function loadData(donecallback = false){
                     serving = data[i];
                 }else{
                     doneOrDrop.push(data[i]);
+
+                    if(data[i].state == "drop"){
+                        d_total++;
+                    }else{
+                        s_total++;
+                    }
                 }
+                
+                
             }
 
             elm_customer_table.find("tbody").html("");
-    
+            
             if(serving != null){
                 elm_customer_table.find("tbody").append(getTableRow(serving));
             }
@@ -31,12 +43,22 @@ function loadData(donecallback = false){
             for(var i =0; i < doneOrDrop.length; i++){
                 elm_customer_table.find("tbody").append(getTableRow(doneOrDrop[i]));
             }
-            // loadSwitchCustomers();
+            console.log("======================");
+            console.log(data);
+            elm_total_success.html(s_total);
+            elm_total_drop.html(d_total);
+                
+            loadSwitchCustomers();
+
+            // if(donecallback != false){
+            //     donecallback();
+            // }
         },
-        error: function() { 
-            alert(data);
+        error: function(data) { 
+            alert(data.responseText);
         }
-    }).done(function(done){
+    }).done(function(data){
+        
         if(donecallback != false){
             donecallback();
         }
@@ -73,7 +95,7 @@ function update_state(id, _tostate, donecallback = false){
         url: url,
         data : vals,
         success: function (data) {
-            return data;
+            
         },
         error: function() { 
             alert(data);
@@ -85,10 +107,10 @@ function update_state(id, _tostate, donecallback = false){
     });
 }
 
-function switchCustomer(id, window_id, donecallback = false){
+function switchCustomer(ids, window_id, donecallback = false){
     var url = "/api/transactions/update_holder";
     var vals = {
-        "id" : id,
+        "ids" : ids,
         "window_id" : window_id
     };
     $.ajax({
@@ -101,9 +123,9 @@ function switchCustomer(id, window_id, donecallback = false){
         error: function() { 
             alert(data);
         }
-    }).done(function(done){
+    }).done(function(data, textStatus, jqXHR){
         if(donecallback != false){
-            donecallback();
+            donecallback(jqXHR.responseText);
         }
     });
 }
