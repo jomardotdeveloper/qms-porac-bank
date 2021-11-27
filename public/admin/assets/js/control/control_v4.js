@@ -169,14 +169,17 @@ var app = new Vue({
         ringq : function(){
             var self = this;
 
-            socket.send(JSON.stringify(socket_messages.ring));
+            
             if(self.waiting.length < 1 && self.serving == null){
                 alertError("Queue is empty!");
             }else if(self.serving == null){
                 alertError("No customer is being served. Please click the start button to start the queue.");
             }else{
                 alertSuccess("Ring!", "Calling " + self.serving.token);
+                socket.send(JSON.stringify(socket_messages.ring));
             }
+
+            console.log(socket_messages.ring);
             
         },
         notify : function(x){
