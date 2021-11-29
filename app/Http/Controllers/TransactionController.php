@@ -203,21 +203,15 @@ class TransactionController extends Controller
                 "window_id" => $request->get("window_id"),
                 "service_id" => $request->get("service_id"),
                 "branch_id" => $request->get("branch_id"),
-                "profile_id" => $request->get("profile_id")
+                "profile_id" => $request->get("profile_id"),
+                "is_notifiable" =>  isset($request->all()["is_notifiable"]) ? $request->all()["is_notifiable"] : 0
             ]);
         }else{
             $last_token = $transactions_for_the_day[count($transactions_for_the_day) - 1];
-            $tokens = Transaction::all()->where("branch_id", "=", $request->get("branch_id"))->where("state", "=", "waiting")->where("window_id", "=", $request->get("window_id"))->all();
             $token_format = $this->token_formatter($last_token->order + 1, $this->get_customer_type($request->get("account_number")) == "priority" );
             
-            if(isset($request->all()["mobile_number"])){
-                $estimated_waiting = (count($tokens) * 5);
-                $waiting_time = $estimated_waiting == 0 ? "5" : strval($estimated_waiting);
-                $message = "Dear customer, thank you for waiting. Your queue number " .  $token_format .  " will be called  in an estimated time of " .  $waiting_time. " minutes. Thank you.";
-                $this->send_message_time($request->all()["mobile_number"], $message);
-            }
-
-            return Transaction::create([
+            
+            $created = Transaction::create([
                 "token" =>$token_format,
                 "order" => $last_token->order + 1,
                 "account_id" => $this->get_account_id($request->get("account_number")),
@@ -227,8 +221,17 @@ class TransactionController extends Controller
                 "window_id" => $request->get("window_id"),
                 "service_id" => $request->get("service_id"),
                 "branch_id" => $request->get("branch_id"),
-                "profile_id" => $request->get("profile_id")
+                "profile_id" => $request->get("profile_id"),
+                "is_notifiable" =>  isset($request->all()["is_notifiable"]) ? $request->all()["is_notifiable"] : 0
             ]);
+            
+            if(isset($request->all()["mobile_number"])){
+                if($created->is_notifiable){
+                    $this->sendMessageInforming($created);
+                }
+            }
+
+            return $created;
             
         }
 
@@ -262,6 +265,58 @@ class TransactionController extends Controller
         $transactions = Transaction::with([ "account", "service" ])->orderBy("order")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND window_id = ?", [$branch_id, $window_id])->get()->all();
         return $transactions;
     }
+
+    public function sendMessageInforming($transaction){
+        $tokens = DB::table("transactions")->whereRaw("
+            DATE(transactions.in) = CURDATE() 
+            AND branch_id = ? 
+            AND state = 'waiting'
+            AND window_id = ?
+            AND id != ?
+            AND transactions.order < ?", 
+            [$transaction->branch->id, 
+             $transaction->window->id,
+             $transaction->id,
+             $transaction->order])->get()->all();
+        $current_token = Transaction::all()->where("state", "=", "serving")->where("window_id", "=", $transaction->window->id)->first();
+        $number_of_minutes = 5;
+        $message = "";
+
+
+        if($current_token != null){
+            $message = "Dear customer, thank you for your patience; the current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is in the position of " . (count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+        }else{
+            $message = "Dear customer, thank you for your patience; there is no currently customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is in the position of " .  (count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+        }
+        
+        return  $this->send_message_time($transaction->mobile_number, $message);
+    }
+
+    public function sendMessageTransfer($transaction){
+        $tokens = DB::table("transactions")->whereRaw("
+            DATE(transactions.in) = CURDATE() 
+            AND branch_id = ? 
+            AND state = 'waiting'
+            AND window_id = ?
+            AND id != ?
+            AND transactions.order < ?", 
+            [$transaction->branch->id, 
+             $transaction->window->id,
+             $transaction->id,
+             $transaction->order])->get()->all();
+        $current_token = Transaction::all()->where("state", "=", "serving")->where("window_id", "=", $transaction->window->id)->first();
+        $number_of_minutes = 5;
+        $message = "";
+
+
+        if($current_token != null){
+            $message = "We'd like to inform you that you've been transfer to ". $transaction->window->name . ". the current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is in the position of " . (count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+        }else{
+            $message = "We'd like to inform you that you've been transfer to ". $transaction->window->name .". there is no currently customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is in the position of " .  (count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+        }
+        
+        return  $this->send_message_time($transaction->mobile_number, $message);
+    }   
 
     public function send_message_time($to, $message){
 
@@ -355,7 +410,7 @@ class TransactionController extends Controller
         $data = [];
 
         foreach($all_windows as $window){
-            $data[$window["order"]] = Transaction::all()->where("branch_id", "=", $branch_id)->where("state", "=", "serving")->where("window_id", "=", $window->id)->first();
+            $data[$window["order"]] =DB::table("transactions")->whereRaw("DATE(transactions.created_at) = CURDATE() AND branch_id = ? AND state = 'serving' AND window_id = ?", [$branch_id, $window->id,])->get()->first();
         }
 
         echo json_encode($data);
@@ -380,5 +435,30 @@ class TransactionController extends Controller
         }
 
         return json_encode($data);
+    }
+
+    // API MESSAGING 
+
+    public function sendSms($id, $is_transfer){
+        $data = [];
+        $transaction = Transaction::find($id);
+        if(intval($is_transfer) == 1){
+            $status = $this->sendMessageTransfer($transaction);
+            if(intval($status) == 1){
+                $data["status"] = 1;
+            }else{
+                $data["status"] = 0;
+            }
+
+        }else if(intval($is_transfer) == 0){
+            $status = $this->sendMessageInforming($transaction);
+            if(intval($status) == 1){
+                $data["status"] = 1;
+            }else{
+                $data["status"] = 0;
+            }
+        }
+
+        return $data;
     }
 }
