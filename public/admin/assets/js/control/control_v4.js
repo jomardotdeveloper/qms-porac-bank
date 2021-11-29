@@ -183,13 +183,14 @@ var app = new Vue({
             
         },
         notify : function(x){
-            alert(x);
-            // var vals = {
-            //     "id" : id,
-            //     "toState" : toState
-            // };
+            // alert(x);
+            // // var vals = {
+            // //     "id" : id,
+            // //     "toState" : toState
+            // // };
             
-            sendMessage();
+            // sendMessage();
+            alert("This function is under maintenance.");
 
         }
     },

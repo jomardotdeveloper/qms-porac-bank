@@ -226,9 +226,10 @@ class TransactionController extends Controller
             ]);
             
             if(isset($request->all()["mobile_number"])){
-                if($created->is_notifiable){
-                    $this->sendMessageInforming($created);
-                }
+                $this->sendMessageInforming($created);
+                // if($created->is_notifiable){
+                    
+                // }
             }
 
             return $created;
