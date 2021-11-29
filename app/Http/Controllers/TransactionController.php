@@ -209,6 +209,7 @@ class TransactionController extends Controller
             $last_token = $transactions_for_the_day[count($transactions_for_the_day) - 1];
             $tokens = Transaction::all()->where("branch_id", "=", $request->get("branch_id"))->where("state", "=", "waiting")->where("window_id", "=", $request->get("window_id"))->all();
             $token_format = $this->token_formatter($last_token->order + 1, $this->get_customer_type($request->get("account_number")) == "priority" );
+            
             if(isset($request->all()["mobile_number"])){
                 $estimated_waiting = (count($tokens) * 5);
                 $waiting_time = $estimated_waiting == 0 ? "5" : strval($estimated_waiting);
@@ -267,6 +268,7 @@ class TransactionController extends Controller
         if(strlen($to) == 10){
             $to = "0" . $to;
         }
+        
         $client = new Client;
         $endpoint = 'https://www.itexmo.com/php_api/';
 
@@ -357,5 +359,26 @@ class TransactionController extends Controller
         }
 
         echo json_encode($data);
+    }
+
+    public function get_mobile_transactions($delimeter){
+        $separator = "YY";
+        $data = [
+            "data" => []
+        ];
+        if($delimeter != "AA"){
+            if(str_contains($delimeter, $separator)){
+                $ids = explode($separator, $delimeter);
+                foreach($ids as $id){
+                    $transaction = Transaction::find(intval($id));
+                    array_push($data["data"], $transaction);
+                }
+            }else{
+                $transaction = Transaction::find(intval($delimeter));
+                array_push($data["data"], $transaction);
+            }
+        }
+
+        return json_encode($data);
     }
 }

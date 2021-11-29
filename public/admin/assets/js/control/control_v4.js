@@ -184,9 +184,17 @@ var app = new Vue({
         },
         notify : function(x){
             alert(x);
+            // var vals = {
+            //     "id" : id,
+            //     "toState" : toState
+            // };
+            
+            sendMessage();
+
         }
     },
     created : function(){
+        sendMessage();
         var self = this;
         loadData(self);
 
@@ -217,6 +225,18 @@ var app = new Vue({
 
 
 // DATABASE
+async function sendMessage(to, message, callbackmethod=false){
+    var params = to + "/" + message;
+
+    var res  = (await axios.get("/api/sms/send_message/" + params)).data;
+
+
+    if(callbackmethod != false){
+        callbackmethod();
+    }
+}
+
+
 async function loadData(self,  callbackmethod = false){
     var res = (await axios.get("/api/transactions/get/" + self.branch_id + "/" + self.window_id)).data;
     self.transactions = res;

@@ -224,18 +224,18 @@
             </div>
             <div class="text-muted mt-3">
                 <h5 class="mb-2">{{$period["day"]["now"]}}
-                    @if($period["day"]["is_decreased"] == 1)
+                    @if($period["day"]["is_decreased"] == 0)
                     <i class="las la-angle-up text-success-teal"></i>
-                    @elseif($period["day"]["is_decreased"] == 0)
+                    @elseif($period["day"]["is_decreased"] == 1)
                     <i class="las la-angle-down text-success-teal"></i>
                     @endif
                 </h5>
                 <div class="d-flex">
-                    @if($period["day"]["is_decreased"] == 0)
+                    @if($period["day"]["is_decreased"] == 1)
                     <span class="badge badge-danger font-size-12"> 
                         - {{ $period["day"]["percent"] }} %
                     </span> 
-                    @elseif($period["day"]["is_decreased"] == 1)
+                    @elseif($period["day"]["is_decreased"] == 0)
                     <span class="badge badge-success-teal font-size-12"> 
                         + {{ $period["day"]["percent"] }} %
                     </span> 
@@ -261,18 +261,18 @@
             </div>
             <div class="text-muted mt-3">
                 <h5 class="mb-2">{{$period["month"]["now"]}}
-                    @if($period["month"]["is_decreased"] == 1)
+                    @if($period["month"]["is_decreased"] == 0)
                     <i class="las la-angle-up text-success-teal"></i>
-                    @elseif($period["month"]["is_decreased"] == 0)
+                    @elseif($period["month"]["is_decreased"] == 1)
                     <i class="las la-angle-down text-success-teal"></i>
                     @endif
                 </h5>
                 <div class="d-flex">
-                    @if($period["month"]["is_decreased"] == 0)
+                    @if($period["month"]["is_decreased"] == 1)
                     <span class="badge badge-danger font-size-12"> 
                         - {{ $period["month"]["percent"] }} %
                     </span> 
-                    @elseif($period["month"]["is_decreased"] == 1)
+                    @elseif($period["month"]["is_decreased"] == 0)
                     <span class="badge badge-success-teal font-size-12"> 
                         + {{ $period["month"]["percent"] }} %
                     </span> 
@@ -299,18 +299,18 @@
             <div class="text-muted mt-3">
                 <h5 class="mb-2">
                     {{$period["year"]["now"]}}
-                    @if($period["year"]["is_decreased"] == 1)
+                    @if($period["year"]["is_decreased"] == 0)
                     <i class="las la-angle-up text-success-teal"></i>
-                    @elseif($period["year"]["is_decreased"] == 0)
+                    @elseif($period["year"]["is_decreased"] == 1)
                     <i class="las la-angle-down text-success-teal"></i>
                     @endif
                 </h5>
                 <div class="d-flex">
-                    @if($period["year"]["is_decreased"] == 0)
+                    @if($period["year"]["is_decreased"] == 1)
                     <span class="badge badge-danger font-size-12"> 
                         - {{ $period["year"]["percent"] }} %
                     </span> 
-                    @elseif($period["year"]["is_decreased"] == 1)
+                    @elseif($period["year"]["is_decreased"] == 0)
                     <span class="badge badge-success-teal font-size-12"> 
                         + {{ $period["year"]["percent"] }} %
                     </span> 

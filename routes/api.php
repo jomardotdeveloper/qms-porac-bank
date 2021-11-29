@@ -29,6 +29,7 @@ Route::post("/transactions/make", [TransactionController::class, "make"]);
 Route::post("/transactions/update_state", [TransactionController::class, "update_state"]);
 Route::post("/transactions/update_holder", [TransactionController::class, "update_holder"]);
 Route::get("/branches/all/", [BranchController::class, "all"]);
+Route::get("/transactions/get_mobile_transactions/{delimeter}", [TransactionController::class, "get_mobile_transactions"]);
 Route::get("/transactions/get/{branch_id}/{window_id}", [TransactionController::class, "get_transactions_now"]);
 Route::get("/transactions/get_live/{branch_id}", [TransactionController::class, "get_active_current"]);
 Route::get("/windows/available/{branch_id}/{service_id}/{is_priority}", [WindowController::class, "get_available_window"]);
