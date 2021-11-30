@@ -23,11 +23,11 @@
             <ul class="navbar-item theme-brand flex-row  text-center">
                 <li class="nav-item theme-logo">
                     <a href="#">
-                        <img src="/admin/assets/img/QMSPBUpdated.png" class="navbar-logo" style="width:100%;margin-left:-1rem;" alt="logo">
+                        <img src="/admin/assets/img/LATEST.png" class="navbar-logo" style="width:100%;margin-left:-1rem;" alt="logo">
                     </a>
                 </li>
                 <!-- <li class="nav-item theme-text">
-                    <a href="#" class="nav-link">PB - ADMIN</a>
+                    <a href="#" class="nav-link" style="margin-left:-1rem;">PBQMS</a>
                 </li> -->
             </ul>
             <ul class="navbar-item flex-row ml-md-auto">

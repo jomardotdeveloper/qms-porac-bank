@@ -59,7 +59,7 @@ var app = new Vue({
         },
         nextq : function (){
             var self = this;
-
+            
             if(self.waiting.length < 1 && self.serving == null){
                 alertError("Queue is empty!");
             }else if(self.serving == null){
@@ -76,6 +76,7 @@ var app = new Vue({
                                 }else{
                                     alertSuccess("Good job!", "Success");
                                 }
+                                automatedNotification(self);
                                 socket.send(JSON.stringify(socket_messages.nextCustomer));
                             });
                         });
@@ -89,6 +90,7 @@ var app = new Vue({
                             }else{
                                 alertSuccess("Good job!", "Success");
                             }
+                            automatedNotification(self);
                             socket.send(JSON.stringify(socket_messages.nextCustomer));
                         });
                     });
@@ -118,6 +120,7 @@ var app = new Vue({
                                     }else{
                                         alertSuccess("Good job!", "Success");
                                     }
+                                    automatedNotification(self);
                                     socket.send(JSON.stringify(socket_messages.nextCustomer));
                                 });
                             });
@@ -131,6 +134,7 @@ var app = new Vue({
                                 }else{
                                     alertSuccess("Good job!", "Success");
                                 }
+                                automatedNotification(self);
                                 socket.send(JSON.stringify(socket_messages.nextCustomer));
                             });
                         });
@@ -145,7 +149,6 @@ var app = new Vue({
             var self = this;
             var select = $("#transactions").val();
             var send_to = $("#window_select").val();
-
             if(self.waiting.length < 1 && self.serving == null){
                 alertError("Queue is empty!");
             }else if(select == ""){
@@ -154,11 +157,13 @@ var app = new Vue({
                 alertRevert(function(){
                     switchCustomer(select, send_to, function(response){
                         if(response["success"] == 1){
+                            sendMessageMultiple(select);
                             alertSuccess("Switch!", "Succesfuly Switch Customers");
                             loadData(self, function(){
                                 if(response["has_serving"] == 1){
                                     alertSuccess("Good job!", "Please press the start again to continue.");
                                 }
+                                automatedNotification(self);
                             });
                             var message = {
                                 "message" : "switchCustomer",
@@ -185,6 +190,7 @@ var app = new Vue({
             }else if(self.serving == null){
                 alertError("No customer is being served. Please click the start button to start the queue.");
             }else{
+                sendMessage(self.serving.id, 0);
                 alertSuccess("Ring!", "Calling " + self.serving.token);
                 socket.send(JSON.stringify(socket_messages.ring));
             }
@@ -206,7 +212,7 @@ var app = new Vue({
     created : function(){
         var self = this;
         loadData(self);
-
+        automatedNotification(self);
         socket.onmessage = function(e){
             var jsonObject = jQuery.parseJSON(e.data);
             jsonObject = jQuery.parseJSON(jsonObject["message"]);
@@ -242,6 +248,37 @@ async function createNotificationLog(id, message){
     var res  = (await axios.post("/api/notifications/store", vals)).data;
 }   
 
+
+async function sendMessageMultiple(ids){
+    for(var i = 0; i < ids.length; i++){
+        sendMessage(ids[i], 1, function(res){
+            if(res["status"] == 1)
+                createNotificationLog(ids[i], res["log"]);
+        });
+    }
+}
+
+async function automatedNotification(self){
+    var setting_res =  (await axios.get("/api/settings/get/" + self.branch_id.toString())).data;
+
+    if(setting_res["is_automatic_sms"] == 1){
+        //PROCEED WITH THE AUTOMATION
+        var interval = setting_res["sms_interval"];
+        var idx = 1;
+
+        for(var i = 0; i <= self.waiting.length; i++){
+            sendMessage(self.waiting[i]["id"], 0, function(res){
+                if(res["status"] == 1)
+                    createNotificationLog(ids[i], res["log"]);
+            });
+            idx++;
+
+            if(idx == interval){
+                break;
+            }
+        }
+    }
+}
 
 async function sendMessage(id, is_transfer = 0, callbackmethod=false){
     var params = id.toString() + "/" + is_transfer.toString();

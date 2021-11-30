@@ -8,6 +8,7 @@ use App\Models\Branch;
 use App\Models\Account;
 use App\Models\Service;
 use App\Models\Window;
+use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
@@ -227,7 +228,16 @@ class TransactionController extends Controller
             
             if(isset($request->all()["mobile_number"])){
                 if($created->is_notifiable){
-                    $this->sendMessageInforming($created);
+                    $res = $this->sendMessageInforming($created);
+
+                    if($res["status"] == 0){
+                        Notification::create([
+                            "account_id" => $created->account->id,
+                            "message" => $res["message"],
+                            "transaction_id" => $created->id,
+                            "branch_id" => $created->branch->id
+                        ]);
+                    }
                 }
             }
 
@@ -286,9 +296,9 @@ class TransactionController extends Controller
 
 
         if($current_token != null){
-            $message = "Dear customer, thank you for your patience; the current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is in the position of " . (count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+            $message = "Dear customer, thank you for your patience; the current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
         }else{
-            $message = "Dear customer, thank you for your patience; there is no currently customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is in the position of " .  (count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+            $message = "Dear customer, thank you for your patience; there is currently no customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
         }
         
         return  [
@@ -298,7 +308,15 @@ class TransactionController extends Controller
     }
 
     public function sendMessageFirst($transaction){
-        $message = "Hello customer, your token " . $transaction->token . " is still active. Kindly proceed to " . $transaction->window->name . " for you to receive the service. Thank you.";
+        $message = "Hello customer, your queue number " . $transaction->token . " is still active. Kindly proceed to " . $transaction->window->name . "  to receive the service. Thank you.";
+        return  [
+            "status" => $this->send_message_time($transaction->mobile_number, $message),
+            "message" => $message
+        ];
+    }
+
+    public function sendMessageTransferFirst($transaction){
+        $message = "We'd like to inform you that you've been transfer to " .  $transaction->window->name  .  ". Your queue number " . $transaction->token . " is still active. Kindly proceed to " . $transaction->window->name . " to receive the service. Thank you.";
         return  [
             "status" => $this->send_message_time($transaction->mobile_number, $message),
             "message" => $message
@@ -323,9 +341,9 @@ class TransactionController extends Controller
 
 
         if($current_token != null){
-            $message = "We'd like to inform you that you've been transfer to ". $transaction->window->name . ". the current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is in the position of " . (count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+            $message = "We'd like to inform you that you've been transfer to ". $transaction->window->name . ". the current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
         }else{
-            $message = "We'd like to inform you that you've been transfer to ". $transaction->window->name .". there is no currently customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is in the position of " .  (count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+            $message = "We'd like to inform you that you've been transfer to ". $transaction->window->name .". there is currently no customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
         }
         
         return  [
@@ -463,57 +481,79 @@ class TransactionController extends Controller
     public function sendSms($id, $is_transfer){
         $data = [];
         $transaction = Transaction::find($id);
-        
-        
-        if($transaction->mobile_number != null){
-            if($transaction->is_notifiable){
-                if(intval($is_transfer) == 1){
-                    $status = $this->sendMessageTransfer($transaction);
-                    if(intval($status["status"]) == 0){
-                        $data["status"] = 1;
-                        $data["message"] = "Successfuly notified " . $transaction->token;
-                        $data["log"] = $status["message"];
-                    }else{
-                        $data["status"] = 0;
-                        $data["message"] = "There is a problem with the SMS server.";
-                    }
-        
-                }else if(intval($is_transfer) == 0){
-                    if($transaction->state == "serving" || $this->isFirst($transaction)){
-                        $status = $this->sendMessageFirst($transaction);
-                        if(intval($status["status"]) == 0){
-                            $data["status"] = 1;
-                            $data["message"] = "Successfuly notified " . $transaction->token;
-                            $data["log"] = $status["message"];
+        $state = ["waiting", "serving"];
+        if(in_array($transaction->state, $state)){
+            if($transaction->mobile_number != null){
+                if($transaction->is_notifiable){
+                    if(intval($is_transfer) == 1){
+                        if($transaction->state == "serving" || $this->isFirst($transaction)){
+                            $status = $this->sendMessageTransferFirst($transaction);
+                            if(intval($status["status"]) == 0){
+                                $data["status"] = 1;
+                                $data["message"] = "Successfuly notified " . $transaction->token;
+                                $data["log"] = $status["message"];
+                            }else{
+                                $data["status"] = 0;
+                                $data["message"] = "There is a problem with the SMS server.";
+                            }
                         }else{
-                            $data["status"] = 0;
-                            $data["message"] = "There is a problem with the SMS server.";
+                            $status = $this->sendMessageTransfer($transaction);
+                            if(intval($status["status"]) == 0){
+                                $data["status"] = 1;
+                                $data["message"] = "Successfuly notified " . $transaction->token;
+                                $data["log"] = $status["message"];
+                            }else{
+                                $data["status"] = 0;
+                                $data["message"] = "There is a problem with the SMS server.";
+                            }
                         }
-                    }{
-                        $status = $this->sendMessageInforming($transaction);
-                        if(intval($status["status"]) == 0){
-                            $data["status"] = 1;
-                            $data["message"] = "Successfuly notified " . $transaction->token;
-                            $data["log"] = $status["message"];
+                        
+            
+                    }else if(intval($is_transfer) == 0){
+                        if($transaction->state == "serving" || $this->isFirst($transaction)){
+                            $status = $this->sendMessageFirst($transaction);
+                            if(intval($status["status"]) == 0){
+                                $data["status"] = 1;
+                                $data["message"] = "Successfuly notified " . $transaction->token;
+                                $data["log"] = $status["message"];
+                            }else{
+                                $data["status"] = 0;
+                                $data["message"] = "There is a problem with the SMS server.";
+                            }
                         }else{
-                            $data["status"] = 0;
-                            $data["message"] = "There is a problem with the SMS server.";
+                            $status = $this->sendMessageInforming($transaction);
+                            if(intval($status["status"]) == 0){
+                                $data["status"] = 1;
+                                $data["message"] = "Successfuly notified " . $transaction->token;
+                                $data["log"] = $status["message"];
+                            }else{
+                                $data["status"] = 0;
+                                $data["message"] = "There is a problem with the SMS server.";
+                            }
                         }
+                        
                     }
-                    
+                }else{
+                    $data["status"] = 0;
+                    $data["message"] = "Token " . $transaction->token . " is not notifiable.";
                 }
             }else{
                 $data["status"] = 0;
-                $data["message"] = "Token " . $transaction->token . " is not notifiable.";
+                $data["message"] = "Token " . $transaction->token . " has no mobile number.";
             }
         }else{
             $data["status"] = 0;
-            $data["message"] = "Token " . $transaction->token . " has no mobile number.";
+            $data["message"] = "Token must be in waiting or serving state to send a sms notification.";
         }
-        
-
-        
 
         return $data;
+    }
+
+    function ordinal($number) {
+        $ends = array('th','st','nd','rd','th','th','th','th','th','th');
+        if ((($number % 100) >= 11) && (($number%100) <= 13))
+            return $number. 'th';
+        else
+            return $number. $ends[$number % 10];
     }
 }

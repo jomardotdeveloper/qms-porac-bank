@@ -52,7 +52,7 @@ class NotificationController extends Controller
             "account_id" => $transaction->account->id,
             "message" => $request->get("message"),
             "transaction_id" => $transaction->id,
-            "branch" => $transaction->branch->id
+            "branch_id" => $transaction->branch->id
         ]);
 
 

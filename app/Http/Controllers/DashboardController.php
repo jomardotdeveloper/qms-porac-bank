@@ -51,6 +51,7 @@ class DashboardController extends Controller
         return view("admin.dashboard.index", $data);
     }
 
+    
     /**
      * Show the form for creating a new resource.
      *

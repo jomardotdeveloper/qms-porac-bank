@@ -103,4 +103,9 @@ class SettingController extends Controller
     {
         //
     }
+
+    public function get_setting($branch_id){
+        $setting = Setting::all()->where("branch_id", "=", $branch_id)->first();
+        return $setting;
+    }
 }
