@@ -16,9 +16,10 @@ class CreateNotifications extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId("account_id")->nullable()->constrained("accounts")->onDelete("set null");
+            $table->foreignId("branch_id")->constrained("branches")->onDelete("cascade");
             $table->timestamp("datetime")->default(DB::raw("CURRENT_TIMESTAMP"));
             $table->string("message");
-            $table->foreignId("transaction_id")->nullable()->constrained("transactions")->onDelete("set null");
+            $table->foreignId("transaction_id")->nullable()->constrained("transactions")->onDelete("cascade");
             $table->timestamps();
         });
     }

@@ -8,4 +8,28 @@ use Illuminate\Database\Eloquent\Model;
 class Notification extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        "account_id",
+        "message",
+        "transaction_id",
+        "branch_id"
+    ];
+
+
+    public function transaction() {
+        return $this->belongsTo(Transaction::class, "transaction_id");
+    }
+
+    public function account() {
+        return $this->belongsTo(Account::class, "account_id");
+    }
+
+    public function branch() {
+        return $this->belongsTo(Branch::class, "branch_id");
+    }
+    
+    
+
+    
 }

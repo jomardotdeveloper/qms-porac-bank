@@ -18,6 +18,10 @@ class Branch extends Model
         return $this->hasMany(Role::class, "branch_id");
     }
 
+    public function notifications() {
+        return $this->hasMany(Notification::class, "branch_id");
+    }
+
     public function profiles() {
         return $this->hasMany(Profile::class, "branch_id");
     }

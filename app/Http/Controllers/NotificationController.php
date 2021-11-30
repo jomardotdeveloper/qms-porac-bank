@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Transaction;
+use App\Models\Notification;
+use Illuminate\Support\Facades\Auth;
 class NotificationController extends Controller
 {
     /**
@@ -13,7 +15,18 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        //
+        $user = auth()->user();
+        $notifications = null;
+
+        if($user->is_admin){
+            $notifications = Notification::all();
+        }else{
+            $notifications = Notification::all()->where("branch_id", "=", $user->profile->branch->id)->all();
+        }
+
+        return view("admin.notification.index", [
+            "notifications" => $notifications
+        ]);
     }
 
     /**
@@ -34,7 +47,16 @@ class NotificationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $transaction = Transaction::find($request->get("id"));
+        $notification = Notification::create([
+            "account_id" => $transaction->account->id,
+            "message" => $request->get("message"),
+            "transaction_id" => $transaction->id,
+            "branch" => $transaction->branch->id
+        ]);
+
+
+        return $notification;
     }
 
     /**

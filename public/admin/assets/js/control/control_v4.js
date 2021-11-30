@@ -65,31 +65,36 @@ var app = new Vue({
             }else if(self.serving == null){
                 alertError("No customer is being served. Please click the start button to start the queue.");
             }else{
+                alertLoader();
                 if(self.waiting.length > 0){
                     updateState(self.next["id"], states.SERVING, function(){
                         updateState(self.current["id"], states.OUT, function(){
                             loadData(self, function(){
+                                swal.close();
                                 if(self.current != null){
                                     alertSuccess("Next Customer!", self.current["token"]);
                                 }else{
                                     alertSuccess("Good job!", "Success");
                                 }
+                                socket.send(JSON.stringify(socket_messages.nextCustomer));
                             });
                         });
                     });
                 }else{
                     updateState(self.current["id"], states.OUT, function(){
                         loadData(self, function(){
+                            swal.close();
                             if(self.current != null){
                                 alertSuccess("Next Customer!", self.current["token"]);
                             }else{
                                 alertSuccess("Good job!", "Success");
                             }
+                            socket.send(JSON.stringify(socket_messages.nextCustomer));
                         });
                     });
                 }
                 
-                socket.send(JSON.stringify(socket_messages.nextCustomer));
+                
             }
 
         },
@@ -102,31 +107,37 @@ var app = new Vue({
                 alertError("No customer is being served. Please click the start button to start the queue.");
             }else{
                 alertRevert(function(){
+                    alertLoader();
                     if(self.waiting.length > 0){
                         updateState(self.next["id"], states.SERVING, function(){
                             updateState(self.current["id"], states.DROP, function(){
                                 loadData(self, function(){
+                                    swal.close();
                                     if(self.current != null){
                                         alertSuccess("Next Customer!", self.current["token"]);
                                     }else{
                                         alertSuccess("Good job!", "Success");
                                     }
+                                    socket.send(JSON.stringify(socket_messages.nextCustomer));
                                 });
                             });
                         });
                     }else{
                         updateState(self.current["id"], states.DROP, function(){
                             loadData(self, function(){
+                                swal.close();
                                 if(self.current != null){
                                     alertSuccess("Next Customer!", self.current["token"]);
                                 }else{
                                     alertSuccess("Good job!", "Success");
                                 }
+                                socket.send(JSON.stringify(socket_messages.nextCustomer));
                             });
                         });
                     }
+                    
                 });
-                socket.send(JSON.stringify(socket_messages.nextCustomer));
+                
             }
 
         },
@@ -169,7 +180,6 @@ var app = new Vue({
         ringq : function(){
             var self = this;
 
-            
             if(self.waiting.length < 1 && self.serving == null){
                 alertError("Queue is empty!");
             }else if(self.serving == null){
@@ -179,23 +189,21 @@ var app = new Vue({
                 socket.send(JSON.stringify(socket_messages.ring));
             }
 
-            console.log(socket_messages.ring);
             
         },
-        notify : function(x){
-            // alert(x);
-            // // var vals = {
-            // //     "id" : id,
-            // //     "toState" : toState
-            // // };
-            
-            // sendMessage();
-            alert("This function is under maintenance.");
-
+        notify : function(id) {
+            $("#listOfCustomer").modal("hide");
+            sendMessage(id, is_transfer = 0, function(status){
+                if(parseInt(status["status"]) == 0){
+                    alertError(status["message"]);
+                }else{
+                    createNotificationLog(id, status["log"]);
+                    alertSuccess("Message sent", status["message"]);
+                }
+            });
         }
     },
     created : function(){
-        sendMessage();
         var self = this;
         loadData(self);
 
@@ -226,14 +234,21 @@ var app = new Vue({
 
 
 // DATABASE
-async function sendMessage(to, message, callbackmethod=false){
-    var params = to + "/" + message;
+async function createNotificationLog(id, message){
+    vals = {
+      id : id,
+      message : message
+    };
+    var res  = (await axios.post("/api/notifications/store", vals)).data;
+}   
 
-    var res  = (await axios.get("/api/sms/send_message/" + params)).data;
 
-
+async function sendMessage(id, is_transfer = 0, callbackmethod=false){
+    var params = id.toString() + "/" + is_transfer.toString();
+    var res  = (await axios.get("/api/transactions/send_sms/" + params)).data;
+    
     if(callbackmethod != false){
-        callbackmethod();
+        callbackmethod(res);
     }
 }
 
@@ -356,6 +371,17 @@ function alertRevert(desiredAction){
     });
 }
 
+async function alertLoader(){
+    swal({
+        title: "System",
+        text: "Processing",
+        padding: "2em",
+        allowOutsideClick: false,
+        onOpen: function () {
+          swal.showLoading();
+        }
+    });
+}
 
 
 

@@ -8,6 +8,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CutoffController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\SMSController;
+use App\Http\Controllers\NotificationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,6 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::resource("transactions", TransactionController::class);
+Route::post("notifications/store", [NotificationController::class, "store"]);
 Route::get("/sms/send_message/{to}/{message}", [SMSController::class, "message"]);
 Route::post("/transactions/make", [TransactionController::class, "make"]);
 Route::post("/transactions/update_state", [TransactionController::class, "update_state"]);

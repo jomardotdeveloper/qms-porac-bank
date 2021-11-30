@@ -39,6 +39,10 @@ class Transaction extends Model
         return $this->belongsTo(Window::class, "window_id");
     }
 
+    public function notifications() {
+        return $this->hasMany(Transaction::class, "transaction_id");
+    }
+
     public function profile() {
         return $this->belongsTo(Profile::class, "profile_id");
     }
