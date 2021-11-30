@@ -180,6 +180,40 @@
             </div>
         </div>
     </div>
+    @if(auth()->user()->is_admin)
+    <div class="col-6">
+        <div class="widget bg-gradient-info">
+            <div class="f-100">
+                <div class="row">
+                    <div class="col-md-7">
+                        <div class="text-white">
+                            <h5 class="text-white">Feedbacks!</h5>
+                            @if(count($feedbacks) < 1)
+                            <p class="text-white mt-1">No feedback yet!</p>
+                            @else
+                            <p class="blink_me text-white mt-1">Recent feedback!</p>
+                            @endif
+
+                            @if(count($feedbacks) < 1)
+                            <p class="text-white mt-1">There is no recent feedback.</p>
+                            @else
+                            <p class="text-white mt-1">From : {{ $recent_feedback->email }}</p>
+                            <a href="{{ route('feedbacks.show', ['feedback' => $recent_feedback]) }}" class="btn btn-primary">
+                                Show details
+                            </a>
+                            @endif
+
+
+                        </div>
+                    </div>
+                    <div class="align-self-end col-md-5">
+                        <img src="/admin/assets/img/dashboard-image-uw.png" alt="" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
     @if(!auth()->user()->is_admin)
     @if(in_array("SA", auth()->user()->profile->role->getPermissionCodenamesAttribute())) 
     <div class="col-6">

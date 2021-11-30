@@ -8,6 +8,7 @@ use App\Models\Transaction;
 use App\Models\Service;
 use App\Models\Profile;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 class WindowController extends Controller
 {
     /**
@@ -312,7 +313,7 @@ class WindowController extends Controller
     }
 
     public function has_active_transaction($window_id){
-        $transactions = Transaction::all()->where("window_id", "=", $window_id)->whereIn("state", ["waiting", "serving"])->all();
+        $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND transactions.state IN ('waiting', 'serving') AND window_id = ?", [$window_id])->get()->all();
         return count($transactions) > 0;
     }
 

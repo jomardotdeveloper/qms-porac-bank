@@ -114,37 +114,39 @@ class TransactionController extends Controller
         $date_to = new DateTime($request->get("to"));
         $interval = $date_from->diff($date_to);
         $number_of_days = 0;
-
+        
         if($interval->y != 0){
             $number_of_days += ($interval->y * 365);
-            $year_from = intval($date_from->format("Y"));
-            $year_to = intval($date_to->format("Y"));
-            while(true){
-                if($year_from > $year_to){
-                    break;
-                }
-    
-                for($x = 1; $x <= 12; $x++){
-                    $number_of_days += cal_days_in_month(CAL_GREGORIAN, $x, $year_from);
-                }
-    
-                $year_from++;
-            }
-            $number_of_days += $interval->d;
         }
+        $year_from = intval($date_from->format("Y"));
+        $year_to = intval($date_to->format("Y"));
+
+        while(true){
+            if($year_from > $year_to){
+                break;
+            }
+
+            for($x = 1; $x <= 12; $x++){
+                $number_of_days += cal_days_in_month(CAL_GREGORIAN, $x, $year_from);
+            }
+
+            $year_from++;
+        }
+        $number_of_days += $interval->d;
 
 
+        $windows = Window::all()->where("branch_id", "=", $request->get("branch_id"))->all();
+        $accounts = Account::all()->where("branch_id", "=", $request->get("branch_id"))->all();
+        
         for($day = 0; $day < $number_of_days; $day++){
-            $your_date = strtotime("1 day", strtotime("2021-12-31"));
-            $sample_date = date("Y-m-d", $your_date);
+            $your_date = strtotime($day . " day", strtotime($request->get("from")));
+            $cur = date("Y-m-d", $your_date);
             
-
-
         }
 
         
-        dd($sample_date);
-        dd($number_of_days);
+        // dd($sample_date);
+        // dd($number_of_days);
         
 
         
@@ -200,12 +202,11 @@ class TransactionController extends Controller
                 "account_id" => $this->get_account_id($request->get("account_number")),
                 "amount" => isset($request->all()["amount"]) ? $request->get("amount") : null,
                 "mobile_number" => isset($request->all()["mobile_number"]) ? $request->get("mobile_number") : null,
-                "is_notifiable" => isset($request->all()["mobile_number"]) ? true : false,
+                "is_notifiable" =>  isset($request->all()["is_notifiable"]) ? $request->all()["is_notifiable"] : 0,
                 "window_id" => $request->get("window_id"),
                 "service_id" => $request->get("service_id"),
                 "branch_id" => $request->get("branch_id"),
-                "profile_id" => $request->get("profile_id"),
-                "is_notifiable" =>  isset($request->all()["is_notifiable"]) ? $request->all()["is_notifiable"] : 0
+                "profile_id" => $request->get("profile_id")
             ]);
         }else{
             $last_token = $transactions_for_the_day[count($transactions_for_the_day) - 1];
@@ -218,12 +219,11 @@ class TransactionController extends Controller
                 "account_id" => $this->get_account_id($request->get("account_number")),
                 "amount" => isset($request->all()["amount"]) ? $request->get("amount") : null,
                 "mobile_number" => isset($request->all()["mobile_number"]) ? $request->get("mobile_number") : null,
-                "is_notifiable" => isset($request->all()["mobile_number"]) ? true : false,
+                "is_notifiable" => isset($request->all()["is_notifiable"]) ? $request->all()["is_notifiable"] : 0,
                 "window_id" => $request->get("window_id"),
                 "service_id" => $request->get("service_id"),
                 "branch_id" => $request->get("branch_id"),
-                "profile_id" => $request->get("profile_id"),
-                "is_notifiable" =>  isset($request->all()["is_notifiable"]) ? $request->all()["is_notifiable"] : 0
+                "profile_id" => $request->get("profile_id")
             ]);
             
             if(isset($request->all()["mobile_number"])){
@@ -555,5 +555,29 @@ class TransactionController extends Controller
             return $number. 'th';
         else
             return $number. $ends[$number % 10];
+    }
+
+    public function set_notifiable($is_notifiable, $delimiter){
+        $separator = "YY";
+        $data = [
+            "data" => []
+        ];
+        
+        if($delimeter != "AA"){
+            if(str_contains($delimeter, $separator)){
+                $ids = explode($separator, $delimeter);
+                foreach($ids as $id){
+                    $transaction = Transaction::find(intval($id));
+                    $transaction->is_notifiable = $is_notifiable;
+                    $transaction->save();
+                }
+            }else{
+                $transaction = Transaction::find(intval($delimeter));
+                $transaction->is_notifiable = $is_notifiable;
+                $transaction->save();
+            }
+        }
+
+        return json_encode($data);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Branch;
+use App\Models\Feedback;
 use App\Models\Transaction;
 use App\Models\Profile;
 use Illuminate\Http\Request;
@@ -32,6 +33,8 @@ class DashboardController extends Controller
             $data["branches"] = Branch::all();
             $data["profiles"] = Profile::all();
             $data["accounts"] = Account::all();
+            $data["feedbacks"] = Feedback::all();
+            $data["recent_feedback"] = Feedback::orderByDesc("created_at")->first();
         }else{
 
             if(in_array("CA", $user->profile->role->getPermissionCodenamesAttribute()) && $user->profile->window != null){

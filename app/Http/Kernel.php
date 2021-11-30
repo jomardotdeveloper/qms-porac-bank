@@ -62,6 +62,7 @@ class Kernel extends HttpKernel
         'checkuser' => \App\Http\Middleware\checkIfAllowedUser::class,
         'checkrole' => \App\Http\Middleware\checkIfAllowedRole::class,
         'checkmobile' => \App\Http\Middleware\checkIfAllowedMobileApplication::class,
+        'checkfeedback' => \App\Http\Middleware\checkIfAllowedFeedback::class,
         'checkbranch' => \App\Http\Middleware\checkIfAllowedBranch::class,
         'checkauth' => \App\Http\Middleware\CheckIfAuthenticated::class,
         'auth' => \App\Http\Middleware\Authenticate::class,

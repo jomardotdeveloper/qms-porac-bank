@@ -242,6 +242,18 @@
                         </a>
                     </li>
                     @endif
+                    
+                    @if(auth()->user()->is_admin)
+                    <li class="menu-title">Feedbacks</li>
+                    <li class="menu">
+                        <a href="{{route('feedbacks.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'feedbacks.index' ? 'true' : 'false' }}">
+                            <div class="">
+                                <i class="las la-comment"></i>
+                                <span>Feedbacks</span>
+                            </div>
+                        </a>
+                    </li>
+                    @endif
                     <!-- ENDS HERE -->
                 </ul>                
             </nav>
