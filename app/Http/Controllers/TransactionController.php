@@ -557,7 +557,7 @@ class TransactionController extends Controller
             return $number. $ends[$number % 10];
     }
 
-    public function set_notifiable($is_notifiable, $delimiter){
+    public function set_notifiable($is_notifiable, $delimeter){
         $separator = "YY";
         $data = [
             "data" => []

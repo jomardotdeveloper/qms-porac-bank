@@ -33,7 +33,7 @@ Route::post("/transactions/update_state", [TransactionController::class, "update
 Route::post("/transactions/update_holder", [TransactionController::class, "update_holder"]);
 Route::get("/branches/all/", [BranchController::class, "all"]);
 Route::get("/transactions/send_sms/{id}/{is_transfer}", [TransactionController::class, "sendSms"]);
-Route::get("/transactions/set_notifiable/{is_notifiable}/{delimiter}", [TransactionController::class, "set_notifiable"]);
+Route::get("/transactions/set_notifiable/{is_notifiable}/{delimeter}", [TransactionController::class, "set_notifiable"]);
 Route::get("/transactions/get_mobile_transactions/{delimeter}", [TransactionController::class, "get_mobile_transactions"]);
 Route::get("/transactions/get/{branch_id}/{window_id}", [TransactionController::class, "get_transactions_now"]);
 Route::get("/transactions/get_live/{branch_id}", [TransactionController::class, "get_active_current"]);
