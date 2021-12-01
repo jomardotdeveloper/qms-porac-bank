@@ -14,6 +14,7 @@ class FeedbackController extends Controller
      */
     public function index()
     {
+        dd(date("h:i:sa"));
         return view("admin.feedback.index", ["feedbacks" => Feedback::all()]);
     }
 
@@ -46,7 +47,6 @@ class FeedbackController extends Controller
      */
     public function show(Feedback $feedback)
     {
-        dd(date("h:i:sa"));
         return view("admin.feedback.show",["feedback" => $feedback]);
     }
 
