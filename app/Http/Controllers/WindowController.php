@@ -137,7 +137,8 @@ class WindowController extends Controller
         foreach($non_prio_window as $w){
             array_push($non_prio_window_cloned, $w);
         }
-        if($is_priority == 1){
+
+        if(intval($is_priority) == 1){
             if($priority_window == null){
                 $data = [
                     "status" => "0",
@@ -172,15 +173,23 @@ class WindowController extends Controller
         
                         echo json_encode($data);
                         return;
+                    }else{
+                        $data = [
+                            "status" => "1",
+                            "window_id" => $priority_window->id,
+                            "profile_id" => $priority_window->profile->id
+                        ];        
                     }
+                }else{
+                    $data = [
+                        "status" => "1",
+                        "window_id" => $priority_window->id,
+                        "profile_id" => $priority_window->profile->id
+                    ];
+    
                 }
 
-                $data = [
-                    "status" => "1",
-                    "window_id" => $priority_window->id,
-                    "profile_id" => $priority_window->profile->id
-                ];
-
+                
                 echo json_encode($data);
                 return;
             }else{

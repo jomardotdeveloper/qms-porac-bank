@@ -231,7 +231,7 @@ class TransactionController extends Controller
         $transactions_for_the_day = $this->get_prev_token($request->get("branch_id"));
         
         if(count($transactions_for_the_day) < 1){
-            return Transaction::create([
+            $created =  Transaction::create([
                 "token" => $this->token_formatter(1, $this->get_customer_type($request->get("account_number"))  == "priority"),
                 "account_id" => $this->get_account_id($request->get("account_number")),
                 "amount" => isset($request->all()["amount"]) ? $request->get("amount") : null,
@@ -242,6 +242,8 @@ class TransactionController extends Controller
                 "branch_id" => $request->get("branch_id"),
                 "profile_id" => $request->get("profile_id")
             ]);
+
+            return Transaction::find($created->id);
         }else{
             $last_token = $transactions_for_the_day[count($transactions_for_the_day) - 1];
             $token_format = $this->token_formatter($last_token->order + 1, $this->get_customer_type($request->get("account_number")) == "priority" );
@@ -281,7 +283,7 @@ class TransactionController extends Controller
                 }
             }
 
-            return $created;
+            return Transaction::find($created->id);
             
         }
 

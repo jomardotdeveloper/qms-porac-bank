@@ -24,8 +24,7 @@ class Transaction extends Model
         'window_id',
         'service_id',
         'branch_id',
-        'profile_id',
-        'in'
+        'profile_id'
     ];
 
     public function branch() {
