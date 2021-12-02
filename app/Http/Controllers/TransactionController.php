@@ -138,11 +138,45 @@ class TransactionController extends Controller
         $windows = Window::all()->where("branch_id", "=", $request->get("branch_id"))->all();
         $accounts = Account::all()->where("branch_id", "=", $request->get("branch_id"))->all();
         
-        for($day = 0; $day < $number_of_days; $day++){
-            $your_date = strtotime($day . " day", strtotime($request->get("from")));
-            $cur = date("Y-m-d", $your_date);
+        // for($day = 0; $day < $number_of_days; $day++){
+        //     $your_date = strtotime($day . " day", strtotime($request->get("from")));
+        //     $cur = date("Y-m-d", $your_date);
             
-        }
+        //     for($tr = 0; $tr < intval($request->get("number_day")); $tr++){
+        //         $random_window = rand(1,3);
+        //         $random_account = rand(1,20);
+        //         $random_service = rand(1,7);
+        //         $is_drop = rand(0, 1);
+        //         $account = Account::find($random_account);
+        //         $window = Window::all()->where("order", "=", $random_window)->first();
+        //          $transaction = Transaction::create([
+        //             "token" => $this->token_formatter($tr + 1, $account->customer_type == "priority"),
+        //             "account_id" => $account->id,
+        //             "amount" => null,
+        //             "mobile_number" => null,
+        //             "is_notifiable" =>  "0",
+        //             "window_id" => $window->id,
+        //             "service_id" => $random_service,
+        //             "branch_id" => $request->get("branch_id"),
+        //             "profile_id" => $window->profile->id
+        //         ]);
+        //         $transaction->state = $is_drop =
+        //     }
+            
+            
+        //     return Transaction::create([
+        //         "token" => $this->token_formatter(1, $this->get_customer_type($request->get("account_number"))  == "priority"),
+        //         "account_id" => $this->get_account_id($request->get("account_number")),
+        //         "amount" => isset($request->all()["amount"]) ? $request->get("amount") : null,
+        //         "mobile_number" => isset($request->all()["mobile_number"]) ? $request->get("mobile_number") : null,
+        //         "is_notifiable" =>  isset($request->all()["is_notifiable"]) ? $request->all()["is_notifiable"] : 0,
+        //         "window_id" => $request->get("window_id"),
+        //         "service_id" => $request->get("service_id"),
+        //         "branch_id" => $request->get("branch_id"),
+        //         "profile_id" => $request->get("profile_id")
+        //     ]);
+
+        // }
 
         
         // dd($sample_date);

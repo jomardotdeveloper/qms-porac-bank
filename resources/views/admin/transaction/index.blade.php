@@ -20,7 +20,7 @@
             <div class="container p-0">
                 <button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#fadeinModal">Export</button>
                 @if(auth()->user()->is_admin)
-                <button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#demoData">Generate Demo Data</button>
+                <!-- <button type="button" class="btn btn-primary mb-2 mr-2" data-toggle="modal" data-target="#demoData">Generate Demo Data</button> -->
                 @endif
                 <div class="row layout-top-spacing date-table-container">
                     <!-- BASIC -->

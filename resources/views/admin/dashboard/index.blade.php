@@ -267,11 +267,11 @@
                 <div class="d-flex">
                     @if($period["day"]["is_decreased"] == 1)
                     <span class="badge badge-danger font-size-12"> 
-                        - {{ $period["day"]["percent"] }} %
+                        - {{ round($period["day"]["percent"], 2) }} %
                     </span> 
                     @elseif($period["day"]["is_decreased"] == 0)
                     <span class="badge badge-success-teal font-size-12"> 
-                        + {{ $period["day"]["percent"] }} %
+                        + {{ round($period["day"]["percent"], 2) }} %
                     </span> 
                     @else
                     <span class="badge badge-secondary font-size-12"> 
@@ -304,11 +304,11 @@
                 <div class="d-flex">
                     @if($period["month"]["is_decreased"] == 1)
                     <span class="badge badge-danger font-size-12"> 
-                        - {{ $period["month"]["percent"] }} %
+                        - {{ round($period["month"]["percent"], 2) }} %
                     </span> 
                     @elseif($period["month"]["is_decreased"] == 0)
                     <span class="badge badge-success-teal font-size-12"> 
-                        + {{ $period["month"]["percent"] }} %
+                        + {{ round($period["month"]["percent"], 2) }} %
                     </span> 
                     @else
                     <span class="badge badge-secondary font-size-12"> 
@@ -342,11 +342,11 @@
                 <div class="d-flex">
                     @if($period["year"]["is_decreased"] == 1)
                     <span class="badge badge-danger font-size-12"> 
-                        - {{ $period["year"]["percent"] }} %
+                        - {{ round($period["year"]["percent"], 2) }} %
                     </span> 
                     @elseif($period["year"]["is_decreased"] == 0)
                     <span class="badge badge-success-teal font-size-12"> 
-                        + {{ $period["year"]["percent"] }} %
+                        + {{ round($period["year"]["percent"], 2) }} %
                     </span> 
                     @else
                     <span class="badge badge-secondary font-size-12"> 
@@ -364,18 +364,15 @@
     <div class="col-12">
         <div class="widget widget-chart-one">
             <div class="widget-heading">
-                <h5 class="">Revenue Comparison</h5>
+                <h5 class="">Transaction Comparison</h5>
                 <ul class="tabs tab-pills">
                     <li>
                         <div class="dropdown  custom-dropdown-icon">
-                            <a class="dropdown-toggle" href="#" role="button" id="customDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Options</span> <i class="las la-angle-down"></i></a>
+                            <a class="dropdown-toggle" href="#" role="button" id="customDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="period">Monthly</span> <i class="las la-angle-down"></i></a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="customDropdown">
-                                <a class="dropdown-item" data-value="Settings" href="javascript:void(0);">Quarterly</a>
-                                <a class="dropdown-item" data-value="Settings" href="javascript:void(0);">Half Yearly</a>
-                                <a class="dropdown-item" data-value="Mail" href="javascript:void(0);">Mail</a>
-                                <a class="dropdown-item" data-value="Print" href="javascript:void(0);">Print</a>
-                                <a class="dropdown-item" data-value="Download" href="javascript:void(0);">Download</a>
-                                <a class="dropdown-item" data-value="Share" href="javascript:void(0);">Share</a>
+                                <a class="dropdown-item" data-value="Settings" href="javascript:void(0);" onclick="monthly()">Monthly</a>
+                                <a class="dropdown-item" data-value="Settings" href="javascript:void(0);" onclick="quarterly()">Quarterly</a>
+                                <a class="dropdown-item" data-value="Settings" href="javascript:void(0);" onclick="halfYearly()">Half Yearly</a>
                             </div>
                         </div>
                     </li>
@@ -384,54 +381,71 @@
             <div class="widget-content">
                 <div class="tabs tab-content">
                     <div id="content_1" class="tabcontent"> 
-                        <div id="revenue"></div>
+                        <div id="transaction_chart"></div>
                         <div class="row mt-3">
-                            <div class="col-md-4">
-                                <div class="widget-rounded-circle card-box">
-                                    <div class="row">
-                                        <div class="col-4 pt-1">
-                                            <div class="avatar-sm rounded-circle bg-primary text-center">
-                                                <i class="las la-chart-line pt-1 font-25"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-8 pl-0">
-                                            <div class="text-left">
-                                                <h6 class="mt-1 mb-0">$<span data-plugin="counterup">58,947</span></h6>
-                                                <p class="text-muted mb-1 text-truncate">Total Sales</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="widget-rounded-circle card-box">
                                     <div class="row">
                                         <div class="col-4 pt-1">
                                             <div class="avatar-sm rounded-circle bg-success text-center">
-                                                <i class="las la-file-invoice-dollar pt-1 font-25"></i>
+                                                <i class="las la-check-circle pt-1 font-25"></i>
                                             </div>
                                         </div>
                                         <div class="col-8 pl-0">
                                             <div class="text-left">
-                                                <h6 class="mt-1 mb-0">$<span data-plugin="counterup">45,458</span></h6>
-                                                <p class="text-muted mb-1 text-truncate">Total Revenue</p>
+                                                <h6 class="mt-1 mb-0"><span data-plugin="counterup">{{ $apex_data["total_success"]["count"] }}</span></h6>
+                                                <p class="text-muted mb-1">Successful Transactions</p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="widget-rounded-circle card-box">
                                     <div class="row">
                                         <div class="col-4 pt-1">
                                             <div class="avatar-sm rounded-circle bg-danger text-center">
-                                                <i class="las la-bullseye pt-1 font-25"></i>
+                                                <i class="las la-times-circle pt-1 font-25"></i>
                                             </div>
                                         </div>
                                         <div class="col-8 pl-0">
                                             <div class="text-left">
-                                                <h6 class="mt-1 mb-0">$<span data-plugin="counterup">58,000</span></h6>
-                                                <p class="text-muted mb-1 text-truncate">Target Revenue</p>
+                                                <h6 class="mt-1 mb-0"><span data-plugin="counterup">{{ $apex_data["total_drop"]["count"] }}</span></h6>
+                                                <p class="text-muted mb-1">Dropped Transactions</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="widget-rounded-circle card-box">
+                                    <div class="row">
+                                        <div class="col-4 pt-1">
+                                            <div class="avatar-sm rounded-circle bg-secondary text-center">
+                                                <i class="las la-exclamation pt-1 font-25"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-8 pl-0">
+                                            <div class="text-left">
+                                                <h6 class="mt-1 mb-0"><span data-plugin="counterup">{{ $apex_data["total_un"]["count"] }}</span></h6>
+                                                <p class="text-muted mb-1">Unsettled Transactions</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="widget-rounded-circle card-box">
+                                    <div class="row">
+                                        <div class="col-4 pt-1">
+                                            <div class="avatar-sm rounded-circle bg-primary text-center">
+                                                <i class="las la-money-bill pt-1 font-25"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-8 pl-0">
+                                            <div class="text-left">
+                                                <h6 class="mt-1 mb-0"><span data-plugin="counterup">{{ $apex_data["total_overall"]["count"] }}</span></h6>
+                                                <p class="text-muted mb-1 text-truncate">Total Transactions</p>
                                             </div>
                                         </div>
                                     </div>
@@ -449,4 +463,140 @@
 @push("custom-scripts")
 <script src="/admin/plugins/apex/apexcharts.min.js"></script>
 <script src="/admin/assets/js/dashboard/dashboard_3.js"></script>
+<script>
+    var options = {
+        series: [{
+        name: 'Successful Transactions',
+        type: 'area',
+        
+        data: [100, 5500, 5100]
+        },{
+        name: 'Dropped Transactions',
+        type: 'line',
+        data: [5500, 6900, 4500]
+        },{
+        name: 'Unsettled Transactions',
+        type: 'line',
+        
+        data: [5000, 5000, 4000]
+        }],
+        chart: {
+        type: 'line',
+        fontFamily: 'Poppins, sans-serif',
+        height: 320,
+        dropShadow: {
+            enabled: true,
+            opacity: 0.1,
+            blur: 5,
+            left: -7,
+            top: 22
+        },
+        toolbar: {
+            show: false
+        },
+        },
+        colors: [  '#8dbf42', '#e7515a', '#5c1ac3'],
+        stroke: {
+        curve: 'smooth'
+        },
+        fill: {
+        type:'solid',
+        opacity: [0.35, 1],
+        },
+        labels: ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
+        markers: {
+        size: 0
+        },
+        xaxis: {
+        axisBorder: {
+            show: false
+        },
+        axisTicks: {
+            show: false
+        },
+        crosshairs: {
+            show: true
+        },
+        labels: {
+            offsetX: 0,
+            offsetY: 5,
+            style: {
+                fontSize: '12px',
+                fontFamily: 'Poppins, sans-serif',
+                cssClass: 'apexcharts-xaxis-title',
+            },
+        }
+        },
+        yaxis: {
+        labels: {
+            formatter: function(value, index) {
+            return value
+            },
+            offsetX: -22,
+            offsetY: 0,
+            style: {
+                fontSize: '12px',
+                fontFamily: 'Poppins, sans-serif',
+                cssClass: 'apexcharts-yaxis-title',
+            },
+        }
+        },
+        legend: {
+        position: 'top',
+        horizontalAlign: 'right',
+        offsetY: -50,
+        fontSize: '13px',
+        fontFamily: 'Poppins, sans-serif',
+        markers: {
+            width: 10,
+            height: 10,
+            strokeWidth: 0,
+            strokeColor: '#fff',
+            fillColors: undefined,
+            radius: 12,
+            onClick: undefined,
+            offsetX: 0,
+            offsetY: 0
+        },    
+        itemMargin: {
+            horizontal: 0,
+            vertical: 20
+        }
+        },
+        tooltip: {
+        theme: 'dark',
+        marker: {
+            show: true,
+        },
+        x: {
+            show: false,
+        }
+        },
+    };
+    var transaction_chart = new ApexCharts(
+        document.querySelector("#transaction_chart"),
+        options
+    );
+    transaction_chart.render();
+
+    var period = $("#period");
+
+    function monthly(){
+        period.html("Monthly");
+        // options.label =  ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    }
+
+    function quarterly(){
+        period.html("Quarterly");
+        
+        transaction_chart.destroy();
+        // options.labels = ['Q1 First Quarter', 'Q2 Second Quarter', 'Q3 Third Quarter', 'Q4 Fourth Quarter'];
+    }
+
+    function halfYearly(){
+        period.html("Half Yearly");
+        // options.label = ['First Half-Year Period', 'Second Half-Year Period'];
+    }
+
+</script>
 @endpush
