@@ -673,7 +673,7 @@ class TransactionController extends Controller
         $state = ["waiting", "serving"];
         if(in_array($transaction->state, $state)){
             if($transaction->mobile_number != null){
-                if($transaction->is_notifiable){
+                if(true){
                     if(intval($is_transfer) == 1){
                         if($transaction->state == "serving" || $this->isFirst($transaction)){
                             $data["status"] = 1;
