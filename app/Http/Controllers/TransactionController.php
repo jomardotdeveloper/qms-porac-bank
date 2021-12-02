@@ -262,7 +262,13 @@ class TransactionController extends Controller
             
             if(isset($request->all()["mobile_number"])){
                 if($created->is_notifiable){
-                    $res = $this->sendMessageInforming($created);
+                    $res = null;
+                    if($this->isFirst($created)){
+                        $res = $this->sendMessageFirst($created);
+                    }else{
+                        $res = $this->sendMessageInforming($created);
+                    }
+                    
 
                     if($res["status"] == 0){
                         Notification::create([
@@ -494,11 +500,11 @@ class TransactionController extends Controller
                 $ids = explode($separator, $delimeter);
                 foreach($ids as $id){
                     $transaction = Transaction::find(intval($id));
-                    array_push($data["data"], $transaction);
+                    array_unshift($data["data"], $transaction);
                 }
             }else{
                 $transaction = Transaction::find(intval($delimeter));
-                array_push($data["data"], $transaction);
+                array_unshift($data["data"], $transaction);
             }
         }
 
