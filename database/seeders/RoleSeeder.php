@@ -24,7 +24,7 @@ class RoleSeeder extends Seeder
             $manager->permissions()->sync([2, 4, 5, 6, 7]);
 
             $teller1 = Role::create([
-                "name" => "Teller 1",
+                "name" => "Teller",
                 "branch_id" => $id
             ]);
             $teller1->permissions()->sync([1,6]);
