@@ -360,7 +360,7 @@
     </div>
 </div>
 
-<div class="row mt-4">
+<!-- <div class="row mt-4">
     <div class="col-12">
         <div class="widget widget-chart-one">
             <div class="widget-heading">
@@ -457,7 +457,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 @endsection
 @push("custom-scripts")
@@ -465,157 +465,157 @@
 <script src="/admin/assets/js/dashboard/dashboard_3.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-    var options = {
-        series: [{
-        name: 'Successful Transactions',
-        type: 'area',
+    // var options = {
+    //     series: [{
+    //     name: 'Successful Transactions',
+    //     type: 'area',
         
-        data: [100, 5500, 5100]
-        },{
-        name: 'Dropped Transactions',
-        type: 'line',
-        data: [5500, 6900, 4500]
-        },{
-        name: 'Unsettled Transactions',
-        type: 'line',
+    //     data: [100, 5500, 5100]
+    //     },{
+    //     name: 'Dropped Transactions',
+    //     type: 'line',
+    //     data: [5500, 6900, 4500]
+    //     },{
+    //     name: 'Unsettled Transactions',
+    //     type: 'line',
         
-        data: [5000, 5000, 4000]
-        }],
-        chart: {
-        type: 'line',
-        fontFamily: 'Poppins, sans-serif',
-        height: 320,
-        dropShadow: {
-            enabled: true,
-            opacity: 0.1,
-            blur: 5,
-            left: -7,
-            top: 22
-        },
-        toolbar: {
-            show: false
-        },
-        },
-        colors: [  '#8dbf42', '#e7515a', '#5c1ac3'],
-        stroke: {
-        curve: 'smooth'
-        },
-        fill: {
-        type:'solid',
-        opacity: [0.35, 1],
-        },
-        labels: ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
-        markers: {
-        size: 0
-        },
-        xaxis: {
-        axisBorder: {
-            show: false
-        },
-        axisTicks: {
-            show: false
-        },
-        crosshairs: {
-            show: true
-        },
-        labels: {
-            offsetX: 0,
-            offsetY: 5,
-            style: {
-                fontSize: '12px',
-                fontFamily: 'Poppins, sans-serif',
-                cssClass: 'apexcharts-xaxis-title',
-            },
-        }
-        },
-        yaxis: {
-        labels: {
-            formatter: function(value, index) {
-            return value
-            },
-            offsetX: -22,
-            offsetY: 0,
-            style: {
-                fontSize: '12px',
-                fontFamily: 'Poppins, sans-serif',
-                cssClass: 'apexcharts-yaxis-title',
-            },
-        }
-        },
-        legend: {
-        position: 'top',
-        horizontalAlign: 'right',
-        offsetY: -50,
-        fontSize: '13px',
-        fontFamily: 'Poppins, sans-serif',
-        markers: {
-            width: 10,
-            height: 10,
-            strokeWidth: 0,
-            strokeColor: '#fff',
-            fillColors: undefined,
-            radius: 12,
-            onClick: undefined,
-            offsetX: 0,
-            offsetY: 0
-        },    
-        itemMargin: {
-            horizontal: 0,
-            vertical: 20
-        }
-        },
-        tooltip: {
-        theme: 'dark',
-        marker: {
-            show: true,
-        },
-        x: {
-            show: false,
-        }
-        },
-    };
-    var transaction_chart = new ApexCharts(
-        document.querySelector("#transaction_chart"),
-        options
-    );
-    transaction_chart.render();
+    //     data: [5000, 5000, 4000]
+    //     }],
+    //     chart: {
+    //     type: 'line',
+    //     fontFamily: 'Poppins, sans-serif',
+    //     height: 320,
+    //     dropShadow: {
+    //         enabled: true,
+    //         opacity: 0.1,
+    //         blur: 5,
+    //         left: -7,
+    //         top: 22
+    //     },
+    //     toolbar: {
+    //         show: false
+    //     },
+    //     },
+    //     colors: [  '#8dbf42', '#e7515a', '#5c1ac3'],
+    //     stroke: {
+    //     curve: 'smooth'
+    //     },
+    //     fill: {
+    //     type:'solid',
+    //     opacity: [0.35, 1],
+    //     },
+    //     labels: ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'],
+    //     markers: {
+    //     size: 0
+    //     },
+    //     xaxis: {
+    //     axisBorder: {
+    //         show: false
+    //     },
+    //     axisTicks: {
+    //         show: false
+    //     },
+    //     crosshairs: {
+    //         show: true
+    //     },
+    //     labels: {
+    //         offsetX: 0,
+    //         offsetY: 5,
+    //         style: {
+    //             fontSize: '12px',
+    //             fontFamily: 'Poppins, sans-serif',
+    //             cssClass: 'apexcharts-xaxis-title',
+    //         },
+    //     }
+    //     },
+    //     yaxis: {
+    //     labels: {
+    //         formatter: function(value, index) {
+    //         return value
+    //         },
+    //         offsetX: -22,
+    //         offsetY: 0,
+    //         style: {
+    //             fontSize: '12px',
+    //             fontFamily: 'Poppins, sans-serif',
+    //             cssClass: 'apexcharts-yaxis-title',
+    //         },
+    //     }
+    //     },
+    //     legend: {
+    //     position: 'top',
+    //     horizontalAlign: 'right',
+    //     offsetY: -50,
+    //     fontSize: '13px',
+    //     fontFamily: 'Poppins, sans-serif',
+    //     markers: {
+    //         width: 10,
+    //         height: 10,
+    //         strokeWidth: 0,
+    //         strokeColor: '#fff',
+    //         fillColors: undefined,
+    //         radius: 12,
+    //         onClick: undefined,
+    //         offsetX: 0,
+    //         offsetY: 0
+    //     },    
+    //     itemMargin: {
+    //         horizontal: 0,
+    //         vertical: 20
+    //     }
+    //     },
+    //     tooltip: {
+    //     theme: 'dark',
+    //     marker: {
+    //         show: true,
+    //     },
+    //     x: {
+    //         show: false,
+    //     }
+    //     },
+    // };
+    // var transaction_chart = new ApexCharts(
+    //     document.querySelector("#transaction_chart"),
+    //     options
+    // );
+    // transaction_chart.render();
 
-    var period = $("#period");
+    // var period = $("#period");
 
-    function monthly(){
-        period.html("Monthly");
+    // function monthly(){
+    //     period.html("Monthly");
         
 
 
-        // options.label =  ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-    }
+    //     // options.label =  ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    // }
 
-    function quarterly(){
-        period.html("Quarterly");
+    // function quarterly(){
+    //     period.html("Quarterly");
         
-        transaction_chart.destroy();
-        // options.labels = ['Q1 First Quarter', 'Q2 Second Quarter', 'Q3 Third Quarter', 'Q4 Fourth Quarter'];
-    }
+    //     transaction_chart.destroy();
+    //     // options.labels = ['Q1 First Quarter', 'Q2 Second Quarter', 'Q3 Third Quarter', 'Q4 Fourth Quarter'];
+    // }
 
-    function halfYearly(){
-        period.html("Half Yearly");
-        // options.label = ['First Half-Year Period', 'Second Half-Year Period'];
-    }
+    // function halfYearly(){
+    //     period.html("Half Yearly");
+    //     // options.label = ['First Half-Year Period', 'Second Half-Year Period'];
+    // }
 
-    function getMonthly(branch_id = null, window_id = null){
-        var res = (await axios.get("/api/settings/get/" + self.branch_id.toString())).data;
-        console.log(res);
+    // function getMonthly(branch_id = null, window_id = null){
+    //     var res = (await axios.get("/api/settings/get/" + self.branch_id.toString())).data;
+    //     console.log(res);
 
 
-    }
+    // }
 
-    function getQuarterly(){
+    // function getQuarterly(){
         
-    }
+    // }
 
-    function getHalf(){
+    // function getHalf(){
         
-    }
+    // }
 
 </script>
 @endpush
