@@ -56,4 +56,11 @@ Route::get("/dashboards/get_quarterly/{year}/{branch_id}/{window_id}", [Dashboar
 Route::get("/dashboards/get_half/{year}/{branch_id}/{window_id}", [DashboardController::class, "get_half"]);
 
 
+//GETTING THE MESSAGES NOTIFICATIONS
+Route::get("/transactions/get_inform/{id}", [DashboardController::class, "getInformingMessage"]);
+Route::get("/transactions/get_first/{id}", [DashboardController::class, "getMessageFirst"]);
+Route::get("/transactions/get_transfer/{id}", [DashboardController::class, "getMessageTransferFirst"]);
+Route::get("/transactions/get_transfer_first/{id}", [DashboardController::class, "getMessageTransfer"]);
+Route::get("/transactions/get_sms/{id}/{is_transfer}", [TransactionController::class, "getSms"]);
+
 

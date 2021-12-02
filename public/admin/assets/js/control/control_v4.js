@@ -21,7 +21,7 @@ const socket_messages = {
         "name" : $("#window_name").val(),
         "window_order" : $("#window_order").val()
     }
-}
+};
 
 
 
@@ -198,11 +198,13 @@ var app = new Vue({
             
         },
         notify : function(id) {
+            var self = this;
             $("#listOfCustomer").modal("hide");
             sendMessage(id, is_transfer = 0, function(status){
                 if(parseInt(status["status"]) == 0){
                     alertError(status["message"]);
                 }else{
+                    getMessage(id, is_transfer = 0);
                     createNotificationLog(id, status["log"]);
                     alertSuccess("Message sent", status["message"]);
                 }
@@ -212,7 +214,6 @@ var app = new Vue({
     created : function(){
         var self = this;
         loadData(self);
-        automatedNotification(self);
         socket.onmessage = function(e){
             var jsonObject = jQuery.parseJSON(e.data);
             jsonObject = jQuery.parseJSON(jsonObject["message"]);
@@ -251,6 +252,7 @@ async function createNotificationLog(id, message){
 
 async function sendMessageMultiple(ids){
     for(var i = 0; i < ids.length; i++){
+        getMessage(ids[i], 1);
         sendMessage(ids[i], 1, function(res){
             if(res["status"] == 1)
                 createNotificationLog(ids[i], res["log"]);
@@ -267,6 +269,7 @@ async function automatedNotification(self){
         var idx = 1;
 
         for(var i = 0; i <= self.waiting.length; i++){
+            getMessage(self.waiting[i]["id"], 0);
             sendMessage(self.waiting[i]["id"], 0, function(res){
                 if(res["status"] == 1)
                     createNotificationLog(ids[i], res["log"]);
@@ -277,6 +280,15 @@ async function automatedNotification(self){
                 break;
             }
         }
+    }
+}
+
+async function getMessage(id, is_transfer = 0){
+    var params = id.toString() + "/" + is_transfer.toString();
+    var res  = (await axios.get("/api/transactions/get_sms/" + params)).data;
+
+    if(res["status"] == 1){
+        socket.send(JSON.stringify({message : "pushNotif", log : res["log"], transaction_id : id}));
     }
 }
 
