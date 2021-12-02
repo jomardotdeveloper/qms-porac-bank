@@ -225,7 +225,7 @@ var app = new Vue({
                 loadData(self);          
             }
         
-            if(jsonObject["message"] == "newCustomer" && jsonObject["id"] == $("#window_id").val()){
+            if(jsonObject["message"] == "newCustomer" && jsonObject["window_id"] == $("#window_id").val()){
                 Snackbar.show({
                     text: 'A new customer has been entered your queue.',
                     pos: 'bottom-right'

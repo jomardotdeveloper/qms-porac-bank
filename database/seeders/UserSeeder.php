@@ -141,30 +141,30 @@ class UserSeeder extends Seeder
                 },
                 "branch_id": 4
             }, {
-                "username": "olding.brandon",
-                "password": "salicylaldehyde",
+                "username": "sairalampano",
+                "password": "123",
                 "fullname": {
-                    "first_name": "Brandon",
-                    "middle_name": "Coon",
-                    "last_name": "Olding"
+                    "first_name": "Saira",
+                    "middle_name": "",
+                    "last_name": "Lampano"
                 },
                 "branch_id": 5
             }, {
-                "username": "rosemond.david",
-                "password": "unswathe",
+                "username": "raejoshua",
+                "password": "123",
                 "fullname": {
-                    "first_name": "David",
-                    "middle_name": "Gentile",
-                    "last_name": "Rosemond"
+                    "first_name": "Rae",
+                    "middle_name": "",
+                    "last_name": "Beltran"
                 },
                 "branch_id": 5
             }, {
-                "username": "halas.jacob",
-                "password": "Native Hawaiian",
+                "username": "bouydavid",
+                "password": "123",
                 "fullname": {
-                    "first_name": "Jacob",
-                    "middle_name": "Wade",
-                    "last_name": "Halas"
+                    "first_name": "Bouy",
+                    "middle_name": "",
+                    "last_name": "David"
                 },
                 "branch_id": 5
             }, {
@@ -424,13 +424,13 @@ class UserSeeder extends Seeder
                 },
                 "branch_id": 4
             },{
-                "username": "gonzales.aaron",
-                "password": "pasko",
+                "username": "jomarramos",
+                "password": "123",
 		        "is_manager" : 1,
                 "fullname": {
-                    "first_name": "Aaron",
-                    "middle_name": "Isip",
-                    "last_name": "Gonzales"
+                    "first_name": "Jomar",
+                    "middle_name": "Franco",
+                    "last_name": "Ramos"
                 },
                 "branch_id": 5
             },{
