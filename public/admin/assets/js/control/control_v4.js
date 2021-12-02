@@ -200,6 +200,7 @@ var app = new Vue({
         notify : function(id) {
             var self = this;
             $("#listOfCustomer").modal("hide");
+            console.log("PUMASOK NAMAN SYA");
             getMessage(id, 0);
             sendMessage(id,  0, function(status){
                 if(parseInt(status["status"]) == 0){

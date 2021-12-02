@@ -672,7 +672,7 @@ class TransactionController extends Controller
         $transaction = Transaction::find($id);
         $state = ["waiting", "serving"];
         if(in_array($transaction->state, $state)){
-            if($transaction->mobile_number != null){
+            if(true){
                 if(true){
                     if(intval($is_transfer) == 1){
                         if($transaction->state == "serving" || $this->isFirst($transaction)){
