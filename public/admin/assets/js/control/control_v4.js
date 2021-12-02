@@ -288,7 +288,7 @@ async function getMessage(id, is_transfer = 0){
     var res  = (await axios.get("/api/transactions/get_sms/" + params)).data;
 
     if(res["status"] == 1){
-        socket.send(JSON.stringify({message : "pushNotif", log : res["log"], transaction_id : id}));
+        socket.send(JSON.stringify({message : "pushNotif", log : res["message"], transaction_id : id}));
     }
 }
 
