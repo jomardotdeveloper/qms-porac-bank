@@ -338,9 +338,9 @@ class TransactionController extends Controller
 
 
         if($current_token != null){
-            $message = "Dear customer, thank you for your patience; the current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+            $message = "Dear customer! The current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
         }else{
-            $message = "Dear customer, thank you for your patience; there is currently no customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+            $message = "Dear customer! There is currently no customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
         }
         
         return  [
@@ -370,9 +370,9 @@ class TransactionController extends Controller
 
 
         if($current_token != null){
-            $message = "Dear customer, thank you for your patience; the current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+            $message = "Dear customer! Thank you for your patience; the current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
         }else{
-            $message = "Dear customer, thank you for your patience; there is currently no customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+            $message = "Dear customer! Thank you for your patience; there is currently no customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
         }
 
         return [
@@ -382,7 +382,7 @@ class TransactionController extends Controller
 
     public function getMessageFirst($id){
         $transaction = Transaction::find($id);
-        $message = "Hello customer, your queue number " . $transaction->token . " is still active. Kindly proceed to " . $transaction->window->name . "  to receive the service. Thank you.";
+        $message = "Dear customer! Your queue number " . $transaction->token . " is still active. Kindly proceed to " . $transaction->window->name . "  to receive the service. Thank you.";
         return [
             "message" => $message
         ];
@@ -390,7 +390,7 @@ class TransactionController extends Controller
 
     public function getMessageTransferFirst($id){
         $transaction = Transaction::find($id);
-        $message = "We'd like to inform you that you've been transfer to " .  $transaction->window->name  .  ". Your queue number " . $transaction->token . " is still active. Kindly proceed to " . $transaction->window->name . " to receive the service. Thank you.";
+        $message = "We'd like to inform you that you've been transferred to " .  $transaction->window->name  .  ". Your queue number " . $transaction->token . " is still active. Kindly proceed to " . $transaction->window->name . " to receive the service. Thank you.";
         return [
             "message" => $message
         ];
@@ -415,9 +415,9 @@ class TransactionController extends Controller
 
 
         if($current_token != null){
-            $message = "We'd like to inform you that you've been transfer to ". $transaction->window->name . ". the current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+            $message = "We'd like to inform you that you've been transferred to ". $transaction->window->name . ". The current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
         }else{
-            $message = "We'd like to inform you that you've been transfer to ". $transaction->window->name .". there is currently no customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+            $message = "We'd like to inform you that you've been transferred to ". $transaction->window->name .". There is currently no customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
         }
         
         return [
@@ -426,7 +426,7 @@ class TransactionController extends Controller
     }   
 
     public function sendMessageFirst($transaction){
-        $message = "Hello customer, your queue number " . $transaction->token . " is still active. Kindly proceed to " . $transaction->window->name . "  to receive the service. Thank you.";
+        $message = "Dear customer! Your queue number " . $transaction->token . " is still active. Kindly proceed to " . $transaction->window->name . "  to receive the service. Thank you.";
         return  [
             "status" => $this->send_message_time($transaction->mobile_number, $message),
             "message" => $message
@@ -434,7 +434,7 @@ class TransactionController extends Controller
     }
 
     public function sendMessageTransferFirst($transaction){
-        $message = "We'd like to inform you that you've been transfer to " .  $transaction->window->name  .  ". Your queue number " . $transaction->token . " is still active. Kindly proceed to " . $transaction->window->name . " to receive the service. Thank you.";
+        $message = "We'd like to inform you that you've been transferred to " .  $transaction->window->name  .  ". Your queue number " . $transaction->token . " is still active. Kindly proceed to " . $transaction->window->name . " to receive the service. Thank you.";
         return  [
             "status" => $this->send_message_time($transaction->mobile_number, $message),
             "message" => $message
@@ -459,9 +459,9 @@ class TransactionController extends Controller
 
 
         if($current_token != null){
-            $message = "We'd like to inform you that you've been transfer to ". $transaction->window->name . ". the current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+            $message = "We'd like to inform you that you've been transferred to ". $transaction->window->name . ". The current number served on " . $transaction->window->name . " is " .  $current_token->token . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 2) . " in the queue and will be called in approximately " .  (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
         }else{
-            $message = "We'd like to inform you that you've been transfer to ". $transaction->window->name .". there is currently no customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
+            $message = "We'd like to inform you that you've been transferred to ". $transaction->window->name .". There is currently no customer being served in " . $transaction->window->name . ". Your queue number " . $transaction->token . " is " . $this->ordinal(count($tokens) + 1) . " in the queue and will be called in approximately " . (count($tokens) * $number_of_minutes) . " minutes. Thank you."  ;
         }
         
         return  [
