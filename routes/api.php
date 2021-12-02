@@ -6,6 +6,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WindowController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CutoffController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\SMSController;
 use App\Http\Controllers\NotificationController;
@@ -42,3 +43,17 @@ Route::get("/windows/available/{branch_id}/{service_id}/{is_priority}", [WindowC
 Route::get("/branches/get_branch_data/{product_key}", [BranchController::class, "get_branch_data"]);
 Route::get("/cutoffs/get_cutoff_data/{branch_id}", [CutoffController::class, "get_cutoff_data"]);
 Route::get("/account/account_exists/{account_number}/{branch_id}", [AccountController::class, "account_exists"]);
+
+//APEX CHART
+Route::get("/dashboards/get_monthly/{year}/{branch_id}/{window_id}", [DashboardController::class, "get_monthly"]);
+Route::get("/dashboards/get_quarterly/{year}/{branch_id}/{window_id}", [DashboardController::class, "get_quarterly"]);
+Route::get("/dashboards/get_half/{year}/{branch_id}/{window_id}", [DashboardController::class, "get_half"]);
+
+
+// WITHOUT BRANCH
+Route::get("/dashboards/get_monthly/{year}/{branch_id}/{window_id}", [DashboardController::class, "get_monthly"]);
+Route::get("/dashboards/get_quarterly/{year}/{branch_id}/{window_id}", [DashboardController::class, "get_quarterly"]);
+Route::get("/dashboards/get_half/{year}/{branch_id}/{window_id}", [DashboardController::class, "get_half"]);
+
+
+

@@ -463,6 +463,7 @@
 @push("custom-scripts")
 <script src="/admin/plugins/apex/apexcharts.min.js"></script>
 <script src="/admin/assets/js/dashboard/dashboard_3.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     var options = {
         series: [{
@@ -583,6 +584,9 @@
 
     function monthly(){
         period.html("Monthly");
+        
+
+
         // options.label =  ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
     }
 
@@ -596,6 +600,21 @@
     function halfYearly(){
         period.html("Half Yearly");
         // options.label = ['First Half-Year Period', 'Second Half-Year Period'];
+    }
+
+    function getMonthly(branch_id = null, window_id = null){
+        var res = (await axios.get("/api/settings/get/" + self.branch_id.toString())).data;
+        console.log(res);
+
+
+    }
+
+    function getQuarterly(){
+        
+    }
+
+    function getHalf(){
+        
     }
 
 </script>
