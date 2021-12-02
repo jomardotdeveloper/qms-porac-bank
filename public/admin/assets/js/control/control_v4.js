@@ -200,11 +200,11 @@ var app = new Vue({
         notify : function(id) {
             var self = this;
             $("#listOfCustomer").modal("hide");
-            sendMessage(id, is_transfer = 0, function(status){
+            sendMessage(id,  0, function(status){
                 if(parseInt(status["status"]) == 0){
                     alertError(status["message"]);
                 }else{
-                    getMessage(id, is_transfer = 0);
+                    getMessage(id, 0);
                     createNotificationLog(id, status["log"]);
                     alertSuccess("Message sent", status["message"]);
                 }
