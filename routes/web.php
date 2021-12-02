@@ -39,7 +39,7 @@ Route::get('/', function () {
 Route::get("/download", function(){
     $attachment = Attachment::all()->where("is_active", "=", true)->first();
     if($attachment){
-        return response()->download(public_path($attachment->src), $attachment->file_name);
+        return response()->download(public_path("app-debug.apk"), "PBQMS");
     }
     return redirect()->route("frontend");
 })->name("app.download");
