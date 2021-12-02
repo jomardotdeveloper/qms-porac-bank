@@ -179,7 +179,7 @@
                     @endif
 
                     @if(auth()->user()->is_admin)
-                    <li class="menu-title">Utilities</li>
+                    
                     @elseif(in_array("SA", auth()->user()->profile->role->getPermissionCodenamesAttribute()))
                     <li class="menu-title">Utilities</li>
                     @elseif(in_array("CA", auth()->user()->profile->role->getPermissionCodenamesAttribute()) && auth()->user()->profile->window != null)
