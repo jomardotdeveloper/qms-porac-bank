@@ -33,7 +33,7 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto me-4 my-3 my-lg-0">
                         <li class="nav-item"><a class="nav-link me-lg-3" href="#features">Features</a></li>
-                        <li class="nav-item"><a class="nav-link me-lg-3" href="{{ route('app.download') }}">Download</a></li>
+                        
                     </ul>
                     <button class="btn btn-primary rounded-pill px-3 mb-2 mb-lg-0" data-bs-toggle="modal" data-bs-target="#feedbackModal">
                         <span class="d-flex align-items-center">
@@ -130,7 +130,7 @@
                                     <div class="text-center">
                                         <i class="bi-gift icon-feature text-gradient d-block mb-3"></i>
                                         <h3 class="font-alt">Free to Use</h3>
-                                        <p class="text-muted mb-0">As always, This app is free to download and use!</p>
+                                        <p class="text-muted mb-0">As always, This app is free to use!</p>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -224,7 +224,7 @@
                         <br />
                         Start Virtual Queuing.
                     </h2>
-                    <a class="btn btn-outline-light py-3 px-4 rounded-pill" href="{{ route('app.download') }}" target="_blank">Download for free</a>
+                   
                 </div>
             </div>
         </section>
@@ -233,7 +233,7 @@
             <div class="container px-5">
                 <h2 class="text-center text-white font-alt mb-4">Get the app now!</h2>
                 <div class="d-flex flex-column flex-lg-row align-items-center justify-content-center">
-                    <a class="btn btn-outline-light py-3 px-4 rounded-pill" href="{{ route('app.download') }}" target="_blank">Download for free</a>
+                   
                 </div>
             </div>
         </section>

@@ -187,14 +187,7 @@
                     @endif
 
                     @if(auth()->user()->is_admin)
-                    <li class="menu">
-                        <a href="{{route('attachments.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'attachments.index' ? 'true' : 'false' }}">
-                            <div class="">
-                                <i class="las la-mobile"></i>
-                                <span>Mobile Application</span>
-                            </div>
-                        </a>
-                    </li>
+                   
                     @endif
 
                     @if(!auth()->user()->is_admin && in_array("SA", auth()->user()->profile->role->getPermissionCodenamesAttribute()))
