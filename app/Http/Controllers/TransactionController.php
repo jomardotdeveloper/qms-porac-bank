@@ -678,11 +678,11 @@ class TransactionController extends Controller
                         if($transaction->state == "serving" || $this->isFirst($transaction)){
                             $data["status"] = 1;
                             $data["message"] = "Successfuly notified " . $transaction->token;
-                            $data["log"] = $this->getMessageTransfer($id);
+                            $data["log"] = $this->getMessageTransfer($id)["message"];
                         }else{
                             $data["status"] = 1;
                             $data["message"] = "Successfuly notified " . $transaction->token;
-                            $data["log"] = $this->getMessageTransfer($id);
+                            $data["log"] = $this->getMessageTransfer($id)["message"];
                         }
                         
             
@@ -690,11 +690,11 @@ class TransactionController extends Controller
                         if($transaction->state == "serving" || $this->isFirst($transaction)){
                             $data["status"] = 1;
                             $data["message"] = "Successfuly notified " . $transaction->token;
-                            $data["log"] = $this->getMessageFirst($id);
+                            $data["log"] = $this->getMessageFirst($id)["message"];
                         }else{
                             $data["status"] = 1;
                             $data["message"] = "Successfuly notified " . $transaction->token;
-                            $data["log"] = $this->getInformingMessage($id);
+                            $data["log"] = $this->getInformingMessage($id)["message"];
                         }
                         
                     }
