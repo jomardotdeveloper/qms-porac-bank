@@ -51,6 +51,14 @@ class Transaction extends Model
         return $this->belongsTo(Service::class, "service_id");
     }
 
+    public function bill(){
+        return $this->belongsTo(Bill::class, "bill_id");
+    }
+
+    public function loan(){
+        return $this->belongsTo(Loan::class, "loan_id");
+    }
+
     public function getDateAttribute()
     {
         return $this->created_at->format('d.m.Y');

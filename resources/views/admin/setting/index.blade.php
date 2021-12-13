@@ -55,17 +55,15 @@
                                             <div class="row">
                                                 <div class="col-sm-6">
                                                     <div class="form-group">
-                                                        <label for="sms_interval">Notification Interval</label>
-                                                        <input type="number" class="form-control mb-4" placeholder="Notification Interval" name="sms_interval" value="{{ $branch->setting->sms_interval }}" />
+                                                        <label for="starting_point">SMS Starting Point</label>
+                                                        <input type="number" class="form-control mb-4" placeholder="Starting Point" name="starting_point" value="{{ $branch->setting->starting_point }}" />
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <div class="form-group mt-3">
-                                                        <div class="custom-control custom-switch">
-                                                            <input type="checkbox" class="custom-control-input" id="is_automatic_sms" name="is_automatic_sms" {{ $branch->setting->is_automatic_sms  ? 'checked' : '' }}/>
-                                                            <label class="custom-control-label" for="is_automatic_sms">Enable automatic sms notification</label>
-                                                        </div>
-                                                    </div>  
+                                                    <div class="form-group">
+                                                        <label for="ending_point">SMS Ending Point</label>
+                                                        <input type="number" class="form-control mb-4" placeholder="Ending Point" name="ending_point" value="{{ $branch->setting->ending_point }}" />
+                                                    </div>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <input type="submit" value="Save Changes" class="btn btn-primary"/>
@@ -158,18 +156,6 @@
                                                                         {{ $profile->full_name }}
                                                                     </option>
                                                                 @endif 
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="priority_window">Priority Window</label>
-                                                        <select class="form-control" name="priority_window">
-                                                            @foreach($branch->windows as $window)
-                                                            <option value="{{ $window->id }}" {{ $window->is_priority ? 'selected' : '' }}>
-                                                                {{ $window->name }}
-                                                            </option>
                                                             @endforeach
                                                         </select>
                                                     </div>

@@ -11,6 +11,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\SMSController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ServerController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,6 +29,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::resource("transactions", TransactionController::class);
 Route::post("notifications/store", [NotificationController::class, "store"]);   
+Route::get("/server/all", [ServerController::class, "all"]);
+Route::get("/server/get_branch_id", [ServerController::class, "getBranchID"]);
 Route::get("/sms/send_message/{to}/{message}", [SMSController::class, "message"]);
 Route::post("/transactions/make", [TransactionController::class, "make"]);
 Route::post("/transactions/update_state", [TransactionController::class, "update_state"]);
@@ -40,6 +43,7 @@ Route::get("/transactions/get/{branch_id}/{window_id}", [TransactionController::
 Route::get("/transactions/get_live/{branch_id}", [TransactionController::class, "get_active_current"]);
 Route::get("/settings/get/{branch_id}", [SettingController::class, "get_setting"]);
 Route::get("/windows/available/{branch_id}/{service_id}/{is_priority}", [WindowController::class, "get_available_window"]);
+Route::get("/windows/update_tour/{window_id}", [WindowController::class, "updateIsTour"]);
 Route::get("/branches/get_branch_data/{product_key}", [BranchController::class, "get_branch_data"]);
 Route::get("/cutoffs/get_cutoff_data/{branch_id}", [CutoffController::class, "get_cutoff_data"]);
 Route::get("/account/account_exists/{account_number}/{branch_id}", [AccountController::class, "account_exists"]);
@@ -62,5 +66,18 @@ Route::get("/transactions/get_first/{id}", [DashboardController::class, "getMess
 Route::get("/transactions/get_transfer/{id}", [DashboardController::class, "getMessageTransferFirst"]);
 Route::get("/transactions/get_transfer_first/{id}", [DashboardController::class, "getMessageTransfer"]);
 Route::get("/transactions/get_sms/{id}/{is_transfer}", [TransactionController::class, "getSms"]);
+
+
+// FOR TESTING PURPOSES
+Route::get("/transactions/test/{branch_id}", [TransactionController::class, "isCutoff"]);
+
+
+
+// CONTROLS
+Route::get("/transactions/start_queue/{branch_id}/{window_id}", [TransactionController::class, "startQueue"]);
+Route::get("/transactions/stop_queue/{window_id}", [TransactionController::class, "stopQueue"]);
+Route::get("/transactions/next_queue/{window_id}/{time}", [TransactionController::class, "nextQueue"]);
+Route::get("/transactions/drop_queue/{window_id}", [TransactionController::class, "dropQueue"]);
+
 
 

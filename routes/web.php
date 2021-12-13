@@ -17,9 +17,11 @@ use App\Http\Controllers\CutoffController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WindowController;
 use App\Http\Controllers\MyProfileController;
+use App\Http\Controllers\ServerController;
 use App\Http\Controllers\FeedbackController;
 use App\Models\Attachment;
 use App\Models\Feedback;
+use App\Models\Log;
 use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
@@ -58,7 +60,9 @@ Route::post("/logout", function (Request $request) {
 
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-
+    $log = Log::find(1);
+    $log->branch_id = null;
+    $log->save();
     return redirect()->route("login.index");
 })->name("logout");
 
@@ -70,6 +74,7 @@ Route::prefix("/backend")->middleware(["auth"])->group(function(){
     Route::resource("accounts", AccountController::class)->middleware("checkaccount"); 
     Route::resource("settings", SettingController::class)->middleware("checksetting");  
     Route::resource("cutoffs", CutoffController::class);
+    Route::resource("servers", ServerController::class);
     Route::resource("windows", WindowController::class);
     Route::resource("feedbacks", FeedbackController::class)->middleware("checkfeedback");
     Route::resource("my_profile", MyProfileController::class);

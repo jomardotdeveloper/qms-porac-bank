@@ -78,7 +78,6 @@ class WindowController extends Controller
         $window_1 = $request->get("window_1");
         $window_2 = $request->get("window_2");
         $window_3 = $request->get("window_3");
-        $window_priority = $request->get("priority_window");
         
         if (($window_1 == $window_2) || ($window_2 == $window_3) || ($window_3 == $window_1)) {
             return back()->withErrors([
@@ -96,20 +95,6 @@ class WindowController extends Controller
             $id_3 = Window::find($window_ids[2]);
             $id_3->profile_id = $window_3;
             $id_3->save();
-
-            $current_active = Window::all()->where("branch_id", "=", 1)->where("id", "!=", $window_priority)->where("is_priority", "=", true)->first();
-            if($current_active){
-                $current_active->is_priority = false;
-                $current_active->save();
-                $prio = Window::find($window_priority);
-                $prio->is_priority = true;
-                $prio->save();
-            }else{
-                $prio = Window::find($window_priority);
-                $prio->is_priority = true;
-                $prio->save();
-            }
-            
 
             return back()->withErrors([
                 "success-window" => "Your changes were successfully applied"
@@ -329,5 +314,11 @@ class WindowController extends Controller
     public function get_number_active_transactions($window_id){
         $transactions = Transaction::all()->where("window_id", "=", $window_id)->whereIn("state", ["waiting", "serving"])->all();
         return count($transactions);
+    }
+
+    public function updateIsTour($window_id){
+        $profile = Window::find($window_id)->profile;
+        $profile->is_done_tour = true;
+        $profile->save();
     }
 }

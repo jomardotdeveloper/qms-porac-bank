@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSettings extends Migration
+class CreateLogs extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateSettings extends Migration
      */
     public function up()
     {
-        Schema::create('settings', function (Blueprint $table) {
+        Schema::create('logs', function (Blueprint $table) {
             $table->id();
-            $table->integer("starting_point")->default(1);
-            $table->integer("ending_point")->default(5);
-            $table->foreignId("branch_id")->nullable()->constrained("branches")->onDelete("cascade");
+            $table->string("branch_id")->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CreateSettings extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('settings');
+        Schema::dropIfExists('logs');
     }
 }

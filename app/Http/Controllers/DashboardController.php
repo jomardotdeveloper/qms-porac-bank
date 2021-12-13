@@ -14,7 +14,7 @@ use GuzzleHttp\Client;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-
+use DateTime;
 class DashboardController extends Controller
 {
     /**
@@ -24,6 +24,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        // dd();
         $user = auth()->user();
         $data = ["quotes" => Inspiring::quote()];
         

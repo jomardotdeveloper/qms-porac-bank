@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Setting extends Model
+class Loan extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        "starting_point",
-        "ending_point"
+        "name"
     ];
 
-    public function branch() {
-        return $this->belongsTo(Branch::class);
+    public function transactions() {
+        return $this->hasMany(Transaction::class, "loan_id");
     }
+
 }

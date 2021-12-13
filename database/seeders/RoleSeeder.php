@@ -21,13 +21,25 @@ class RoleSeeder extends Seeder
                 "name" => "Manager",
                 "branch_id" => $id
             ]);
-            $manager->permissions()->sync([2, 4, 5, 6, 7]);
+            $manager->permissions()->sync([6, 2, 9]);
 
-            $teller1 = Role::create([
+            $teller = Role::create([
                 "name" => "Teller",
                 "branch_id" => $id
             ]);
-            $teller1->permissions()->sync([1,6]);
+            $teller->permissions()->sync([1,6]);
+
+            $server = Role::create([
+                "name" => "Server",
+                "branch_id" => $id
+            ]);
+            $server->permissions()->sync([8]);
+
+            $server = Role::create([
+                "name" => "IT",
+                "branch_id" => $id
+            ]);
+            $server->permissions()->sync([4, 6, 7]);
         }
 
         

@@ -22,6 +22,7 @@ class CreateProfiles extends Migration
             $table->string("middle_name")->nullable();
             $table->string("last_name");
             $table->string("photo")->nullable();
+            $table->boolean("is_done_tour")->default(false);
             $table->timestamps();
         });
     }

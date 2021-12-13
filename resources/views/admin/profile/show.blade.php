@@ -30,7 +30,11 @@
                             <div class="widget-content widget-content-area">
                                 <div class="row mb-3">
                                     <div class="col">
+                                        @if($profile->photo)
                                         <img class="rounded-circle" style="height:7rem;width:7rem;" src="{{$profile->photo}}" alt="">
+                                        @else
+                                        <img class="rounded-circle" style="height:7rem;width:7rem;" src="/admin/assets/img/default.png" alt="">
+                                        @endif
                                     </div>
                                 </div>
                                 <div class="row">

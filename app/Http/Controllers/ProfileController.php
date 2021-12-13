@@ -194,4 +194,6 @@ class ProfileController extends Controller
 
         return redirect()->route("profiles.index", ["profiles" => Profile::all()]);
     }
+
+    
 }

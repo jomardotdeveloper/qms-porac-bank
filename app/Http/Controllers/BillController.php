@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use App\Models\User;
-use App\Models\Log;
-class LoginController extends Controller
+
+class BillController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +13,7 @@ class LoginController extends Controller
      */
     public function index()
     {
-        return view("admin.login.index");
+        //
     }
 
     /**
@@ -37,34 +34,7 @@ class LoginController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            "username" => "required",
-            "password" => "required"
-        ]);
-
-        $credentials = [
-            "username" => $validated["username"],
-            "password" => $validated["password"]
-        ];
-        if (Auth::attempt($credentials, true)) {
-            $request->session()->regenerate();
-            
-            $user = Auth::user();
-            
-
-            if(!$user->is_admin){
-                $log = Log::find(1);
-                $log->branch_id = $user->profile->branch->id;
-                $log->save();
-            }
-            
-
-            return redirect()->intended("/backend/dashboards");
-        }
-        
-        return back()->withErrors([
-            "login-error" => "The provided credentials do not match our records."
-        ]);
+        //
     }
 
     /**

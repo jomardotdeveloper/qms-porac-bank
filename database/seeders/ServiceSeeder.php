@@ -16,11 +16,9 @@ class ServiceSeeder extends Seeder
     {
         $service1 = Service::create(["name" => "Cash Deposit", "code_name" => "CD"]);
         $service2 = Service::create(["name" => "Cash Withdrawal", "code_name" => "CW"]);
-        $service3 = Service::create(["name" => "Checkout", "code_name" => "CO"]);
-        $service4 = Service::create(["name" => "Cash Encashment", "code_name" => "CE"]);
-        $service5 = Service::create(["name" => "Bills Payment", "code_name" => "BP"]);
-        $service6 = Service::create(["name" => "Loan Transaction / Application / Inquiry", "code_name" => "LT"]);
-        $service7 = Service::create(["name" => "Time Deposit Transaction", "code_name" => "TD"]);
-        
+        $service3 = Service::create(["name" => "Cash Encashment", "code_name" => "CE"]);
+        $service4 = Service::create(["name" => "Bills Payment", "code_name" => "BP"]);
+        $service5 = Service::create(["name" => "Loan Transaction / Application / Inquiry", "code_name" => "LT"]);
+        $service6 = Service::create(["name" => "New Account", "code_name" => "NA"]);
     }
 }

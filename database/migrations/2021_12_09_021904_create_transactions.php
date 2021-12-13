@@ -26,6 +26,11 @@ class CreateTransactions extends Migration
             $table->string("amount")->nullable();
             $table->string("mobile_number")->nullable();
             $table->integer("is_notifiable")->default(false);
+            $table->boolean("is_mobile")->default(false);
+            $table->boolean("is_sync")->default(false);
+            $table->string("servedtime")->nullable();
+            $table->foreignId("bill_id")->nullable()->constrained("bills")->onDelete("set null");
+            $table->foreignId("loan_id")->nullable()->constrained("loans")->onDelete("set null");
 	        $table->foreignId("window_id")->nullable()->constrained("windows")->onDelete("set null");
             $table->foreignId("service_id")->nullable()->constrained("services")->onDelete("set null");
             $table->foreignId("branch_id")->nullable()->constrained("branches")->onDelete("cascade");

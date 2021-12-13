@@ -74,17 +74,7 @@ class SettingController extends Controller
     public function update(Request $request, Setting $setting)
     {
         $val = $request->all();
-
-        if(isset($val["is_automatic_sms"]))
-            $val["is_automatic_sms"] = 1;
-        else
-            $val["is_automatic_sms"] = 0;
-
-        if(isset($val["is_qrcode_automatic"]))
-            $val["is_qrcode_automatic"] = 1;
-        else
-            $val["is_qrcode_automatic"] = 0;
-
+        
         $setting->fill($val);
         $setting->save();
 

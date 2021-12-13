@@ -1,10 +1,13 @@
-var socket  = new WebSocket('ws://74.63.204.84:8090');
+var socket  = new WebSocket('ws://127.0.0.1:8090');
+var cacheTime = 0;
+// 74.63.204.84
 const states = {
     SERVING : "serving",
     WAITING : "waiting",
     DROP : "drop",
     OUT : "out"
 };
+
 const socket_messages = {
     nextCustomer : {
         "message" : "nextCustomer",
@@ -22,7 +25,6 @@ const socket_messages = {
         "window_order" : $("#window_order").val()
     }
 };
-
 
 
 var app = new Vue({
@@ -49,12 +51,25 @@ var app = new Vue({
             if(self.waiting.length < 1){
                 alertError("Queue is empty!");
             }else{
-                updateState(self.waiting[0]["id"], states.SERVING, function(){
-                    loadData(self);
-                });
-                
-                alertSuccess("Queue Start", "Ongoing Queue");
-                socket.send(JSON.stringify(socket_messages.nextCustomer));
+                // updateState(self.waiting[0]["id"], states.SERVING, function(){
+                //     loadData(self);
+                // });
+
+                if(self.is_ongoing){
+                    alertRevert(function(){
+                        stopQueue(self);
+                        stopTimer();
+                        socket.send(JSON.stringify(socket_messages.nextCustomer));
+                    });
+                }else{
+                    startQueue(self, function(){
+                        loadData(self);
+                    });
+
+                    startTimer();
+                    alertSuccess("Queue Start", "Ongoing Queue");
+                    socket.send(JSON.stringify(socket_messages.nextCustomer));
+                }
             }
         },
         nextq : function (){
@@ -66,9 +81,10 @@ var app = new Vue({
                 alertError("No customer is being served. Please click the start button to start the queue.");
             }else{
                 alertLoader();
+                stopTimer();
                 if(self.waiting.length > 0){
-                    updateState(self.next["id"], states.SERVING, function(){
-                        updateState(self.current["id"], states.OUT, function(){
+                    nextQueue(self, function(){
+                        startQueue(self, function(){
                             loadData(self, function(){
                                 swal.close();
                                 if(self.current != null){
@@ -76,13 +92,14 @@ var app = new Vue({
                                 }else{
                                     alertSuccess("Good job!", "Success");
                                 }
-                                automatedNotification(self);
+                                startTimer();
+                                // automatedNotification(self);
                                 socket.send(JSON.stringify(socket_messages.nextCustomer));
                             });
                         });
                     });
                 }else{
-                    updateState(self.current["id"], states.OUT, function(){
+                    nextQueue(self, function(){
                         loadData(self, function(){
                             swal.close();
                             if(self.current != null){
@@ -90,7 +107,7 @@ var app = new Vue({
                             }else{
                                 alertSuccess("Good job!", "Success");
                             }
-                            automatedNotification(self);
+                            // automatedNotification(self);
                             socket.send(JSON.stringify(socket_messages.nextCustomer));
                         });
                     });
@@ -111,8 +128,8 @@ var app = new Vue({
                 alertRevert(function(){
                     alertLoader();
                     if(self.waiting.length > 0){
-                        updateState(self.next["id"], states.SERVING, function(){
-                            updateState(self.current["id"], states.DROP, function(){
+                        dropQueue(self, function(){
+                            startQueue(self, function(){
                                 loadData(self, function(){
                                     swal.close();
                                     if(self.current != null){
@@ -120,13 +137,13 @@ var app = new Vue({
                                     }else{
                                         alertSuccess("Good job!", "Success");
                                     }
-                                    automatedNotification(self);
+                                    // automatedNotification(self);
                                     socket.send(JSON.stringify(socket_messages.nextCustomer));
                                 });
                             });
                         });
                     }else{
-                        updateState(self.current["id"], states.DROP, function(){
+                        dropQueue(self, function(){
                             loadData(self, function(){
                                 swal.close();
                                 if(self.current != null){
@@ -134,7 +151,7 @@ var app = new Vue({
                                 }else{
                                     alertSuccess("Good job!", "Success");
                                 }
-                                automatedNotification(self);
+                                // automatedNotification(self);
                                 socket.send(JSON.stringify(socket_messages.nextCustomer));
                             });
                         });
@@ -143,7 +160,6 @@ var app = new Vue({
                 });
                 
             }
-
         },
         switchq : function(){
             var self = this;
@@ -210,11 +226,19 @@ var app = new Vue({
                     alertSuccess("Message sent", status["message"]);
                 }
             });
+        },
+        sample : function(){
+            console.log("JOMAR");
         }
     },
     created : function(){
         var self = this;
-        loadData(self);
+        loadData(self, function(){
+            if(self.is_ongoing){
+                startTimer();
+            }
+        });
+
         socket.onmessage = function(e){
             var jsonObject = jQuery.parseJSON(e.data);
             jsonObject = jQuery.parseJSON(jsonObject["message"]);
@@ -226,8 +250,8 @@ var app = new Vue({
                 });
                 loadData(self);          
             }
-        
-            if(jsonObject["message"] == "newCustomer" && jsonObject["window_id"] == $("#window_id").val()){
+            
+            if(jsonObject["message"] == "newCustomer" && jsonObject["branch_id"] == $("#branch_id").val()){
                 Snackbar.show({
                     text: 'A new customer has been entered your queue.',
                     pos: 'bottom-right'
@@ -235,13 +259,59 @@ var app = new Vue({
                 loadData(self);
             }
             
+
+            if(jsonObject["message"] == "nextCustomer" && jsonObject["branch_id"] == self.branch_id){
+                loadData(self);
+            }
         }
+
+        
+
     }
 });
 
 
 
 // DATABASE
+async function startQueue(self, callbackmethod = false){
+    var params = self.branch_id + "/" + self.window_id;
+    var res  = (await axios.get("/api/transactions/start_queue/" + params)).data;
+
+    
+
+    if(callbackmethod != false){
+        callbackmethod();
+    }
+}
+
+async function stopQueue(self){
+    var params =  self.window_id;
+    var res  = (await axios.get("/api/transactions/stop_queue/" + params)).data;
+    console.log(res);
+    loadData(self);
+}
+
+
+async function nextQueue(self, callbackmethod = false){
+    var params =  self.window_id + "/" + cacheTime.toString();
+    var res  = (await axios.get("/api/transactions/next_queue/" + params)).data;
+    
+    if(callbackmethod != false){
+        callbackmethod();
+    }
+}
+
+
+async function dropQueue(self, callbackmethod = false){
+    var params =  self.window_id;
+    var res  = (await axios.get("/api/transactions/drop_queue/" + params)).data;
+    
+    if(callbackmethod != false){
+        callbackmethod();
+    }
+}
+
+
 async function createNotificationLog(id, message){
     vals = {
       id : id,
@@ -305,6 +375,7 @@ async function sendMessage(id, is_transfer = 0, callbackmethod=false){
 
 async function loadData(self,  callbackmethod = false){
     var res = (await axios.get("/api/transactions/get/" + self.branch_id + "/" + self.window_id)).data;
+    console.log(res);
     self.transactions = res;
     self.waiting = [];
     self.serving = null;
@@ -312,6 +383,8 @@ async function loadData(self,  callbackmethod = false){
     self.total_success = 0;
     self.total_drop = 0;
     self.switch_options = [];
+    
+    var waitingCache = [];
 
     for(var i = 0; i < res.length; i++){
         if(res[i].state == "waiting"){
@@ -330,11 +403,37 @@ async function loadData(self,  callbackmethod = false){
         }
     }
 
+
+    for(var i =0; i < self.waiting.length; i++){
+        if(self.waiting[i].account != null){
+            if(self.waiting[i].account.customer_type == "priority"){
+                waitingCache.push(self.waiting[i]);
+            }
+        }
+    }
+
+    for(var i =0; i < self.waiting.length; i++){
+        if(self.waiting[i].account != null){
+            if(self.waiting[i].account.customer_type == "regular"){
+                waitingCache.push(self.waiting[i]);
+            }
+        }else{
+            waitingCache.push(self.waiting[i]);
+        }
+    }
+
+    self.waiting = waitingCache;
+    self.transactions = [];
+    
     if(self.serving != null){
         self.current = self.serving;
+        self.transactions.push(self.serving);
     }else{
         self.current = null;
     }
+
+    
+    
 
     if(self.doneOrDrop.length >= 1){
         self.prev = self.doneOrDrop[self.doneOrDrop.length - 1];
@@ -353,6 +452,9 @@ async function loadData(self,  callbackmethod = false){
     }else{
         self.is_ongoing = false;
     }
+    
+    self.transactions =  self.transactions.concat(self.waiting, self.doneOrDrop);
+   
 
     if(callbackmethod != false){
         callbackmethod();
@@ -435,3 +537,116 @@ async function alertLoader(){
 
 
 
+// TIMER
+
+var time = 0;
+var invrl = null;
+
+function startTimer(){
+    invrl = setInterval(function(){
+        time++;
+        console.log(time);
+    }, 1000);
+}
+
+function stopTimer(){
+    cacheTime = time;
+    time = 0;
+    clearInterval(invrl);
+}
+
+//hotkeys
+$(document).keydown(function (event) {
+    if (event.altKey && event.keyCode == 49) {
+       app.nextq();
+    }
+
+    if (event.altKey && event.keyCode == 50) {
+        app.dropq();
+     }
+
+    if (event.altKey && event.keyCode == 51) {
+        app.ringq();
+    }
+
+    if (event.altKey && event.keyCode == 52) {
+        tourstart();
+    }
+
+    if (event.altKey && event.keyCode == 53) {
+        $("#listOfCustomer").modal("show");
+    }
+
+    if(event.keyCode == 32){
+        if($("#listOfCustomer").data('bs.modal')?._isShown){
+            $("#listOfCustomer").modal("hide");
+        }
+    }
+
+    if (event.altKey && event.keyCode == 54) {
+        app.startq();
+    }
+});
+
+
+var tour = {
+id: "app",
+steps: [
+    {
+    title: "Start Control",
+    content: "This is the control to start the Queue. Hotkey is alt + 6. ",
+    target: document.getElementById("startQueue"),
+    placement: "left"
+    },
+    {
+    title: "List Control",
+    content: "To see all the customer in your queue click the list or use the hotkey alt + 5. ",
+    target: document.getElementById("lst"),
+    placement: "left"
+    },
+    {
+    title: "Help Control",
+    content: "If you are still not familiar with the hotkeys you can click help button or use the hotkey alt + 4.",
+    target: document.getElementById("help"),
+    placement: "left"
+    },
+    {
+    title: "Ring Control",
+    content: "If customer still not in your service area, you can click the link to trigger the voice of the digital signage tv. Hotkey is alt + 3.",
+    target: document.getElementById("ring"),
+    placement: "left"
+    },
+    {
+    title: "Drop Control",
+    content: "If customer did not appear in the service area for a while, you can drop the customer. Hotkey is alt + 2.",
+    target: document.getElementById("dropCustomer"),
+    placement: "left"
+    },
+    {
+    title: "Next Control",
+    content: "For a successful transaction and to serve the next customer, you can click the next button or use the hotkey alt + 1.",
+    target: document.getElementById("nextCustomer"),
+    placement: "top"
+    }
+],
+onEnd : function(){
+    if($("#is_done_tour").val().toString() == "0"){
+        updateTour();
+        
+    }
+}
+};
+
+
+async function updateTour(){
+    var params =  $("#window_id").val();
+    var res  = (await axios.get("/api/windows/update_tour/" + params)).data;
+}
+
+function tourstart(){
+    hopscotch.startTour(tour);
+}
+
+if($("#is_done_tour").val().toString() == "0"){
+    tourstart();    
+}

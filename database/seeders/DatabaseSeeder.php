@@ -19,7 +19,10 @@ class DatabaseSeeder extends Seeder
             BranchSeeder::class,
             RoleSeeder::class,
             UserSeeder::class,
-            AccountSeeder::class
+            AccountSeeder::class,
+            LoanSeeder::class,
+            BillSeeder::class,
+            LogSeeder::class
         ]);
         // \App\Models\User::factory(10)->create();
     }

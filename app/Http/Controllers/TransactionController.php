@@ -7,6 +7,7 @@ use App\Models\Transaction;
 use App\Models\Branch;
 use App\Models\Account;
 use App\Models\Service;
+use App\Models\Cutoff;
 use App\Models\Window;
 use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
@@ -216,7 +217,7 @@ class TransactionController extends Controller
                 "service" => $service->name,
                 "count" => count($transactions_in_service)
             ]);
-        }
+        } 
 
         $pdf_obj = App::make('dompdf.wrapper');
         $pdf = $pdf_obj->loadView('admin.reports.transaction',[
@@ -226,68 +227,146 @@ class TransactionController extends Controller
         ]);
         return $pdf->download(Branch::find($request->get("branch_id"))->name . '.pdf');;
     }
+    // date('Y-m-d H:i:s', strtotime("+1 days"))
+
+    public function isCutoff($branch_id){
+        $cutoff = Cutoff::where("branch_id", "=", $branch_id)->first();
+        $is_cutoff = false;
+        $now = intval(date("w"));
+
+        if($now == 1){
+            return $this->isCutoffByDay($cutoff->m);
+        }else if ($now == 2){
+            return $this->isCutoffByDay($cutoff->t);
+        }else if ($now == 3){
+            return $this->isCutoffByDay($cutoff->w);
+        }else if ($now == 4){
+            return $this->isCutoffByDay($cutoff->th);
+        }else if ($now == 5){
+            return $this->isCutoffByDay($cutoff->f);
+        }else if ($now == 6){
+            return $this->isCutoffByDay($cutoff->s);
+        }else if ($now == 0){
+            return $this->isCutoffByDay($cutoff->sd);
+        }
+
+
+        return $is_cutoff;
+    }
+
+    public function isCutoffByDay($value){
+        $now = new DateTime('NOW');
+        $form = $now->format("h:i");
+        $splitted_now = explode( ":", $form);
+        $splitted_val = null;
+
+        if($value == null){
+            return false;
+        }else{
+            $splitted_val = explode(":", $value);
+
+            if(intval($splitted_now[0]) > intval($splitted_val[0])){
+                return true;
+            }else if(intval($splitted_now[0]) == intval($splitted_val[0])){
+                if (intval($splitted_now[1]) >= intval($splitted_val[1]))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+
+    }
+
+    public function getDay(){
+
+    }
+
+    public function makeAdvance(Request $request){
+        
+    }
 
     public function make(Request $request){
-        $transactions_for_the_day = $this->get_prev_token($request->get("branch_id"));
-        
+        if($this->isCutoff($request->get("branch_id"))){
+            $transactions_for_the_day = $this->get_prev_token_advance($request->get("branch_id"));
+        }else{
+            $transactions_for_the_day = $this->get_prev_token($request->get("branch_id"));
+        }
+
         if(count($transactions_for_the_day) < 1){
+                
             $created =  Transaction::create([
-                "token" => $this->token_formatter(1, $this->get_customer_type($request->get("account_number"))  == "priority"),
-                "account_id" => $this->get_account_id($request->get("account_number")),
+                "token" => isset($request->all()["account_number"]) ? $this->token_formatter(1, $this->get_customer_type($request->get("account_number"))  == "priority") : $this->token_formatter(1, false),
+                "account_id" => isset($request->all()["account_number"]) ? $this->get_account_id($request->get("account_number")) : null,
                 "amount" => isset($request->all()["amount"]) ? $request->get("amount") : null,
                 "mobile_number" => isset($request->all()["mobile_number"]) ? $request->get("mobile_number") : null,
                 "is_notifiable" =>  isset($request->all()["is_notifiable"]) ? $request->all()["is_notifiable"] : 0,
-                "window_id" => $request->get("window_id"),
+                "window_id" => null,
                 "service_id" => $request->get("service_id"),
                 "branch_id" => $request->get("branch_id"),
-                "profile_id" => $request->get("profile_id")
+                "profile_id" => null,
+                "is_mobile" => isset($request->all()["is_mobile"]) ? true : false,
+                "bill_id" =>  isset($request->all()["bill_id"]) ? $request->get("bill_id") : null,
+                "loan_id" => isset($request->all()["loan_id"]) ? $request->get("loan_id") : null
             ]);
+
+            if($this->isCutoff($request->get("branch_id"))){
+                $created->in = date('Y-m-d H:i:s', strtotime("+1 days"));
+                $created->save();
+            }
 
             return Transaction::find($created->id);
         }else{
             $last_token = $transactions_for_the_day[count($transactions_for_the_day) - 1];
-            $token_format = $this->token_formatter($last_token->order + 1, $this->get_customer_type($request->get("account_number")) == "priority" );
-            
+            $token_format = isset($request->all()["account_number"]) ? $this->token_formatter($last_token->order + 1, $this->get_customer_type($request->get("account_number"))  == "priority") : $this->token_formatter($last_token->order + 1, false);
             
             $created = Transaction::create([
                 "token" =>$token_format,
                 "order" => $last_token->order + 1,
-                "account_id" => $this->get_account_id($request->get("account_number")),
+                "account_id" => isset($request->all()["account_number"]) ? $this->get_account_id($request->get("account_number")) : null,
                 "amount" => isset($request->all()["amount"]) ? $request->get("amount") : null,
                 "mobile_number" => isset($request->all()["mobile_number"]) ? $request->get("mobile_number") : null,
                 "is_notifiable" => isset($request->all()["is_notifiable"]) ? $request->all()["is_notifiable"] : 0,
-                "window_id" => $request->get("window_id"),
+                "window_id" => null,
                 "service_id" => $request->get("service_id"),
                 "branch_id" => $request->get("branch_id"),
-                "profile_id" => $request->get("profile_id")
+                "profile_id" => null,
+                "is_mobile" => isset($request->all()["is_mobile"]) ? true : false,
+                "bill_id" =>  isset($request->all()["bill_id"]) ? $request->get("bill_id") : null,
+                "loan_id" => isset($request->all()["loan_id"]) ? $request->get("loan_id") : null
             ]);
             
-            if(isset($request->all()["mobile_number"])){
-                if($created->is_notifiable){
-                    $res = null;
-                    if($this->isFirst($created)){
-                        $res = $this->sendMessageFirst($created);
-                    }else{
-                        $res = $this->sendMessageInforming($created);
-                    }
+            if($this->isCutoff($request->get("branch_id"))){
+                $created->in = date('Y-m-d H:i:s', strtotime("+1 days"));
+                $created->save();
+            }
+            
+            // if(isset($request->all()["mobile_number"])){
+            //     if($created->is_notifiable){
+            //         $res = null;
+            //         if($this->isFirst($created)){
+            //             $res = $this->sendMessageFirst($created);
+            //         }else{
+            //             $res = $this->sendMessageInforming($created);
+            //         }
                     
 
-                    if($res["status"] == 0){
-                        Notification::create([
-                            "account_id" => $created->account->id,
-                            "message" => $res["message"],
-                            "transaction_id" => $created->id,
-                            "branch_id" => $created->branch->id
-                        ]);
-                    }
-                }
-            }
+            //         if($res["status"] == 0){
+            //             Notification::create([
+            //                 "account_id" => $created->account->id,
+            //                 "message" => $res["message"],
+            //                 "transaction_id" => $created->id,
+            //                 "branch_id" => $created->branch->id
+            //             ]);
+            //         }
+            //     }
+            // }
 
             return Transaction::find($created->id);
             
         }
-
-
+        
     }
 
     public function get_account_id($account_number){
@@ -308,14 +387,45 @@ class TransactionController extends Controller
         }
     }
 
+    public function get_prev_token_advance($branch_id){
+        $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = date_add(curdate(),interval 1 day) AND branch_id = ?", [$branch_id])->get()->all();
+        return $transactions;
+    }
+
     public function get_prev_token($branch_id){
         $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ?", [$branch_id])->get()->all();
         return $transactions;
     }
 
     public function get_transactions_now($branch_id, $window_id){
-        $transactions = Transaction::with([ "account", "service" ])->orderBy("order")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND window_id = ?", [$branch_id, $window_id])->get()->all();
-        return $transactions;
+        $window_services = Window::find($window_id)->profile->service_ids;
+        $transactions = Transaction::with([ "account", "service", "bill", "loan" ])->orderBy("order")->whereRaw("DATE(transactions.in) = CURDATE() AND state IN ('waiting', 'serving')  AND branch_id = ?", [$branch_id])->get()->all();
+        
+        $all = [];
+        
+
+        foreach($transactions as $t){
+            if(in_array($t->service_id,$window_services)){
+                if($t->state == "serving"){
+                    if($t->window_id == $window_id){
+                        array_push($all, $t);
+                    }
+                }else{
+                    array_push($all, $t);
+                }
+            }
+        }
+
+        $transactions = Transaction::with([ "account", "service", "bill", "loan" ])->orderBy("order")->whereRaw("DATE(transactions.in) = CURDATE() AND state IN ('drop', 'out')  AND branch_id = ?", [$branch_id])->get()->all();
+        
+        foreach($transactions as $t){
+            if($t->window_id == $window_id){
+                array_push($all, $t);
+            }
+        }
+
+
+        return $all;
     }
 
     public function sendMessageInforming($transaction){
@@ -332,7 +442,7 @@ class TransactionController extends Controller
              $transaction->order])->get()->all();
 
         
-        $current_token = DB::table("transactions")->whereRaw("DATE(transactions.created_at) = CURDATE() AND state = 'serving' AND window_id = ?", [ $transaction->window->id])->get()->first();
+        $current_token = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND state = 'serving' AND window_id = ?", [ $transaction->window->id])->get()->first();
         $number_of_minutes = 5;
         $message = "";
 
@@ -364,7 +474,7 @@ class TransactionController extends Controller
              $transaction->order])->get()->all();
 
         
-        $current_token = DB::table("transactions")->whereRaw("DATE(transactions.created_at) = CURDATE() AND state = 'serving' AND window_id = ?", [ $transaction->window->id])->get()->first();
+        $current_token = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND state = 'serving' AND window_id = ?", [ $transaction->window->id])->get()->first();
         $number_of_minutes = 5;
         $message = "";
 
@@ -409,7 +519,7 @@ class TransactionController extends Controller
              $transaction->window->id,
              $transaction->id,
              $transaction->order])->get()->all();
-        $current_token = DB::table("transactions")->whereRaw("DATE(transactions.created_at) = CURDATE() AND state = 'serving' AND window_id = ?", [ $transaction->window->id])->get()->first();
+        $current_token = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND state = 'serving' AND window_id = ?", [ $transaction->window->id])->get()->first();
         $number_of_minutes = 5;
         $message = "";
 
@@ -453,7 +563,7 @@ class TransactionController extends Controller
              $transaction->window->id,
              $transaction->id,
              $transaction->order])->get()->all();
-        $current_token = DB::table("transactions")->whereRaw("DATE(transactions.created_at) = CURDATE() AND state = 'serving' AND window_id = ?", [ $transaction->window->id])->get()->first();
+        $current_token = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND state = 'serving' AND window_id = ?", [ $transaction->window->id])->get()->first();
         $number_of_minutes = 5;
         $message = "";
 
@@ -493,6 +603,8 @@ class TransactionController extends Controller
         $transaction = Transaction::find($request->get("id"));
         $state = $request->get("toState");
         if($state == "serving"){
+            $transaction->window_id = $request->get("window_id");
+            $transaction->profile_id = $request->get("profile_id");
             $transaction->state = "serving";
             $transaction->serve = date('Y-m-d H:i:s');
             $transaction->save();
@@ -503,6 +615,12 @@ class TransactionController extends Controller
         }else if($state == "drop"){
             $transaction->state = "drop";
             $transaction->serve = date('Y-m-d H:i:s');
+            $transaction->save();
+        }else if($state == "waiting"){
+            $transaction->window_id = null;
+            $transaction->profile_id = null;
+            $transaction->state = "waiting";
+            $transaction->serve = null;
             $transaction->save();
         }
 
@@ -562,7 +680,7 @@ class TransactionController extends Controller
         $data = [];
 
         foreach($all_windows as $window){
-            $data[$window["order"]] =DB::table("transactions")->whereRaw("DATE(transactions.created_at) = CURDATE() AND branch_id = ? AND state = 'serving' AND window_id = ?", [$branch_id, $window->id,])->get()->first();
+            $data[$window["order"]] =DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'serving' AND window_id = ?", [$branch_id, $window->id,])->get()->first();
         }
 
         echo json_encode($data);
@@ -746,4 +864,87 @@ class TransactionController extends Controller
 
         return json_encode($data);
     }
+
+
+    public function startQueue($branch_id, $window_id){
+        $window = Window::find($window_id);
+        $transactions = Transaction::with([ "account", "service" ])->orderBy("order")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting' ", [$branch_id])->get()->all();
+        $services = $window->profile->service_ids;
+        $priority_customer = [];
+        $all = [];
+
+        foreach($transactions as $t){
+            if(in_array($t->service_id,$services)){
+                if($t->account_id != null){
+                    if($t->account->customer_type == "priority" ){
+                        array_push($priority_customer, $t);
+                    }
+                }
+
+                if($t->state == "serving"){
+                    if($t->window_id == $window_id){
+                        array_push($all, $t);
+                    }
+                }else{
+                    array_push($all, $t);
+                }
+            }   
+        }
+
+
+        if(count($priority_customer) > 0){
+            $priority_customer[0]->window_id = $window->id;
+            $priority_customer[0]->profile_id = $window->profile->id;
+            $priority_customer[0]->state = "serving";
+            $priority_customer[0]->serve = date('Y-m-d H:i:s');
+            $priority_customer[0]->save();
+
+            return $priority_customer[0];
+        }else{
+            $all[0]->window_id = $window->id;
+            $all[0]->profile_id = $window->profile->id;
+            $all[0]->state = "serving";
+            $all[0]->serve = date('Y-m-d H:i:s');
+            $all[0]->save();
+
+            return $all[0];
+        }
+
+        return null;
+    }
+
+    public function stopQueue($window_id){
+        $window = Window::find($window_id);
+        $transactions = Transaction::with([ "account", "service" ])->orderBy("order")->whereRaw("DATE(transactions.in) = CURDATE() AND window_id = ? AND state = 'serving' ", [$window_id])->get()->all();
+        $transactions[0]->window_id = null;
+        $transactions[0]->profile_id = null;
+        $transactions[0]->state = "waiting";
+        $transactions[0]->serve = null;
+        $transactions[0]->save();
+
+        return $transactions[0];
+    }
+
+    public function nextQueue($window_id, $time){
+        $window = Window::find($window_id);
+        $transactions = Transaction::with([ "account", "service" ])->orderBy("order")->whereRaw("DATE(transactions.in) = CURDATE() AND window_id = ? AND state = 'serving' ", [$window_id])->get()->all();
+        $transactions[0]->state = "out";
+        $transactions[0]->out = date('Y-m-d H:i:s');
+        $transactions[0]->servedtime = $time;
+        $transactions[0]->save();
+        
+        return $transactions[0];
+    }
+
+    public function dropQueue($window_id){
+        $window = Window::find($window_id);
+        $transactions = Transaction::with([ "account", "service" ])->orderBy("order")->whereRaw("DATE(transactions.in) = CURDATE() AND window_id = ? AND state = 'serving' ", [$window_id])->get()->all();
+        $transactions[0]->state = "drop";
+        $transactions[0]->drop = date('Y-m-d H:i:s');
+        $transactions[0]->save();
+        
+        return $transactions[0];
+    }
 }
+
+

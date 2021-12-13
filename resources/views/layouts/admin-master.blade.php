@@ -179,7 +179,7 @@
                     @endif
 
                     @if(auth()->user()->is_admin)
-                    
+                    <li class="menu-title">Utilities</li>
                     @elseif(in_array("SA", auth()->user()->profile->role->getPermissionCodenamesAttribute()))
                     <li class="menu-title">Utilities</li>
                     @elseif(in_array("CA", auth()->user()->profile->role->getPermissionCodenamesAttribute()) && auth()->user()->profile->window != null)
@@ -187,7 +187,14 @@
                     @endif
 
                     @if(auth()->user()->is_admin)
-                   
+                    <li class="menu">
+                        <a href="{{route('servers.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'servers.index' ? 'true' : 'false' }}">
+                            <div class="">
+                                <i class="las la-server"></i>
+                                <span>Servers</span>
+                            </div>
+                        </a>
+                    </li>
                     @endif
 
                     @if(!auth()->user()->is_admin && in_array("SA", auth()->user()->profile->role->getPermissionCodenamesAttribute()))
@@ -214,6 +221,18 @@
                     @endif
                     @endif
 
+                    @if(!auth()->user()->is_admin && in_array("SVA", auth()->user()->profile->role->getPermissionCodenamesAttribute()))
+                    <li class="menu-title">Server</li>
+                    <li class="menu">
+                        <a href="{{route('notifications.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'notifications.index' ? 'true' : 'false' }}">
+                            <div class="">
+                                <i class="las la-envelope"></i>
+                                <span>Server</span>
+                            </div>
+                        </a>
+                    </li>
+                    @endif
+                    
                     @if(auth()->user()->is_admin || in_array("RA", auth()->user()->profile->role->getPermissionCodenamesAttribute()))
                     <li class="menu-title">Reports</li>
                     @endif
@@ -227,15 +246,40 @@
                         </a>
                     </li>
                     <li class="menu">
-                        <a href="{{route('transactions.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'transactions.index' ? 'true' : 'false' }}">
+                        <a href="{{route('notifications.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'notifications.index' ? 'true' : 'false' }}">
+                            <div class="">
+                                <i class="las la-money-bill-wave"></i>
+                                <span>Deposits</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="menu">
+                        <a href="#transactions" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                             <div class="">
                                 <i class="las la-file-invoice"></i>
                                 <span>Transactions</span>
                             </div>
+                            <div>
+                                <i class="las la-angle-right sidemenu-right-icon"></i>
+                            </div>
                         </a>
+                        <ul class="collapse submenu list-unstyled" id="transactions" data-parent="#accordionExample">
+                            <li>
+                                <a href="maps_leaflet_map.html"> All </a>
+                            </li>
+                            <li>
+                                <a href="maps_vector_map.html"> Daily </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Monthly </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Yearly </a>
+                            </li>
+                        </ul>
                     </li>
                     @endif
-                    
+                   
                     @if(auth()->user()->is_admin)
                     <li class="menu-title">Feedbacks</li>
                     <li class="menu">

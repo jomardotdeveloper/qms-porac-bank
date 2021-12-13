@@ -42,6 +42,10 @@ class Branch extends Model
         return $this->hasOne(Setting::class);
     }
 
+    public function server() {
+        return $this->hasOne(Server::class);
+    }
+
     public function transactions() {
         return $this->hasMany(Transaction::class, "branch_id");
     }

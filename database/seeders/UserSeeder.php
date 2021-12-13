@@ -524,7 +524,12 @@ class UserSeeder extends Seeder
 
             if(isset($user["is_manager"])){ 
                 $role = Role::all()->where("branch_id", "=", $user["branch_id"])->where("name", "=", "Manager")->first();
+            }else if(isset($user["is_server"])){
+                $role = Role::all()->where("branch_id", "=", $user["branch_id"])->where("name", "=", "Server")->first();
+            }else if(isset($user["is_it"])){
+                $role = Role::all()->where("branch_id", "=", $user["branch_id"])->where("name", "=", "IT")->first();
             }
+            
 
             $user1 = User::create([
                 "username" => $user["username"],
@@ -541,7 +546,7 @@ class UserSeeder extends Seeder
                     "branch_id" => $user["branch_id"]
                 ])
             );
-            $user1->profile->services()->attach([1,2,3,4,5,6,7]);
+            $user1->profile->services()->attach([1,2,3,4,5,6]);
         }
 
 
