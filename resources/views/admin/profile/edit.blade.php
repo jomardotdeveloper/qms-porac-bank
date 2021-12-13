@@ -128,7 +128,7 @@
                                             <div class="form-group">
                                                 <label>Services 
                                                 <span class="text-danger">*</span></label>
-                                                <select class="form-control multiple" multiple="multiple" name="services[]" required>
+                                                <select class="form-control multiple" multiple="multiple" name="services[]" >
                                                     @foreach($services as $service)
                                                         @if(in_array($service->id, $profile->service_ids))
                                                         <option value="{{ $service->id }}" selected>{{ $service->name }}</option>

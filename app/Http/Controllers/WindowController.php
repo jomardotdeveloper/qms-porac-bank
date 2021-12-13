@@ -79,27 +79,40 @@ class WindowController extends Controller
         $window_2 = $request->get("window_2");
         $window_3 = $request->get("window_3");
         
-        if (($window_1 == $window_2) || ($window_2 == $window_3) || ($window_3 == $window_1)) {
-            return back()->withErrors([
-                "failed-window" => "Windows cannot have the same user."
-            ]);    
+        $profile1 = Profile::find($window_1);
+        $profile2 = Profile::find($window_2);
+        $profile3 = Profile::find($window_3);
+
+        if(count($profile1->service_ids) > 0 && count($profile2->service_ids) > 0 && count($profile3->service_ids) > 0){
+            if (($window_1 == $window_2) || ($window_2 == $window_3) || ($window_3 == $window_1)) {
+                return back()->withErrors([
+                    "failed-window" => "Windows cannot have the same user."
+                ]);    
+            }else{
+                $id_1 = Window::find($window_ids[0]);
+                $id_1->profile_id = $window_1;
+                $id_1->save();
+    
+                $id_2 = Window::find($window_ids[1]);
+                $id_2->profile_id = $window_2;
+                $id_2->save();
+    
+                $id_3 = Window::find($window_ids[2]);
+                $id_3->profile_id = $window_3;
+                $id_3->save();
+    
+                return back()->withErrors([
+                    "success-window" => "Your changes were successfully applied"
+                ]); 
+            }
         }else{
-            $id_1 = Window::find($window_ids[0]);
-            $id_1->profile_id = $window_1;
-            $id_1->save();
-
-            $id_2 = Window::find($window_ids[1]);
-            $id_2->profile_id = $window_2;
-            $id_2->save();
-
-            $id_3 = Window::find($window_ids[2]);
-            $id_3->profile_id = $window_3;
-            $id_3->save();
-
             return back()->withErrors([
-                "success-window" => "Your changes were successfully applied"
+                "failed-window" => "A user must have a service in order to be a Window user."
             ]); 
         }
+        
+        
+        
     }
 
     /**

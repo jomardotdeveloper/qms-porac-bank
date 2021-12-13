@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Branch;
 use App\Models\Setting;
+use App\Models\Server;
 use App\Models\Window;
 use App\Models\Cutoff;
+use Illuminate\Support\Facades\DB;
 class BranchController extends Controller
 {
     /**
@@ -59,6 +61,11 @@ class BranchController extends Controller
 
         $window3_1 = Window::create(["name" => "Window 3", "order" => 3, "branch_id" => $branch->id]);
         $window3_1->save();
+
+        $server = Server::create([
+            "name" => $branch->name . "'s" . " Server",
+            "branch_id" => $branch->id
+        ]);
 
         return redirect()->route("branches.show", ["branch" => $branch]);
     }
@@ -132,6 +139,6 @@ class BranchController extends Controller
     }
 
     public function all(){
-        echo json_encode(Branch::all());
+        echo json_encode(DB::table('branches')->orderBy('name', 'ASC')->get()->all());
     }
 }

@@ -16,6 +16,8 @@ class CreateCodes extends Migration
         Schema::create('codes', function (Blueprint $table) {
             $table->id();
             $table->string("code");
+            $table->string("number");
+            $table->timestamp("in")->default(DB::raw("CURRENT_TIMESTAMP"));
             $table->timestamps();
         });
     }

@@ -114,7 +114,7 @@
                                             <div class="form-group">
                                                 <label>Services 
                                                 <span class="text-danger">*</span></label>
-                                                <select class="form-control multiple" multiple="multiple" name="services[]" required>
+                                                <select class="form-control multiple" multiple="multiple" name="services[]" >
                                                     @foreach($services as $service)
                                                     <option value="{{ $service->id }}">{{ $service->name }}</option>
                                                     @endforeach

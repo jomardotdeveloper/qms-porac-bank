@@ -76,8 +76,8 @@
                     "next": "<i class='las la-angle-right'></i>"
                 }
             },
-            "lengthMenu": [5,10,15,20],
-            "pageLength": 5 
+            "lengthMenu": [5, 10, 20, 40, 80, 100],
+            "pageLength": 100
         });
         $('#dropdown-dt').DataTable({
             "language": {

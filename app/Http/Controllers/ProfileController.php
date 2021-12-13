@@ -91,7 +91,10 @@ class ProfileController extends Controller
         $profileValidated["branch_id"] = $request->get("branch_id");
         $profileValidated["role_id"] = $request->get("role_id");
         $profile = Profile::create($profileValidated); 
-        $profile->services()->attach($request->only("services")["services"]);
+
+        if(isset($request->only("services")["services"]))
+            $profile->services()->attach($request->only("services")["services"]);
+        
         $profile->save();
         return redirect()->route("profiles.show", ["profile" => $profile]);
     }
@@ -174,8 +177,12 @@ class ProfileController extends Controller
 
         $profile->fill($profileValidated);
         $profile->save();
-        $profile->services()->sync($request->only("services")["services"]);
+        
 
+        if(isset($request->only("services")["services"]))
+            $profile->services()->sync($request->only("services")["services"]);
+        else
+            $profile->services()->sync([]);
         return redirect()->route("profiles.show", ["profile" => $profile]);
     }
 

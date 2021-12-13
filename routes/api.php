@@ -12,6 +12,7 @@ use App\Http\Controllers\SMSController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ServerController;
+use App\Http\Controllers\CodeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -81,3 +82,6 @@ Route::get("/transactions/drop_queue/{window_id}", [TransactionController::class
 
 
 
+//OTP
+Route::get("/codes/create_code/{number}", [CodeController::class, "createCode"]);
+Route::get("/codes/check_code/{number}/{code}", [CodeController::class, "checker"]);
