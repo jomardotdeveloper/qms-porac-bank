@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+use App\Models\Server;
 
 class WebsocketController extends Controller implements MessageComponentInterface
 {
     private $connections = [];
-    
+    private $branches = [];
      /**
      * When a new connection is opened it will be passed to this method
      * @param  ConnectionInterface $conn The socket/connection that just connected to your application
@@ -17,6 +18,13 @@ class WebsocketController extends Controller implements MessageComponentInterfac
      */
     function onOpen(ConnectionInterface $conn){
         $this->connections[$conn->resourceId] = compact('conn') + ['user_id' => null];
+        $this->connections[$conn->resourceId]['conn']->send(json_encode(["message" => json_encode(["message" => "isBranch"])]));
+        // array_push($this->branches, [$conn->resourceId => ]);
+        // foreach($this->connections as $resourceId => &$connection){
+        //     $connection['conn']->send(json_encode(["message"=> $conn->resourceId]));
+        //     // if($conn->resourceId != $resourceId)
+        //     //     $onlineUsers[$resourceId] = $connection['user_id'];
+        // }
     }
     
      /**
@@ -25,7 +33,12 @@ class WebsocketController extends Controller implements MessageComponentInterfac
      * @throws \Exception
      */
     function onClose(ConnectionInterface $conn){
-        
+        if(array_key_exists($conn->resourceId, $this->branches)){
+            $server = Server::where("branch_id", "=", $this->branches[$conn->resourceId])->first();
+            $server->is_connected = false;
+            $server->save();
+            unset($this->branches[$conn->resourceId]);
+        }
     }
     
      /**
@@ -64,14 +77,31 @@ class WebsocketController extends Controller implements MessageComponentInterfac
         //         'from_resource_id' => $conn->resourceId
         //     ]));
         // }
-        
-        $this->connections[$conn->resourceId]['user_id'] = $msg;
-        $onlineUsers = [];
-        foreach($this->connections as $resourceId => &$connection){
-            $connection['conn']->send(json_encode(["message"=> $msg]));
-            // if($conn->resourceId != $resourceId)
-            //     $onlineUsers[$resourceId] = $connection['user_id'];
+
+        // echo "JOMAR";
+
+        $message_json = json_decode($msg, true);
+        // $message_json = json_decode($message_json)
+        // $this->connections[$conn->resourceId]['conn']->send(json_encode(["message" => json_encode(["message" => $message_json["message"]])]));
+        if($message_json["message"] == "iambranch"){
+            $this->branches[$conn->resourceId] = $message_json["branch_id"];
+            $server = Server::where("branch_id", "=", $this->branches[$conn->resourceId])->first();
+            $server->is_connected = true;
+            $server->save();
+            
+        }else{
+            $this->connections[$conn->resourceId]['user_id'] = $msg;
+            $onlineUsers = [];
+            
+            foreach($this->connections as $resourceId => &$connection){
+                $connection['conn']->send(json_encode(["message"=> $msg]));
+                // if($conn->resourceId != $resourceId)
+                //     $onlineUsers[$resourceId] = $connection['user_id'];
+            }
         }
+        
+        
+        
             
         // $fromUserId = $this->connections[$conn->resourceId]['user_id'];
         // $msg->send(json_encode([

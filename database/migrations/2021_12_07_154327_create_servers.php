@@ -16,6 +16,7 @@ class CreateServers extends Migration
         Schema::create('servers', function (Blueprint $table) {
             $table->id();
             $table->string("name");
+            $table->boolean("is_connected")->default(false);
             $table->foreignId("branch_id")->constrained("branches")->onDelete("cascade");
             $table->timestamps();
         });

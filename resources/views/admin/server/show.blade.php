@@ -178,6 +178,15 @@ setInterval(
         if(jsonObject["message"] == "serverCheckStatus" && jsonObject["branch_id"] == branch.toString()){
             socket.send(JSON.stringify({message : "serverUpdateStatus", branch_id : branch.toString()}));
         }
+
+        if(jsonObject["message"] == "isBranch"){
+            var datas = {
+                "message" : "iambranch",
+                "branch_id" : branch
+            };
+
+            socket.send(JSON.stringify(datas));
+        }
     }
 </script>
 @endpush
