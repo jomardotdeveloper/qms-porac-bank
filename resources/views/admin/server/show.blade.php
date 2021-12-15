@@ -115,6 +115,7 @@ chart.render();
 var isOnline = false;
 var branch = $("#branch_id").val();
 var socket  = new WebSocket('ws://74.63.204.84:8090');
+var localSocket  = new WebSocket('ws://127.0.0.1:8090');
 // 1,2,3
 var needToSync = 1;
 var networkSpeedCache = 0;
@@ -197,7 +198,7 @@ setInterval(
     }
 
 
-    var localSocket  = new WebSocket('ws://127.0.0.1:8090');
+   
 
     localSocket.onmessage = function(e){
         var jsonObject = jQuery.parseJSON(e.data);
@@ -222,13 +223,21 @@ setInterval(
             transactions : await getTransactionsUnsink()
         } )).data;
 
-        console.log(res);
+        socket.send(JSON.stringify({
+            message : "nextCustomer",
+            branch_id : branch
+        }));
     }
 
     async function fetchCloud(){
         var res  = (await axios.post("/api/sinker_local/sink_transactions", {
             transactions : await getTransactionsCloud()
         } )).data;
+        console.log(res);
+        localSocket.send(JSON.stringify({
+            message : "newCustomer",
+            branch_id : branch
+        }));
     }
 
     async function getTransactionsCloud(){

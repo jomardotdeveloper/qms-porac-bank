@@ -101,11 +101,11 @@ class SinkerClod extends Controller
     }
 
     public function getAccount($account_number){
-        return Transaction::where("account_number", "=", $account_number)->get()->all()[0];
+        return Account::where("account_number", "=", $account_number)->get()->all()[0];
     }
 
     public function accountExists($account_number){
-        return count(Transaction::where("account_number", "=", $account_number)->get()->all()) > 0;
+        return count(Account::where("account_number", "=", $account_number)->get()->all()) > 0;
     }
 
     public function getUser($username){

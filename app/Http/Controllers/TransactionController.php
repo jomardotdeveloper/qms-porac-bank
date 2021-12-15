@@ -308,7 +308,7 @@ class TransactionController extends Controller
                 "profile_id" => null,
                 "is_mobile" => isset($request->all()["is_mobile"]) ? true : false,
                 "bill_id" =>  isset($request->all()["bill_id"]) ? $request->get("bill_id") : null,
-                "loan_id" => isset($request->all()["loan_id"]) ? $request->get("loan_id") : null
+                "loan_id" => isset($request->all()["loan_id"]) ? $request->get("loan_id") : null,
             ]);
 
             if($this->isCutoff($request->get("branch_id"))){

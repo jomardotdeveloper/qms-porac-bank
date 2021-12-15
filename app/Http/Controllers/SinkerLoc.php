@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 use App\Models\Account;
 use App\Models\Profile;
 use App\Models\User;
@@ -23,7 +24,7 @@ class SinkerLoc extends Controller
         
         foreach($transactions as $transaction){
             
-            array_push($data, $transaction["token"]);
+            // array_push($data, $transaction["token"]);
             $finder = Transaction::where("token", "=", $transaction["token"])->where("in", "=", $transaction["in"])->first();
             $profile = null;
             if($transaction["profile_id"] != null){
@@ -33,7 +34,7 @@ class SinkerLoc extends Controller
             }
 
             if($finder){
-                
+                array_push($data, "SA FINDER");
                 $finder->fill([
                     "token" => $transaction["token"],
                     "order" => $transaction["order"],
@@ -57,7 +58,7 @@ class SinkerLoc extends Controller
                 ]);
                 $finder->save();
             }else{
-                array_push($data, $transaction["token"]);
+                array_push($data, "SA ELSE");
                 $account = null;
               
                 if($transaction["account_id"] != null){
@@ -103,11 +104,11 @@ class SinkerLoc extends Controller
     }
 
     public function getAccount($account_number){
-        return Transaction::where("account_number", "=", $account_number)->get()->all()[0];
+        return Account::where("account_number", "=", $account_number)->get()->all()[0];
     }
 
     public function accountExists($account_number){
-        return count(Transaction::where("account_number", "=", $account_number)->get()->all()) > 0;
+        return count(Account::where("account_number", "=", $account_number)->get()->all()) > 0;
     }
 
     public function getUser($username){

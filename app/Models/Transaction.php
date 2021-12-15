@@ -25,7 +25,10 @@ class Transaction extends Model
         'service_id',
         'branch_id',
         'profile_id',
-        "is_sync"
+        "is_sync",
+        "bill_id",
+        "loan_id",
+        "is_mobile"
     ];
 
     public function branch() {

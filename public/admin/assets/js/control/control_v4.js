@@ -48,7 +48,7 @@ var app = new Vue({
     methods: {
         startq: function(){
             var self = this;
-            if(self.waiting.length < 1){
+            if(self.waiting.length < 1 && self.serving == null){
                 alertError("Queue is empty!");
             }else{
                 // updateState(self.waiting[0]["id"], states.SERVING, function(){
