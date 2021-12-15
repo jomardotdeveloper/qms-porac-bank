@@ -18,7 +18,12 @@ class CheckIfAuthenticated
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
-            return redirect('/backend/dashboards');
+            if(!auth()->user()->is_admin && in_array("SVA", auth()->user()->profile->role->getPermissionCodenamesAttribute())){
+                return redirect('/backend/servers/' . auth()->user()->profile->branch->server->id);
+            }else{
+                return redirect('/backend/dashboards');
+            }
+            
         }
         return $next($request);
     }

@@ -301,7 +301,7 @@ class TransactionController extends Controller
                 "account_id" => isset($request->all()["account_number"]) ? $this->get_account_id($request->get("account_number")) : null,
                 "amount" => isset($request->all()["amount"]) ? $request->get("amount") : null,
                 "mobile_number" => isset($request->all()["mobile_number"]) ? $request->get("mobile_number") : null,
-                "is_notifiable" =>  isset($request->all()["is_notifiable"]) ? $request->all()["is_notifiable"] : 0,
+                "is_notifiable" =>  isset($request->all()["is_notifiable"]) ? 1 : 0,
                 "window_id" => null,
                 "service_id" => $request->get("service_id"),
                 "branch_id" => $request->get("branch_id"),

@@ -98,4 +98,8 @@ class ServerController extends Controller
             "branch_id" => intval(Log::find(1)->branch_id)
         ];
     }
+
+    public function check($branch_id){
+        return Server::where("branch_id", "=", $branch_id)->first();
+    }
 }

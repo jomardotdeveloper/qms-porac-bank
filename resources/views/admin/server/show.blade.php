@@ -113,20 +113,22 @@ chart.render();
 
 
 var isOnline = false;
-
+var branch = $("#branch_id").val();
+var socket  = new WebSocket('ws://74.63.204.84:8090');
+// 1,2,3
+var needToSync = 1;
 var networkSpeedCache = 0;
 const maximum = 10;
+
 // navigator.connection.downlinkMax
 setInterval(
     function () {
         var status = window.navigator.onLine;
         if(isOnline != status){
             isOnline = status; 
-
             // Update Chart
             if(status){
                 var speed = navigator.connection.downlink;
-
                 if(networkSpeedCache != speed){
                     networkSpeedCache = speed;
                     if(speed == 0){
@@ -171,35 +173,44 @@ setInterval(
 
 
 <script>
-    var branch = $("#branch_id").val();
-    // var socket  = new WebSocket('ws://74.63.204.84:8090');
-    // socket.onmessage = function(e){
-    //     var jsonObject = jQuery.parseJSON(e.data);
-    //     jsonObject = jQuery.parseJSON(jsonObject["message"]);
-    //     if(jsonObject["message"] == "serverCheckStatus" && jsonObject["branch_id"] == branch.toString()){
-    //         socket.send(JSON.stringify({message : "serverUpdateStatus", branch_id : branch.toString()}));
-    //     }
+    socket.onmessage = function(e){
+        var jsonObject = jQuery.parseJSON(e.data);
+        jsonObject = jQuery.parseJSON(jsonObject["message"]);
+        if(jsonObject["message"] == "serverCheckStatus" && jsonObject["branch_id"] == branch.toString()){
+            socket.send(JSON.stringify({message : "serverUpdateStatus", branch_id : branch.toString()}));
+        }
 
-    //     if(jsonObject["message"] == "isBranch"){
-    //         var datas = {
-    //             "message" : "iambranch",
-    //             "branch_id" : branch
-    //         };
+        if(jsonObject["message"] == "isBranch"){
+            var datas = {
+                "message" : "iambranch",
+                "branch_id" : branch
+            };
 
-    //         socket.send(JSON.stringify(datas));
-    //     }
+            socket.send(JSON.stringify(datas));
+        }
 
-    //     console.log(jsonObject);
-    // }
+        if(jsonObject["message"] == "newCustomer" && jsonObject["branch_id"] == branch){
+            fetchCloud();
+        }
+
+        console.log(jsonObject);
+    }
 
 
-    // var localSocket  = new WebSocket('ws://127.0.0.1:8090');
+    var localSocket  = new WebSocket('ws://127.0.0.1:8090');
 
-    // localSocket.onmessage = function(e){
-    //     if(jsonObject["message"] == "newCustomer"){
+    localSocket.onmessage = function(e){
+        var jsonObject = jQuery.parseJSON(e.data);
+        jsonObject = jQuery.parseJSON(jsonObject["message"]);
 
-    //     }
-    // }
+        if(jsonObject["message"] == "newCustomer" && jsonObject["branch_id"] == branch){
+            sink();
+        }
+
+        if(jsonObject["message"] == "nextCustomer" && jsonObject["branch_id"] == branch){
+            sink();
+        }
+    }
 
     async function getTransactionsUnsink(){
         var res  = (await axios.get("/api/sinker_local/get_all/" + branch)).data;
@@ -215,8 +226,12 @@ setInterval(
         console.log(res);
     }
 
+    async function fetchCloud(){
+        
+    }
 
-    sink();
+
+    
 
 
 </script>
