@@ -21,7 +21,7 @@ class SinkerLoc extends Controller
     }
 
     public function getAllTransactions($branch_id){
-        return Transaction::with([ "account", "profile.user"])->whereRaw("branch_id = ? ", [$branch_id])->first();
+        return Transaction::with([ "account", "profile.user"])->whereRaw("branch_id = ? ", [$branch_id])->get()->all();
         // return Transaction::with([ "account", "profile"])->whereRaw("DATE(transactions.in) = CURDATE() AND state IN ('waiting', 'serving')  AND branch_id = ?", [$branch_id])->get()->all();
     }
 
