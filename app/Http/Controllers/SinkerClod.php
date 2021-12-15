@@ -13,7 +13,7 @@ class SinkerClod extends Controller
 {
     public function sinkTransactions(Request $request){
         $data = [];
-        $transactions = $request->get("transactions");
+        $transactions =  (array) $request->get("transactions");
         foreach($transactions as $transaction){
             array_push($data, $transaction["token"]);
             // $finder = Transaction::where("token", "=", $transaction["token"])->where("in", "=", $transaction["in"])->first();
