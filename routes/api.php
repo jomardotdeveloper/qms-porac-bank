@@ -100,7 +100,5 @@ Route::get("/codes/check_code/{number}/{code}", [CodeController::class, "checker
 //LOCAL ENDPOINTS
 Route::get("/sinker_local/sink_all", [SinkerLoc::class, "sinkAll"]);
 
-
-
 //CLOUD ENDPOINTS
 Route::post("/sinker_cloud/sink_transactions", [SinkerClod::class, "sinkTransactions"]);

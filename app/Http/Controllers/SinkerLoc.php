@@ -14,9 +14,11 @@ class SinkerLoc extends Controller
     public function sinkTransactions(){
         $client = new Client;
         $endpoint = 'https://www.poracbankqms.com/api/';
-        $res = $client->post($endpoint . 'sinker_clod_transaction',["form_params" => [
+        $res = $client->post($endpoint . 'sinker_cloud/sink_transactions',["form_params" => [
             "transactions" => Transaction::all()
         ]]);
+
+        // dd($res);
     }
 
     public function sinkTransactionsViaJson(){

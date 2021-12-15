@@ -171,48 +171,46 @@ setInterval(
 
 
 <script>
-    var branch = $("#branch_id").val();
-    var socket  = new WebSocket('ws://74.63.204.84:8090');
-    socket.onmessage = function(e){
-        var jsonObject = jQuery.parseJSON(e.data);
-        jsonObject = jQuery.parseJSON(jsonObject["message"]);
-        if(jsonObject["message"] == "serverCheckStatus" && jsonObject["branch_id"] == branch.toString()){
-            socket.send(JSON.stringify({message : "serverUpdateStatus", branch_id : branch.toString()}));
-        }
+    // var branch = $("#branch_id").val();
+    // var socket  = new WebSocket('ws://74.63.204.84:8090');
+    // socket.onmessage = function(e){
+    //     var jsonObject = jQuery.parseJSON(e.data);
+    //     jsonObject = jQuery.parseJSON(jsonObject["message"]);
+    //     if(jsonObject["message"] == "serverCheckStatus" && jsonObject["branch_id"] == branch.toString()){
+    //         socket.send(JSON.stringify({message : "serverUpdateStatus", branch_id : branch.toString()}));
+    //     }
 
-        if(jsonObject["message"] == "isBranch"){
-            var datas = {
-                "message" : "iambranch",
-                "branch_id" : branch
-            };
+    //     if(jsonObject["message"] == "isBranch"){
+    //         var datas = {
+    //             "message" : "iambranch",
+    //             "branch_id" : branch
+    //         };
 
-            socket.send(JSON.stringify(datas));
-        }
+    //         socket.send(JSON.stringify(datas));
+    //     }
 
-        console.log(jsonObject);
-    }
-
-
-    var localSocket  = new WebSocket('ws://127.0.0.1:8090');
-
-    localSocket.onmessage = function(e){
-        if(jsonObject["message"] == "newCustomer"){
-
-        }
-    }
+    //     console.log(jsonObject);
+    // }
 
 
-    const ENDPOINTS = {
-        GET_ALL : ""
-    }
+    // var localSocket  = new WebSocket('ws://127.0.0.1:8090');
+
+    // localSocket.onmessage = function(e){
+    //     if(jsonObject["message"] == "newCustomer"){
+
+    //     }
+    // }
+
+
+
 
     async function getTransactionsUnsink(){
-        var params = branch;
-        var res  = (await axios.get(ENDPOINTS.GET_ALL + params)).data;
-        return res; 
+        // var params = branch;
+        var res  = (await axios.post("/api/sinker_cloud/sink_transactions", {sample : "HAHAHA"})).data;
+        console.log (res); 
     }
-
-    
+    getTransactionsUnsink();
+    // console.log( await getTransactionsUnsink());
 
 
 </script>
