@@ -217,7 +217,6 @@ setInterval(
         return res;  
     }
 
-
     async function sink(){
         var res  = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_transactions", {
             transactions : await getTransactionsUnsink()
@@ -227,7 +226,14 @@ setInterval(
     }
 
     async function fetchCloud(){
-        
+        var res  = (await axios.post("/api/sinker_local/sink_transactions", {
+            transactions : await getTransactionsCloud()
+        } )).data;
+    }
+
+    async function getTransactionsCloud(){
+        var res  = (await axios.get("http://poracbankqms.com/api/sinker_cloud/get_all/" + branch)).data;
+        return res; 
     }
 
 

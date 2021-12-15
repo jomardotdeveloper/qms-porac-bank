@@ -95,6 +95,11 @@ class SinkerClod extends Controller
         return $data;
     }
 
+    public function getAllTransactions($branch_id){
+        return Transaction::with([ "account", "profile.user"])->whereRaw("branch_id = ? ", [$branch_id])->get()->all();
+        // return Transaction::with([ "account", "profile"])->whereRaw("DATE(transactions.in) = CURDATE() AND state IN ('waiting', 'serving')  AND branch_id = ?", [$branch_id])->get()->all();
+    }
+
     public function getAccount($account_number){
         return Transaction::where("account_number", "=", $account_number)->get()->all()[0];
     }

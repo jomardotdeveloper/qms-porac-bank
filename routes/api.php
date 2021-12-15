@@ -74,34 +74,20 @@ Route::get("/transactions/get_sms/{id}/{is_transfer}", [TransactionController::c
 
 // FOR TESTING PURPOSES
 Route::get("/transactions/test/{branch_id}", [TransactionController::class, "isCutoff"]);
-
-
-
 // CONTROLS
 Route::get("/transactions/start_queue/{branch_id}/{window_id}", [TransactionController::class, "startQueue"]);
 Route::get("/transactions/stop_queue/{window_id}", [TransactionController::class, "stopQueue"]);
 Route::get("/transactions/next_queue/{window_id}/{time}", [TransactionController::class, "nextQueue"]);
 Route::get("/transactions/drop_queue/{window_id}", [TransactionController::class, "dropQueue"]);
-
-
-
 //OTP
 Route::get("/codes/create_code/{number}", [CodeController::class, "createCode"]);
 Route::get("/codes/check_code/{number}/{code}", [CodeController::class, "checker"]);
-
-
-
-
 //LOCAL SERVER CHECKER
 Route::get("/servers/check/{branch_id}", [ServerController::class, "check"]);
-
-
-
-
 //LOCAL ENDPOINTS
 // Route::get("/sinker_local/get_validated", [SinkerLoc::class, "getValidated"]);
 Route::get("/sinker_local/get_all/{branch_id}", [SinkerLoc::class, "getAllTransactions"]);
+Route::post("/sinker_local/sink_transactions", [SinkerLoc::class, "sinkTransactions"]);
 //CLOUD ENDPOINTS
-Route::post("/sinker_cloud/sink_transactions", [SinkerClod::class, "sinkTransactions"]);
 Route::post("/sinker_cloud/sink_transactions", [SinkerClod::class, "sinkTransactions"]);
 Route::get("/sinker_cloud/get_all/{branch_id}", [SinkerClod::class, "getAllTransactions"]);
