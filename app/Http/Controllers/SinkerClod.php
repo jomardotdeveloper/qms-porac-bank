@@ -18,72 +18,73 @@ class SinkerClod extends Controller
             
             array_push($data, $transaction["token"]);
             $finder = Transaction::where("token", "=", $transaction["token"])->where("in", "=", $transaction["in"])->first();
-            
-            // if($finder){
-            //     $finder->fill([
-            //         "token" => $transaction["token"],
-            //         "order" => $order,
-            //         "account_id" => $account,
-            //         "state" => $transaction["state"],
-            //         "in" => $transaction["in"],
-            //         "out" => $transaction["out"],
-            //         "drop" => $transaction["drop"],
-            //         "serve" => $transaction["serve"],
-            //         "amount" => $transaction["amount"],
-            //         "mobile_number" => $transaction["mobile_number"],
-            //         "is_notifiable" => $transaction["is_notifiable"],
-            //         "is_mobile" => $transaction["is_mobile"],
-            //         "is_sync" => true,
-            //         "servedtime" => $transaction["servedtime"],
-            //         "bill_id" => $transaction["bill_id"],
-            //         "loan_id" => $transaction["loan_id"],
-            //         "window_id" => $transaction["window_id"],
-            //         "service_id" => $transaction["service_id"],
-            //         "branch_id" => $transaction["branch_id"],
-            //         "profile_id" => $profile
-            //     ]);
-            //     $finder->save();
-            // }else{
-            //     $account = null;
-            //     $profile = null;
 
-            //     if($transaction["account_id"] != null){
-            //         if($this->accountExists($transaction["account"]["account_number"])){
-            //             $account = $this->getAccount($transaction["account"]["account_number"])->id;
-            //         }
-            //     }
+            if($finder){
+                $finder->fill([
+                    "token" => $transaction["token"],
+                    "order" => $order,
+                    "account_id" => $account,
+                    "state" => $transaction["state"],
+                    "in" => $transaction["in"],
+                    "out" => $transaction["out"],
+                    "drop" => $transaction["drop"],
+                    "serve" => $transaction["serve"],
+                    "amount" => $transaction["amount"],
+                    "mobile_number" => $transaction["mobile_number"],
+                    "is_notifiable" => $transaction["is_notifiable"],
+                    "is_mobile" => $transaction["is_mobile"],
+                    "is_sync" => true,
+                    "servedtime" => $transaction["servedtime"],
+                    "bill_id" => $transaction["bill_id"],
+                    "loan_id" => $transaction["loan_id"],
+                    "window_id" => $transaction["window_id"],
+                    "service_id" => $transaction["service_id"],
+                    "branch_id" => $transaction["branch_id"],
+                    "profile_id" => $profile
+                ]);
+                $finder->save();
+            }else{
+                array_push($data, $transaction["token"]);
+                // $account = null;
+                // $profile = null;
 
-            //     if($transaction["profile_id"] != null){
-            //         if($this->userExists($transaction["profile"]["user"]["username"])){
-            //             $profile = $this->getUser($transaction["profile"]["user"]["username"])->id;
-            //         }
-            //     }
+                // if($transaction["account_id"] != null){
+                //     if($this->accountExists($transaction["account"]["account_number"])){
+                //         $account = $this->getAccount($transaction["account"]["account_number"])->id;
+                //     }
+                // }
 
-            //     $cur = Transaction::create([
-            //         "token" => $transaction["token"],
-            //         "order" => $order,
-            //         "account_id" => $account,
-            //         "state" => $transaction["state"],
-            //         "in" => $transaction["in"],
-            //         "out" => $transaction["out"],
-            //         "drop" => $transaction["drop"],
-            //         "serve" => $transaction["serve"],
-            //         "amount" => $transaction["amount"],
-            //         "mobile_number" => $transaction["mobile_number"],
-            //         "is_notifiable" => $transaction["is_notifiable"],
-            //         "is_mobile" => $transaction["is_mobile"],
-            //         "is_sync" => true,
-            //         "servedtime" => $transaction["servedtime"],
-            //         "bill_id" => $transaction["bill_id"],
-            //         "loan_id" => $transaction["loan_id"],
-            //         "window_id" => $transaction["window_id"],
-            //         "service_id" => $transaction["service_id"],
-            //         "branch_id" => $transaction["branch_id"],
-            //         "profile_id" => $profile
-            //     ]); 
+                // if($transaction["profile_id"] != null){
+                //     if($this->userExists($transaction["profile"]["user"]["username"])){
+                //         $profile = $this->getUser($transaction["profile"]["user"]["username"])->id;
+                //     }
+                // }
 
-            //     $cur->save();
-            // }
+                // $cur = Transaction::create([
+                //     "token" => $transaction["token"],
+                //     "order" => $order,
+                //     "account_id" => $account,
+                //     "state" => $transaction["state"],
+                //     "in" => $transaction["in"],
+                //     "out" => $transaction["out"],
+                //     "drop" => $transaction["drop"],
+                //     "serve" => $transaction["serve"],
+                //     "amount" => $transaction["amount"],
+                //     "mobile_number" => $transaction["mobile_number"],
+                //     "is_notifiable" => $transaction["is_notifiable"],
+                //     "is_mobile" => $transaction["is_mobile"],
+                //     "is_sync" => true,
+                //     "servedtime" => $transaction["servedtime"],
+                //     "bill_id" => $transaction["bill_id"],
+                //     "loan_id" => $transaction["loan_id"],
+                //     "window_id" => $transaction["window_id"],
+                //     "service_id" => $transaction["service_id"],
+                //     "branch_id" => $transaction["branch_id"],
+                //     "profile_id" => $profile
+                // ]); 
+
+                // $cur->save();
+            }
             // Transaction::with([ "account", "profile", "bill", "loan" ])->orderBy("order")->whereRaw("DATE(transactions.in) = CURDATE() AND state IN ('waiting', 'serving')  AND branch_id = ?", [$branch_id])->get()->all();
         }
         return $data;
