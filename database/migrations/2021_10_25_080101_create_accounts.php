@@ -21,6 +21,7 @@ class CreateAccounts extends Migration
             $table->string("account_number")->unique();
             $table->enum("customer_type", ["priority", "regular"]);
             $table->foreignId("branch_id")->constrained("branches")->onDelete("cascade");
+            $table->boolean("is_sync")->default(false);
             $table->timestamps();
         });
     }

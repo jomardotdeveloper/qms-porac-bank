@@ -16,7 +16,8 @@ class Account extends Model
         "middle_name",
         "account_number",
         "customer_type",
-        "branch_id"
+        "branch_id",
+        "is_sync"
     ];
 
     public function branch() {

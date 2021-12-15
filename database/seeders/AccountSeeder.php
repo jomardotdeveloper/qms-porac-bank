@@ -25,7 +25,8 @@ class AccountSeeder extends Seeder
                 "middle_name" => $account["middle_name"],
                 "account_number" => $account["account_number"],
                 "customer_type" => $account["customer_type"],
-                "branch_id" => $account["branch_id"] 
+                "branch_id" => $account["branch_id"],
+                "is_sync" => true 
             ]);
         }
     }

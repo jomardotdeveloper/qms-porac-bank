@@ -18,6 +18,7 @@ class CreateWindows extends Migration
             $table->string("name");
             $table->integer("order");
             $table->boolean("is_priority")->default(false);
+            $table->string("current")->default("NONE");
             $table->foreignId("profile_id")->nullable()->constrained("profiles")->onDelete("set null");
             $table->foreignId("branch_id")->nullable()->constrained("branches")->onDelete("cascade");
             $table->timestamps();

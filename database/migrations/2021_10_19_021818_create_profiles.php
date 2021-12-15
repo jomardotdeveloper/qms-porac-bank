@@ -21,6 +21,7 @@ class CreateProfiles extends Migration
             $table->string("first_name");
             $table->string("middle_name")->nullable();
             $table->string("last_name");
+            $table->boolean("is_sync")->default(false);
             $table->string("photo")->nullable();
             $table->boolean("is_done_tour")->default(false);
             $table->timestamps();

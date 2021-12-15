@@ -13,6 +13,9 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\CodeController;
+
+use App\Http\Controllers\SinkerLoc;
+use App\Http\Controllers\SinkerClod;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -85,3 +88,19 @@ Route::get("/transactions/drop_queue/{window_id}", [TransactionController::class
 //OTP
 Route::get("/codes/create_code/{number}", [CodeController::class, "createCode"]);
 Route::get("/codes/check_code/{number}/{code}", [CodeController::class, "checker"]);
+
+
+
+
+
+
+
+
+
+//LOCAL ENDPOINTS
+Route::get("/sinker_local/sink_all", [SinkerLoc::class, "sinkAll"]);
+
+
+
+//CLOUD ENDPOINTS
+Route::post("/sinker_cloud/sink_transactions", [SinkerClod::class, "sinkTransactions"]);

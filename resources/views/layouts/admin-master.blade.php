@@ -113,7 +113,9 @@
         <!--  Sidebar Starts  -->
         <div class="sidebar-wrapper sidebar-theme">
             <nav id="sidebar">
+            
                 <ul class="list-unstyled menu-categories" id="accordionExample">
+                    @if(!auth()->user()->is_admin && !in_array("SVA", auth()->user()->profile->role->getPermissionCodenamesAttribute()))
                     <li class="menu-title">Dashboard</li>
                     <li class="menu">
                         <a href="{{route('dashboards.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'dashboards.index' ? 'true' : 'false' }}">
@@ -123,6 +125,18 @@
                             </div>
                         </a>
                     </li>
+                    @endif
+                    @if(auth()->user()->is_admin)
+                    <li class="menu-title">Dashboard</li>
+                    <li class="menu">
+                        <a href="{{route('dashboards.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'dashboards.index' ? 'true' : 'false' }}">
+                            <div class="">
+                                <i class="las la-home"></i>
+                                <span>Dashboard</span>
+                            </div>
+                        </a>
+                    </li>
+                    @endif
                     <!-- STARTS HERE -->
                     @if(auth()->user()->is_admin)
                     <li class="menu-title">Branches</li>
@@ -224,7 +238,7 @@
                     @if(!auth()->user()->is_admin && in_array("SVA", auth()->user()->profile->role->getPermissionCodenamesAttribute()))
                     <li class="menu-title">Server</li>
                     <li class="menu">
-                        <a href="{{route('notifications.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'notifications.index' ? 'true' : 'false' }}">
+                        <a href="{{route('servers.show', ['server' => auth()->user()->profile->branch->server])}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'notifications.index' ? 'true' : 'false' }}">
                             <div class="">
                                 <i class="las la-envelope"></i>
                                 <span>Server</span>

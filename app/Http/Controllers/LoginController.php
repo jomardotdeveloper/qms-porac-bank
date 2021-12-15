@@ -58,8 +58,11 @@ class LoginController extends Controller
                 $log->save();
             }
             
-
-            return redirect()->intended("/backend/dashboards");
+            if(!auth()->user()->is_admin && in_array("SVA", auth()->user()->profile->role->getPermissionCodenamesAttribute())){
+                return redirect()->intended("/backend/servers/" . auth()->user()->profile->branch->server->id);
+            }else{
+                return redirect()->intended("/backend/dashboards");
+            }
         }
         
         return back()->withErrors([

@@ -16,7 +16,8 @@ class Profile extends Model
         "first_name",
         "middle_name",
         "last_name",
-        "photo"
+        "photo",
+        "is_sync"
     ];
 
     public function user() {

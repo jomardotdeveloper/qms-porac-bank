@@ -51,6 +51,7 @@
 @push("custom-scripts")
 <script src="/admin/plugins/apex/apexcharts.min.js"></script>
 <!-- <script src="/admin/assets/js/dashboard/dashboard_1.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
 var dangerColor = "#e7515a";
 var successColor = "#2262c6";
@@ -187,7 +188,33 @@ setInterval(
 
             socket.send(JSON.stringify(datas));
         }
+
+        console.log(jsonObject);
     }
+
+
+    var localSocket  = new WebSocket('ws://127.0.0.1:8090');
+
+    localSocket.onmessage = function(e){
+        if(jsonObject["message"] == "newCustomer"){
+
+        }
+    }
+
+
+    const ENDPOINTS = {
+        GET_ALL : ""
+    }
+
+    async function getTransactionsUnsink(){
+        var params = branch;
+        var res  = (await axios.get(ENDPOINTS.GET_ALL + params)).data;
+        return res; 
+    }
+
+    
+
+
 </script>
 @endpush
 
