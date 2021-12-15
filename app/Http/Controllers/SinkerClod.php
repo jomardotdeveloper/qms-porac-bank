@@ -17,8 +17,8 @@ class SinkerClod extends Controller
         foreach($transactions as $transaction){
             
             array_push($data, $transaction["token"]);
-            // $finder = Transaction::where("token", "=", $transaction["token"])->where("in", "=", $transaction["in"])->first();
-
+            $finder = Transaction::where("token", "=", $transaction["token"])->where("in", "=", $transaction["in"])->first();
+            
             // if($finder){
             //     $finder->fill([
             //         "token" => $transaction["token"],
