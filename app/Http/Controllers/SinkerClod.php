@@ -22,7 +22,7 @@ class SinkerClod extends Controller
             if($finder){
                 $finder->fill([
                     "token" => $transaction["token"],
-                    "order" => $order,
+                    "order" => $transaction["order"],
                     "account_id" => $account,
                     "state" => $transaction["state"],
                     "in" => $transaction["in"],
