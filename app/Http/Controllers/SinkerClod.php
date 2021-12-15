@@ -18,12 +18,18 @@ class SinkerClod extends Controller
             
             array_push($data, $transaction["token"]);
             $finder = Transaction::where("token", "=", $transaction["token"])->where("in", "=", $transaction["in"])->first();
+            $profile = null;
+            if($transaction["profile_id"] != null){
+                if($this->userExists($transaction["profile"]["user"]["username"])){
+                    $profile = $this->getUser($transaction["profile"]["user"]["username"])->id;
+                }
+            }
 
             if($finder){
+                
                 $finder->fill([
                     "token" => $transaction["token"],
                     "order" => $transaction["order"],
-                    "account_id" => $account,
                     "state" => $transaction["state"],
                     "in" => $transaction["in"],
                     "out" => $transaction["out"],
@@ -46,8 +52,7 @@ class SinkerClod extends Controller
             }else{
                 array_push($data, $transaction["token"]);
                 $account = null;
-                $profile = null;
-
+              
                 if($transaction["account_id"] != null){
                     if($this->accountExists($transaction["account"]["account_number"])){
                         $account = $this->getAccount($transaction["account"]["account_number"])->id;
