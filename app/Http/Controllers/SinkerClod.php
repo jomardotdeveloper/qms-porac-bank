@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class SinkerClod extends Controller
 {
     public function sinkTransactions(Request $request){
-        return $request->all();
+        return count($request->get("transactions")) > 0;
     }
 
     public function sinkTransactionsViaJson(){

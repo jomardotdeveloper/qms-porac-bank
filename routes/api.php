@@ -98,7 +98,7 @@ Route::get("/codes/check_code/{number}/{code}", [CodeController::class, "checker
 
 
 //LOCAL ENDPOINTS
-Route::get("/sinker_local/sink_all", [SinkerLoc::class, "sinkAll"]);
-
+Route::get("/sinker_local/get_validated", [SinkerLoc::class, "getValidated"]);
+Route::get("/sinker_local/get_all/{branch_id}", [SinkerLoc::class, "getAllTransactions"]);
 //CLOUD ENDPOINTS
 Route::post("/sinker_cloud/sink_transactions", [SinkerClod::class, "sinkTransactions"]);

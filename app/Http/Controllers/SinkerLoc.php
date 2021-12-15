@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use App\Models\Account;
 use App\Models\Profile;
 use App\Models\User;
@@ -12,13 +13,15 @@ use GuzzleHttp\Client;
 class SinkerLoc extends Controller
 {
     public function sinkTransactions(){
-        $client = new Client;
-        $endpoint = 'https://www.poracbankqms.com/api/';
-        $res = $client->post($endpoint . 'sinker_cloud/sink_transactions',["form_params" => [
-            "transactions" => Transaction::all()
-        ]]);
-
+        $response = Http::post('https://www.poracbankqms.com/api/sinker_cloud/sink_transactions', [
+            'name' => 'Steve',
+            'role' => 'Network Administrator',
+        ]);
         // dd($res);
+    }
+
+    public function getAllTransactions($branch_id){
+        return Transaction::where("branch_id", "=", $branch_id)->where("is_sync", "=", false)->get()->all();
     }
 
     public function sinkTransactionsViaJson(){
@@ -51,22 +54,27 @@ class SinkerLoc extends Controller
 
     }
 
-    public function sinkAll(){
+    public function getValidated(){
         $flag = false;
+        $data = [
+            "sinkUser" => 0,
+            "sinkAccount" => 0,
+            "viaJson" => 0
+        ];
 
         if($this->userHasUnsink()){
-            $this->sinkUser();
+            $data["sinkUser"] = 1;
             $flag = true;
         }
 
         if($this->accountHasUnsink()){
-            $this->sinkAccount();
+            $data["sinkAccount"] = 1;
             $flag = true;
         }
 
         if($flag)
-            $this->sinkTransactionsViaJson();
-        else
-            $this->sinkTransactions();
+            $data["viaJson"] = 1;
+
+        return $data;
     }
 }

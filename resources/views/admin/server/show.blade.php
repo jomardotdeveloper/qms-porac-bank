@@ -171,7 +171,7 @@ setInterval(
 
 
 <script>
-    // var branch = $("#branch_id").val();
+    var branch = $("#branch_id").val();
     // var socket  = new WebSocket('ws://74.63.204.84:8090');
     // socket.onmessage = function(e){
     //     var jsonObject = jQuery.parseJSON(e.data);
@@ -201,16 +201,20 @@ setInterval(
     //     }
     // }
 
-
-
-
     async function getTransactionsUnsink(){
-        // var params = branch;
-        var res  = (await axios.post("/api/sinker_cloud/sink_transactions", {sample : "HAHAHA"})).data;
-        console.log (res); 
+        var res  = (await axios.get("/api/sinker_local/get_all/" + branch)).data;
+        return res;  
     }
-    getTransactionsUnsink();
-    // console.log( await getTransactionsUnsink());
+
+
+    async function sink(){
+        var res  = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_transactions", {
+            transactions : await getTransactionsUnsink()
+        } )).data;
+
+        console.log(res);
+    }
+    sink();
 
 
 </script>
