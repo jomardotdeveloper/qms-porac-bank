@@ -13,6 +13,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\CodeController;
+use App\Http\Controllers\MessagingController;
 
 use App\Http\Controllers\SinkerLoc;
 use App\Http\Controllers\SinkerClod;
@@ -91,3 +92,9 @@ Route::post("/sinker_local/sink_transactions", [SinkerLoc::class, "sinkTransacti
 //CLOUD ENDPOINTS
 Route::post("/sinker_cloud/sink_transactions", [SinkerClod::class, "sinkTransactions"]);
 Route::get("/sinker_cloud/get_all/{branch_id}", [SinkerClod::class, "getAllTransactions"]);
+
+
+// NEW MESSAGING PROCESS
+Route::get("/messaging/send_message/{id}/{is_prio_message}", [MessagingController::class, "sendMessage"]);
+Route::get("/messaging/get_notification/{id}/{is_prio_message}", [MessagingController::class, "getNotification"]);
+

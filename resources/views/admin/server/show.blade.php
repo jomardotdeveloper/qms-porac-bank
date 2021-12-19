@@ -5,6 +5,7 @@
 <link href="/admin/plugins/flatpickr/custom-flatpickr.css" rel="stylesheet" type="text/css">
 <link href="/admin/assets/css/elements/tooltip.css" rel="stylesheet" type="text/css">
 <link href="/admin/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
+<link href="/admin/plugins/notification/snackbar/snackbar.min.css" rel="stylesheet" type="text/css">
 @endsection
 @section("breadcrumbs")
 <nav class="breadcrumb-one" aria-label="breadcrumb">
@@ -52,9 +53,11 @@
 <script src="/admin/plugins/apex/apexcharts.min.js"></script>
 <!-- <script src="/admin/assets/js/dashboard/dashboard_1.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/admin/plugins/notification/snackbar/snackbar.min.js"></script>
 <script>
 var dangerColor = "#e7515a";
 var successColor = "#2262c6";
+
 
 var options5 = {
     series: [0],
@@ -116,6 +119,8 @@ var isOnline = false;
 var branch = $("#branch_id").val();
 var socket  = new WebSocket('ws://74.63.204.84:8090');
 var localSocket  = new WebSocket('ws://127.0.0.1:8090');
+var hasNoConnection = false;
+var mtimer = 1;
 // 1,2,3
 var needToSync = 1;
 var networkSpeedCache = 0;
@@ -125,10 +130,35 @@ const maximum = 10;
 setInterval(
     function () {
         var status = window.navigator.onLine;
+        
+        if(status){
+            if(hasNoConnection){
+                // socket.close();
+                mtimer++;
+                if(mtimer == 3){
+                    sink();
+                    Snackbar.show({
+                        text: 'Syncing data with the cloud server.',
+                        pos: 'bottom-right'
+                    });
+                    hasNoConnection = false;
+                    mtimer = 1; 
+                    // socket  = new WebSocket('ws://74.63.204.84:8090');
+                } 
+                console.log("pumapasok kase dito");
+            }
+        }else{
+            
+            hasNoConnection = true;
+        }
+        
+
         if(isOnline != status){
             isOnline = status; 
             // Update Chart
             if(status){
+                
+
                 var speed = navigator.connection.downlink;
                 if(networkSpeedCache != speed){
                     networkSpeedCache = speed;
@@ -155,6 +185,9 @@ setInterval(
                     }
                 });
             }else{
+                networkSpeedCache = 0;
+                
+                chart.updateSeries([0]);
                 chart.updateOptions({
                     labels : ["No Internet Connection "],
                     plotOptions : {
@@ -194,6 +227,10 @@ setInterval(
             fetchCloud();
         }
 
+        if(jsonObject["message"] == "sink" && jsonObject["branch_id"] == branch){
+            sinkNotifier();
+        }
+
         console.log(jsonObject);
     }
 
@@ -205,17 +242,59 @@ setInterval(
         jsonObject = jQuery.parseJSON(jsonObject["message"]);
 
         if(jsonObject["message"] == "newCustomer" && jsonObject["branch_id"] == branch){
-            sink();
+            if(window.navigator.onLine){
+                sink();
+            }else{
+                Snackbar.show({
+                    text: 'Failed to sync. Internet connection failure.',
+                    pos: 'bottom-right'
+                });
+            }
         }
 
         if(jsonObject["message"] == "nextCustomer" && jsonObject["branch_id"] == branch){
-            sink();
+            if(window.navigator.onLine){
+                sink();
+            }else{
+                Snackbar.show({
+                    text: 'Failed to sync. Internet connection failure.',
+                    pos: 'bottom-right'
+                });
+            }
+        }
+
+        if(jsonObject["message"] == "pushNotif" && jsonObject["branch_id"] == branch){
+            var notifData = {
+                message : "pushNotif", 
+                log : jsonObject["log"], 
+                transaction_id : jsonObject["transaction_id"], 
+                token : jsonObject["token"], 
+                datetime : jsonObject["datetime"], 
+                branch_id: jsonObject["branch_id"],
+                service : jsonObject["service"]
+            };
+            
+            if(window.navigator.onLine){
+                socket.send(JSON.stringify(notifData));
+            }else{
+                Snackbar.show({
+                    text: 'Failed to send push notification. Internet connection failure.',
+                    pos: 'bottom-right'
+                });
+            }
+            
         }
     }
 
     async function getTransactionsUnsink(){
         var res  = (await axios.get("/api/sinker_local/get_all/" + branch)).data;
         return res;  
+    }
+
+    async function sinkNotifier(){
+        var res  = (await axios.post("/api/sinker_local/sink_transactions", {
+            transactions : await getTransactionsCloud()
+        } )).data;
     }
 
     async function sink(){

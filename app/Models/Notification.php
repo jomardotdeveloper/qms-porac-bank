@@ -13,7 +13,8 @@ class Notification extends Model
         "account_id",
         "message",
         "transaction_id",
-        "branch_id"
+        "branch_id",
+        "is_push"
     ];
 
 

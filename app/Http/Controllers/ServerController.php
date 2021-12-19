@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Server;
+use App\Models\Branch;
 use App\Models\Log;
 use Illuminate\Support\Facades\Auth;
 class ServerController extends Controller
@@ -95,7 +96,8 @@ class ServerController extends Controller
 
     public function getBranchID(Request $request){
         return [
-            "branch_id" => intval(Log::find(1)->branch_id)
+            "branch_id" => intval(Log::find(1)->branch_id),
+            "branch_name" => Branch::find(Log::find(1)->branch_id)->name
         ];
     }
 

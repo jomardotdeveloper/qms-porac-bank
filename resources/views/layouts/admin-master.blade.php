@@ -252,26 +252,217 @@
                     @endif
                     @if(auth()->user()->is_admin || in_array("RA", auth()->user()->profile->role->getPermissionCodenamesAttribute()))
                     <li class="menu">
-                        <a href="{{route('notifications.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'notifications.index' ? 'true' : 'false' }}">
+                        <a href="#notifications" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle ">
                             <div class="">
                                 <i class="las la-envelope"></i>
                                 <span>Notifications</span>
                             </div>
-                        </a>
-                    </li>
-                    <li class="menu">
-                        <a href="{{route('notifications.index')}}" aria-expanded="false" class="dropdown-toggle" data-active="{{ request()->route()->getName() == 'notifications.index' ? 'true' : 'false' }}">
-                            <div class="">
-                                <i class="las la-money-bill-wave"></i>
-                                <span>Deposits</span>
+                            <div>
+                                <i class="las la-angle-right sidemenu-right-icon"></i>
                             </div>
                         </a>
+                        <ul class="collapse submenu list-unstyled {{ request()->route()->getName() == 'notifications.index' || request()->route()->getName() == 'notifications.index.daily' ||  request()->route()->getName() == 'notifications.index.monthly' ||  request()->route()->getName() == 'notifications.index.yearly' ? 'show' : ''  }}" id="notifications" data-parent="#accordionExample">
+                            <li>
+                                <a data-active="{{ request()->route()->getName() == 'notifications.index' ? 'true' : 'false'  }}" href="{{ route('notifications.index') }}"> All </a>
+                            </li>
+                            <li>
+                                <a data-active="{{ request()->route()->getName() == 'notifications.index.daily' ? 'true' : 'false'  }}"  href="{{ route('notifications.index.daily') }}"> Daily </a>
+                            </li>
+                            <li>
+                                <a data-active="{{ request()->route()->getName() == 'notifications.index.monthly' ? 'true' : 'false'  }}"  href="{{ route('notifications.index.monthly') }}"> Monthly </a>
+                            </li>
+                            <li>
+                                <a data-active="{{ request()->route()->getName() == 'notifications.index.yearly' ? 'true' : 'false'  }}"  href="{{ route('notifications.index.yearly') }}"> Yearly </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="menu">
+                        <a href="#transactions" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <i class="las la-male"></i>
+                                <span>Performance</span>
+                            </div>
+                            <div>
+                                <i class="las la-angle-right sidemenu-right-icon"></i>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="transactions" data-parent="#accordionExample">
+                            <li>
+                                <a href="maps_leaflet_map.html"> All </a>
+                            </li>
+                            <li>
+                                <a href="maps_vector_map.html"> Daily </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Monthly </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Yearly </a>
+                            </li>
+                        </ul>
                     </li>
                     <li class="menu">
                         <a href="#transactions" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
                             <div class="">
                                 <i class="las la-file-invoice"></i>
                                 <span>Transactions</span>
+                            </div>
+                            <div>
+                                <i class="las la-angle-right sidemenu-right-icon"></i>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="transactions" data-parent="#accordionExample">
+                            <li>
+                                <a href="maps_leaflet_map.html"> All </a>
+                            </li>
+                            <li>
+                                <a href="maps_vector_map.html"> Daily </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Monthly </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Yearly </a>
+                            </li>
+                        </ul>
+                    </li>
+
+
+                    <li class="menu">
+                        <a href="#transactions" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <i class="las la-money-bill"></i>
+                                <span>Cash Deposits</span>
+                            </div>
+                            <div>
+                                <i class="las la-angle-right sidemenu-right-icon"></i>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="transactions" data-parent="#accordionExample">
+                            <li>
+                                <a href="maps_leaflet_map.html"> All </a>
+                            </li>
+                            <li>
+                                <a href="maps_vector_map.html"> Daily </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Monthly </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Yearly </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="menu">
+                        <a href="#transactions" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <i class="las la-money-bill-wave"></i>
+                                <span>Cash Withdrawals</span>
+                            </div>
+                            <div>
+                                <i class="las la-angle-right sidemenu-right-icon"></i>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="transactions" data-parent="#accordionExample">
+                            <li>
+                                <a href="maps_leaflet_map.html"> All </a>
+                            </li>
+                            <li>
+                                <a href="maps_vector_map.html"> Daily </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Monthly </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Yearly </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="menu">
+                        <a href="#transactions" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <i class="las la-money-check"></i>
+                                <span>Cash Encashments</span>
+                            </div>
+                            <div>
+                                <i class="las la-angle-right sidemenu-right-icon"></i>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="transactions" data-parent="#accordionExample">
+                            <li>
+                                <a href="maps_leaflet_map.html"> All </a>
+                            </li>
+                            <li>
+                                <a href="maps_vector_map.html"> Daily </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Monthly </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Yearly </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="menu">
+                        <a href="#transactions" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <i class="las las la-wallet"></i>
+                                <span>Bills Payment</span>
+                            </div>
+                            <div>
+                                <i class="las la-angle-right sidemenu-right-icon"></i>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="transactions" data-parent="#accordionExample">
+                            <li>
+                                <a href="maps_leaflet_map.html"> All </a>
+                            </li>
+                            <li>
+                                <a href="maps_vector_map.html"> Daily </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Monthly </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Yearly </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="menu">
+                        <a href="#transactions" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <i class="las la-credit-card"></i>
+                                <span>Loan Transactions</span>
+                            </div>
+                            <div>
+                                <i class="las la-angle-right sidemenu-right-icon"></i>
+                            </div>
+                        </a>
+                        <ul class="collapse submenu list-unstyled" id="transactions" data-parent="#accordionExample">
+                            <li>
+                                <a href="maps_leaflet_map.html"> All </a>
+                            </li>
+                            <li>
+                                <a href="maps_vector_map.html"> Daily </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Monthly </a>
+                            </li>
+                            <li>
+                                <a href="maps_leaflet_map.html"> Yearly </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu">
+                        <a href="#transactions" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                            <div class="">
+                                <i class="las la-file-invoice-dollar"></i>
+                                <span>New Accounts</span>
                             </div>
                             <div>
                                 <i class="las la-angle-right sidemenu-right-icon"></i>

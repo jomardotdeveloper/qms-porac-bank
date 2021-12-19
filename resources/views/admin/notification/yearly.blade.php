@@ -9,7 +9,7 @@
 <nav class="breadcrumb-one" aria-label="breadcrumb">
     <ol class="breadcrumb">
         <!-- <li class="breadcrumb-item"><a href="javascript:void(0);">Branches</a></li> -->
-        <li class="breadcrumb-item" aria-current="page"><span>Notifications</span></li>
+        <li class="breadcrumb-item" aria-current="page"><span>Yearly Notifications</span></li>
     </ol>
 </nav>
 @endsection
@@ -22,40 +22,38 @@
                     <!-- BASIC -->
                     <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                         <div class="widget-content widget-content-area br-6">
-                        <h4 class="table-header">All Notifications</h4>
+                        <h4 class="table-header">Yearly Notifications</h4>
                             <div class="table-responsive mb-4">
                                 <table id="basic-dt" class="table table-hover" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th>Token</th>
-                                            <th>Account</th>
-                                            <th>Branch</th>
-                                            <th>Date</th>
-                                            <th>Message</th>
+                                            <th>Year</th>
+                                            <th>SMS Notifications</th>
+                                            <th>Push Notifications</th>
+                                            <th>PDF</th>
+                                            <th>EXCEL</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                       @foreach($notifications as $notification)
-                                        <tr>
-                                            <td>{{ $notification->transaction->token }}</td>
-                                            @if($notification->account_id != null)
-                                            <td>{{ $notification->account->account_number }}</td>
-                                            @else
-                                            <td>None</td>
-                                            @endif
-                                            <td>{{ $notification->branch->name }}</td>
-                                            <td>{{ $notification->created_at }}</td>
-                                            <td>{{ $notification->message }}</td>
-                                        </tr>
+                                        @foreach($data as $notification)
+                                       <tr>
+                                           <td>{{ $notification["datename"] }}</td>
+                                           <td>{{ $notification["sms"] }}</td>
+                                           <td>{{ $notification["push"] }}</td>
+                                           <td>
+                                           <a href="{{ route('notifications.export.pdf.daily', ['date' => $notification['date']]) }}" title="Edit" class="font-20 text-primary"><i class="las la-file-pdf"></i></a>
+                                           </td>
+                                           <td><a href="#" title="Edit" class="font-20 text-primary"><i class="las la-file-excel"></i></a></td>
+                                       </tr>
                                        @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th>Token</th>
-                                            <th>Account</th>
-                                            <th>Branch</th>
-                                            <th>Date</th>
-                                            <th>Message</th>
+                                            <th>Year</th>
+                                            <th>SMS NOTIFICATIONS</th>
+                                            <th>PUSH NOTIFICATIONS</th>
+                                            <th>PDF</th>
+                                            <th>EXCEL</th>
                                         </tr>
                                     </tfoot>
                                 </table>

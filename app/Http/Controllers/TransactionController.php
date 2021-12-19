@@ -334,39 +334,78 @@ class TransactionController extends Controller
                 "profile_id" => null,
                 "is_mobile" => isset($request->all()["is_mobile"]) ? true : false,
                 "bill_id" =>  isset($request->all()["bill_id"]) ? $request->get("bill_id") : null,
-                "loan_id" => isset($request->all()["loan_id"]) ? $request->get("loan_id") : null
+                "loan_id" => isset($request->all()["loan_id"]) ? $request->get("loan_id") : null,
+
             ]);
             
             if($this->isCutoff($request->get("branch_id"))){
                 $created->in = date('Y-m-d H:i:s', strtotime("+1 days"));
                 $created->save();
+            }else{
+                
+                if(isset($request->all()["mobile_number"])){
+                    if($created->is_notifiable){
+                        $res = $this->sendMessage1($created->id, "0");
+                        
+                        if(intval($res["status"]) == 1){
+                            if($created->account_id != null){
+                                Notification::create([
+                                    "account_id" => $created->account->id,
+                                    "message" => $res["log"],
+                                    "transaction_id" => $created->id,
+                                    "branch_id" => $created->branch->id
+                                ]);
+                            }else{
+                                Notification::create([
+                                    "message" => $res["log"],
+                                    "transaction_id" => $created->id,
+                                    "branch_id" => $created->branch->id
+                                ]);
+                            }
+                            
+                        }
+                    }
+                }
             }
             
-            // if(isset($request->all()["mobile_number"])){
-            //     if($created->is_notifiable){
-            //         $res = null;
-            //         if($this->isFirst($created)){
-            //             $res = $this->sendMessageFirst($created);
-            //         }else{
-            //             $res = $this->sendMessageInforming($created);
-            //         }
-                    
-
-            //         if($res["status"] == 0){
-            //             Notification::create([
-            //                 "account_id" => $created->account->id,
-            //                 "message" => $res["message"],
-            //                 "transaction_id" => $created->id,
-            //                 "branch_id" => $created->branch->id
-            //             ]);
-            //         }
-            //     }
-            // }
+            
 
             return Transaction::find($created->id);
             
         }
         
+    }
+
+    public function notifyAllByPriority($branch_id){
+        $transactions = Transaction::with([ "account", "service", "bill", "loan" ])->orderBy("order")->whereRaw("DATE(transactions.in) = CURDATE() AND state = 'waiting' AND branch_id = ?", [$branch_id])->get()->all();
+
+        foreach($transactions as $transaction){
+            if($transaction->account_id == null){
+                $res = $this->sendMessage1($transaction->id, "1");
+
+                if(intval($res["status"]) == 1){
+                    Notification::create([
+                        "message" => $res["log"],
+                        "transaction_id" => $transaction->id,
+                        "branch_id" => $transaction->branch->id
+                    ]);
+                }
+            }else{
+                if($transaction->account->customer_type == "regular"){
+                    $res = $this->sendMessage1($transaction->id, "1");
+
+                    if(intval($res["status"]) == 1){
+                        Notification::create([
+                            "account_id" => $transaction->account->id,
+                            "message" => $res["log"],
+                            "transaction_id" => $transaction->id,
+                            "branch_id" => $transaction->branch->id
+                        ]);
+                    }
+                }
+            }
+        }   
+
     }
 
     public function get_account_id($account_number){
@@ -945,6 +984,173 @@ class TransactionController extends Controller
         
         return $transactions[0];
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function getOrder1($id){
+        $transaction = Transaction::find($id);
+        $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting'", [$transaction->branch->id])->get()->all();
+        $count = 0;
+        
+
+        foreach($transactions as $t){
+            if($transaction->order > $t->order){
+                $count++;
+            }else if($transaction->order < $t->order){
+                if($t->account_id != null){
+                    $account = Account::find($t->account_id);
+                    if($account->customer_type == "priority"){
+                        $count++;
+                    }
+                }
+            }
+        }
+
+
+        if($this->hasServing1($transaction->branch->id)){
+            return $count + 2;
+        }
+
+        return $count + 1;
+    }
+
+    public function hasServing1($branch_id){
+        $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND state = 'serving'", [$branch_id])->get()->all();
+        return count($transactions) > 0;
+    }
+
+    public function sendMessage1($id, $isPrioMessage){
+        $transaction = Transaction::find($id);
+        $windows = $this->get_active_current1($transaction->branch->id);
+        $window_1 = $windows[1] == null ? "NONE" : $windows[1];
+        $window_2 = $windows[2] == null ? "NONE" : $windows[2];
+        $window_3 = $windows[3] == null ? "NONE" : $windows[3];
+
+        $token = $transaction->token;
+        $waitingTime = $this->getEstimateWaitingTime1($id);
+        $order = $this->ordinal1($this->getOrder1($id));
+
+        $data = [];
+
+        if($transaction->is_notifiable && $transaction->mobile_number != null){
+            if(intval($isPrioMessage) == 1){
+                $message = $this->getMessagePrio1($waitingTime, $window_1, $window_2, $window_3);
+                $sent = $this->itextMoSend1($transaction->mobile_number, $message);
+                if(intval($sent) == 0){
+                    $data["status"] = 1;
+                    $data["log"] = $message;
+                }else{
+                    $data["status"] = 0;
+                }
+            }else{
+                if($transaction->state == "serving"){
+                    $my_window =  $transaction->window->order;
+                    $message = $this->getMessageFirst1($my_window, $token);
+                    $sent = $this->itextMoSend1($transaction->mobile_number, $message);
+                    if(intval($sent) == 0){
+                        $data["status"] = 1;
+                        $data["log"] = $message;
+                    }else{
+                        $data["status"] = 0;
+                    }
+                }else if($transaction->state == "waiting"){
+                    $message = $this->getMessageQueue1($token, $order, $waitingTime, $window_1, $window_2, $window_3);
+                    $sent = $this->itextMoSend1($transaction->mobile_number, $message);
+                    if(intval($sent) == 0){
+                        $data["status"] = 1;
+                        $data["log"] = $message;
+                    }else{
+                        $data["status"] = 0;
+                    }
+                }
+            }
+
+            
+        }else{
+            $data["status"] = 0;
+        }
+
+        
+        return $data;
+    }
+
+    public function getMessageFirst1($window , $token){
+        return "Hello, dear customer! You have reached the front of the Queue. Window $window is waiting for your queue number $token. Kindly proceed to Window $window to receive the service. Thank you.";
+    }
+
+    public function getMessagePrio1($waitingTime, $window_1, $window_2, $window_3){
+        return "Hello, customer! We'd like to inform you that a priority customer has been added to the line. Your wait time is estimated to be $waitingTime minutes. This is the queue status: \nWindow 1 : $window_1 \nWindow 2 : $window_2 \nWindow 3 : $window_3\nThank you.";
+    }
+
+    public function getMessageQueue1($token, $order, $waitingTime, $window_1, $window_2, $window_3){
+        return "Hello customer! Thank you for your patience. Your queue number $token is $order in the queue and will be called in approximately $waitingTime minutes. This is the queue status: \nWindow 1 : $window_1 \nWindow 2 : $window_2 \nWindow 3 : $window_3\nThank you. ";
+    }
+
+
+
+
+    public function get_active_current1($branch_id){
+        $all_windows = Window::with(["profile"])->where("branch_id", "=", $branch_id)->get()->all();
+        $data = [];
+
+        foreach($all_windows as $window){
+            $data[$window["order"]] =DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'serving' AND window_id = ?", [$branch_id, $window->id,])->get()->first();
+        }
+
+        return $data;
+    }
+
+
+    function ordinal1($number) {
+        $ends = array('th','st','nd','rd','th','th','th','th','th','th');
+        if ((($number % 100) >= 11) && (($number%100) <= 13))
+            return $number. 'th';
+        else
+            return $number. $ends[$number % 10];
+    }
+
+    public function getEstimateWaitingTime1($id){
+        $burst_time = 5;
+        // $transactions
+
+        // $transaction = Transaction::find($id);
+        return $burst_time;
+    }
+
+    public function itextMoSend1($to, $message){
+        if(strlen($to) == 10){
+            $to = "0" . $to;
+        }
+
+        $client = new Client;
+        $endpoint = 'https://www.itexmo.com/php_api/';
+
+        $res = $client->post($endpoint . 'api.php',["form_params" => [
+            '1' => $to,
+            '2' => $message,
+            '3' => "ST-SAIRA416151_ILJ5C",
+            "passwd" => "%p5d)1]pq9"
+        ]]);
+        
+        
+        
+        return $res->getBody()->getContents();
+    }   
 }
 
 

@@ -80,7 +80,14 @@ Route::prefix("/backend")->middleware(["auth"])->group(function(){
     Route::resource("my_profile", MyProfileController::class);
     Route::resource("dashboards", DashboardController::class);
     Route::resource("controls", ControlController::class)->middleware("checkcontrol"); 
+
+    // NOTIFICATION REPORTS
     Route::resource("notifications", NotificationController::class)->middleware("checkreport"); 
+    Route::get("/notification/daily", [NotificationController::class, "daily"])->name("notifications.index.daily")->middleware("checkreport"); 
+    Route::get("/notification/monthly", [NotificationController::class, "monthly"])->name("notifications.index.monthly")->middleware("checkreport");
+    Route::get("/notification/yearly", [NotificationController::class, "yearly"])->name("notifications.index.yearly")->middleware("checkreport");
+    Route::get("/notification/export_pdf_daily/{date}", [NotificationController::class, "export_pdf_daily"])->name("notifications.export.pdf.daily")->middleware("checkreport");
+
     Route::resource("transactions", TransactionController::class)->middleware("checkreport"); 
     Route::post("transactions/generate_demo_data", [TransactionController::class, "generate_demo_data"])->name("transaction.generate_demo_data"); 
     Route::post("transactions/export", [TransactionController::class, "export"])->name("transaction.export"); 
