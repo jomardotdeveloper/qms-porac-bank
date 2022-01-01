@@ -46,12 +46,12 @@ class WebsocketController extends Controller implements MessageComponentInterfac
      */
     function onError(ConnectionInterface $conn, \Exception $e)
     {
-        if (array_key_exists($conn->resourceId, $this->branches)) {
-            $server = Server::where("branch_id", "=", $this->branches[$conn->resourceId])->first();
-            $server->is_connected = false;
-            $server->save();
-            unset($this->branches[$conn->resourceId]);
-        }
+        // if (array_key_exists($conn->resourceId, $this->branches)) {
+        //     $server = Server::where("branch_id", "=", $this->branches[$conn->resourceId])->first();
+        //     $server->is_connected = false;
+        //     $server->save();
+        //     unset($this->branches[$conn->resourceId]);
+        // }
     }
 
     /**
