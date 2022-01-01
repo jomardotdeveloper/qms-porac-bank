@@ -63,6 +63,32 @@ class Transaction extends Model
         return $this->belongsTo(Loan::class, "loan_id");
     }
 
+    public function formattedServingTime(){
+        if($this->servedtime != null){
+            $hour = gmdate("H", intval($this->servedtime));
+            $min = gmdate("i", intval($this->servedtime));
+            $sec = gmdate("s", intval($this->servedtime));
+            $time = "";
+            if(intval($hour) != 0){
+                $time.=strval($hour) . " h ";
+            }
+
+            if(intval($min) != 0){
+                $time.=strval($min) . " m ";
+            }
+
+            if(intval($sec) != 0){
+                $time.=strval($sec) . " s ";
+            }else{
+                return "0 s";
+            }
+            
+            return $time;
+        }else{ 
+            return "0 s";
+        }
+    }
+
     public function getDateAttribute()
     {
         return $this->created_at->format('d.m.Y');

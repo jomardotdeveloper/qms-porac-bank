@@ -1,5 +1,5 @@
 @extends("layouts.admin-master")
-@section("title", "Notifications")
+@section("title", "New Account Reports")
 @section("custom-styles")
 <link rel="stylesheet" type="text/css" href="/admin/plugins/table/datatable/datatables.css">
 <link rel="stylesheet" type="text/css" href="/admin/plugins/table/datatable/dt-global_style.css">
@@ -9,7 +9,7 @@
 <nav class="breadcrumb-one" aria-label="breadcrumb">
     <ol class="breadcrumb">
         <!-- <li class="breadcrumb-item"><a href="javascript:void(0);">Branches</a></li> -->
-        <li class="breadcrumb-item" aria-current="page"><span>Notifications</span></li>
+        <li class="breadcrumb-item" aria-current="page"><span>New Account Reports</span></li>
     </ol>
 </nav>
 @endsection
@@ -23,7 +23,7 @@
                     <!-- BASIC -->
                     <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                         <div class="widget-content widget-content-area br-6">
-                        @if($errors->any())
+                            @if($errors->any())
                             <div class="alert alert-danger mb-4" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"> 
                                     <i class="las la-times"></i>
@@ -35,43 +35,36 @@
                                 </ul>
                             </div>
                             @endif
-                        <h4 class="table-header">All Notifications</h4>
+                        <h4 class="table-header">All New Account Reports</h4>
                             <div class="table-responsive mb-4">
                                 <table id="basic-dt" class="table table-hover" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th>Token</th>
+                                            @if(auth()->user()->is_admin)
                                             <th>Branch</th>
+                                            @endif
+                                            <th>Token</th>
                                             <th>Date</th>
-                                            <th>Type</th>
-                                            <th>Message</th>
-                                            
                                         </tr>
                                     </thead>
                                     <tbody>
-                                       @foreach($notifications as $notification)
+                                       @foreach($news as $new)
                                         <tr>
-                                            <td>{{ $notification->transaction->token }}</td>
-                                            <td>{{ $notification->branch->name }}</td>
-                                            <td>{{ date_format(date_create($notification->datetime), 'F d, Y') }}</td>
-                                            @if($notification->is_push)
-                                            <td>Push</td>
-                                            @else
-                                            <td>Sms</td>
+                                            @if(auth()->user()->is_admin)
+                                            <td>{{ $new->branch->name }}</td>
                                             @endif
-                                            <td>{{ $notification->message }}</td>
-                                            
+                                            <td>{{ $new->token }}</td>
+                                            <td>{{ date_format(date_create($new->in), 'F d, Y') }}</td>
                                         </tr>
                                        @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th>Token</th>
+                                            @if(auth()->user()->is_admin)
                                             <th>Branch</th>
+                                            @endif
+                                            <th>Token</th>
                                             <th>Date</th>
-                                            <th>Type</th>
-                                            <th>Message</th>
-                                            
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -93,7 +86,7 @@
                     <i class="las la-times"></i>
                 </button>
             </div>
-            <form action="{{route('notifications.export')}}" method="POST" enctype="multipart/form-data">
+            <form action="{{route('news.export')}}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
@@ -102,7 +95,7 @@
                             <div class="form-group">
                                 <label>Branch 
                                 <span class="text-danger">*</span></label>
-                                <select class="form-control basic" name="branch_id" required>
+                                <select class="form-control basic" name="branch_id" id="branch_id" required>
                                     @foreach($branches as $branch)
                                     <option value="{{ $branch->id }}">{{ $branch->name }}</option>
                                     @endforeach
@@ -124,17 +117,6 @@
                                 <input type="date" class="form-control" name="to" id="to" required/>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label>Notification Type 
-                                <span class="text-danger">*</span></label>
-                                <select class="form-control basic" name="notification_type" required>
-                                    <option value="0">All</option>
-                                    <option value="1">SMS Notification</option>
-                                    <option value="2">Push Notification</option>
-                                </select>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -150,6 +132,7 @@
 
 @push("custom-scripts")
 <script src="/admin/plugins/table/datatable/datatables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#basic-dt').DataTable({

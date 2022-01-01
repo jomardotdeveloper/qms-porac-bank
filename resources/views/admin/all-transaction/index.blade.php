@@ -1,5 +1,5 @@
 @extends("layouts.admin-master")
-@section("title", "Notifications")
+@section("title", "Transactions")
 @section("custom-styles")
 <link rel="stylesheet" type="text/css" href="/admin/plugins/table/datatable/datatables.css">
 <link rel="stylesheet" type="text/css" href="/admin/plugins/table/datatable/dt-global_style.css">
@@ -9,7 +9,7 @@
 <nav class="breadcrumb-one" aria-label="breadcrumb">
     <ol class="breadcrumb">
         <!-- <li class="breadcrumb-item"><a href="javascript:void(0);">Branches</a></li> -->
-        <li class="breadcrumb-item" aria-current="page"><span>Notifications</span></li>
+        <li class="breadcrumb-item" aria-current="page"><span>Transactions</span></li>
     </ol>
 </nav>
 @endsection
@@ -23,7 +23,7 @@
                     <!-- BASIC -->
                     <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                         <div class="widget-content widget-content-area br-6">
-                        @if($errors->any())
+                            @if($errors->any())
                             <div class="alert alert-danger mb-4" role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"> 
                                     <i class="las la-times"></i>
@@ -35,43 +35,57 @@
                                 </ul>
                             </div>
                             @endif
-                        <h4 class="table-header">All Notifications</h4>
+                        <h4 class="table-header">All Transactions</h4>
                             <div class="table-responsive mb-4">
                                 <table id="basic-dt" class="table table-hover" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th>Token</th>
+                                            @if(auth()->user()->is_admin)
                                             <th>Branch</th>
+                                            @endif
+                                            <th>Service</th>
+                                            <th>Token</th>
                                             <th>Date</th>
-                                            <th>Type</th>
-                                            <th>Message</th>
-                                            
+                                            <th>Status</th>
+                                            <th>Platform</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                       @foreach($notifications as $notification)
+                                       @foreach($alls as $t)
                                         <tr>
-                                            <td>{{ $notification->transaction->token }}</td>
-                                            <td>{{ $notification->branch->name }}</td>
-                                            <td>{{ date_format(date_create($notification->datetime), 'F d, Y') }}</td>
-                                            @if($notification->is_push)
-                                            <td>Push</td>
-                                            @else
-                                            <td>Sms</td>
+                                            @if(auth()->user()->is_admin)
+                                            <td>{{ $t->branch->name }}</td>
                                             @endif
-                                            <td>{{ $notification->message }}</td>
-                                            
+                                            <td>{{ $t->service->name }}</td>
+                                            <td>{{ $t->token }}</td>
+                                            <td>{{ date_format(date_create($t->in), 'F d, Y') }}</td>
+                                            @if($t->state == 'waiting')
+                                            <td> <span class="badge badge-secondary">Waiting</span></td>
+                                            @elseif($t->state == 'out')
+                                            <td> <span class="badge badge-success">Served</span></td>
+                                            @elseif($t->state == 'drop')
+                                            <td> <span class="badge badge-danger">Drop</span></td>
+                                            @else
+                                            <td> <span class="badge badge-warning">Serving</span></td>
+                                            @endif
+                                            @if($t->is_mobile)
+                                            <td>Mobile Application</td>
+                                            @else
+                                            <td>Kiosk Machine</td>
+                                            @endif
                                         </tr>
                                        @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th>Token</th>
+                                            @if(auth()->user()->is_admin)
                                             <th>Branch</th>
+                                            @endif
+                                            <th>Service</th>
+                                            <th>Token</th>
                                             <th>Date</th>
-                                            <th>Type</th>
-                                            <th>Message</th>
-                                            
+                                            <th>Status</th>
+                                            <th>Platform</th>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -93,7 +107,7 @@
                     <i class="las la-times"></i>
                 </button>
             </div>
-            <form action="{{route('notifications.export')}}" method="POST" enctype="multipart/form-data">
+            <form action="{{route('alls.export')}}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="row">
@@ -102,7 +116,7 @@
                             <div class="form-group">
                                 <label>Branch 
                                 <span class="text-danger">*</span></label>
-                                <select class="form-control basic" name="branch_id" required>
+                                <select class="form-control basic" name="branch_id" id="branch_id" required>
                                     @foreach($branches as $branch)
                                     <option value="{{ $branch->id }}">{{ $branch->name }}</option>
                                     @endforeach
@@ -110,6 +124,19 @@
                             </div>
                         </div>
                         @endif
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label>Service 
+                                <span class="text-danger">*</span></label>
+                                <select class="form-control basic" name="service_id" id="service_id" required>
+                                    <option value="0">All</option>
+                                    @foreach($services as $service)
+                                    <option value="{{ $service->id }}">{{ $service->name }}</option>
+                                    
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-6">
                             <div class="form-group">
                                 <label>From 
@@ -126,12 +153,25 @@
                         </div>
                         <div class="col-6">
                             <div class="form-group">
-                                <label>Notification Type 
+                                <label>Status 
                                 <span class="text-danger">*</span></label>
-                                <select class="form-control basic" name="notification_type" required>
+                                <select class="form-control basic" name="status" id="status" required>
                                     <option value="0">All</option>
-                                    <option value="1">SMS Notification</option>
-                                    <option value="2">Push Notification</option>
+                                    <option value="1">Waiting</option>
+                                    <option value="2">Served</option>
+                                    <option value="3">Dropped</option>
+                                    <option value="4">Serving</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label>Platform 
+                                <span class="text-danger">*</span></label>
+                                <select class="form-control basic" name="platform" id="platform" required>
+                                    <option value="0">All</option>
+                                    <option value="1">Mobile Application</option>
+                                    <option value="2">Kiosk Machine</option>
                                 </select>
                             </div>
                         </div>
@@ -150,6 +190,7 @@
 
 @push("custom-scripts")
 <script src="/admin/plugins/table/datatable/datatables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#basic-dt').DataTable({

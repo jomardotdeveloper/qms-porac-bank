@@ -12,6 +12,7 @@
             }
             table{
                 font-family: Arial, sans-serif;
+                text-align: center;
             }
         </style>
         @yield("custom-styles")

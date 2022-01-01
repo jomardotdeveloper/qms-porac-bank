@@ -27,9 +27,5 @@ ARAYAT BRANCH
     </tr>
     @endforeach
 </table>
-<h2>SUMMARY</h2>
-<hr style="margin-top: -1rem;"/>
-<h4 style="margin-top:-.1rem; ">TOTAL NUMBER OF SMS NOTIFICATIONS: <span style="font-weight:normal;">{{ $sms }}</span></h4>
-<h4 style="margin-top:-1rem; ">TOTAL NUMBER OF PUSH NOTIFICATIONS: <span style="font-weight:normal;">{{ $push }}</span></h4>
-<h4 style="margin-top:-1rem; ">TOTAL NUMBER OF NOTIFICATIONS: <span style="font-weight:normal;">{{ $sms + $push}}</span></h4>
+
 @endsection

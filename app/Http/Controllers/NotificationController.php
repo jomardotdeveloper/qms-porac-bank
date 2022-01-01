@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaction;
+use App\Models\Branch;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +31,8 @@ class NotificationController extends Controller
         }
 
         return view("admin.notification.index", [
-            "notifications" => $notifications
+            "notifications" => $notifications,
+            "branches" => Branch::all()
         ]);
     }
 
@@ -112,6 +114,59 @@ class NotificationController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function export(Request $request){
+        $branch_id = 0;
+        $notif_filter = "";
+        $data = [
+            "from" => date_format(date_create($request->get("from")), "F d, Y"),
+            "to" => date_format(date_create($request->get("to")), "F d, Y")
+        ];
+        $pdf_obj = App::make('dompdf.wrapper');
+        $date_from = $request->get("from");
+        $date_to =  $request->get("to");
+
+
+        if($request->get("from") > $request->get("to")){
+            return back()->withErrors([
+                "date-error" => "Date from must not be greater than date to."
+            ]);
+        }
+        
+        if(intval($request->get("notification_type")) == 1){
+            $data["type"] = "Sms Notification";
+            $notif_filter = "AND is_push = 0";
+        }else if(intval($request->get("notification_type")) == 2){
+            $notif_filter = "AND is_push = 1";
+            $data["type"] = "Push Notification";
+        }
+
+        if(auth()->user()->is_admin){
+            $branch_id = $request->get("branch_id");
+        }else{ 
+            $branch_id = auth()->user()->profile->branch->id;
+        }
+
+        $data["branch"] = strtoupper(Branch::find($branch_id)->name);
+        
+        if($request->get("pdf") != null){
+            $data["data"] = Notification::with([ "account","transaction.service"])
+                ->whereRaw("DATE(notifications.datetime) >= ? AND DATE(notifications.datetime) <= ? AND branch_id = ? $notif_filter" , [$request->get("from"), $request->get("to"), $branch_id])
+                ->orderBy("datetime")
+                ->get()
+                ->all();
+
+
+            if(intval($request->get("notification_type")) == 0){
+                $data["sms"] = count(DB::table('notifications')->whereRaw("DATE(notifications.datetime) >= ? AND DATE(notifications.datetime) <= ? AND branch_id = ? AND is_push = 0", [$request->get("from"), $request->get("to"), $branch_id])->get()->all());
+                $data["push"] = count(DB::table('notifications')->whereRaw("DATE(notifications.datetime) >= ? AND DATE(notifications.datetime) <= ? AND branch_id = ? AND is_push = 1", [$request->get("from"), $request->get("to"), $branch_id])->get()->all());
+            }
+            $pdf = $pdf_obj->loadView('admin.reports.notification', ["data" => $data]);
+            return $pdf->download("Notification Reports($date_from - $date_to).pdf");
+        }
+
+        
     }
 
 
