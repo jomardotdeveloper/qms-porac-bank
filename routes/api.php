@@ -1,5 +1,6 @@
 <?php
 date_default_timezone_set('Asia/Manila');
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransactionController;
@@ -14,7 +15,15 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ServerController;
 use App\Http\Controllers\CodeController;
 use App\Http\Controllers\MessagingController;
-
+use App\Http\Controllers\PerformanceController;
+use App\Http\Controllers\CashWithController;
+use App\Http\Controllers\CashDepositController;
+use App\Http\Controllers\CashEncashmentController;
+use App\Http\Controllers\BillsPaymentController;
+use App\Http\Controllers\LoanTransactionController;
+use App\Http\Controllers\NewAccountController;
+use App\Http\Controllers\AllTransactionController;
+use App\Http\Controllers\MailManController;
 use App\Http\Controllers\SinkerLoc;
 use App\Http\Controllers\SinkerClod;
 /*
@@ -33,7 +42,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::resource("transactions", TransactionController::class);
-Route::post("notifications/store", [NotificationController::class, "store"]);   
+Route::post("notifications/store", [NotificationController::class, "store"]);
 Route::get("/server/all", [ServerController::class, "all"]);
 Route::get("/server/get_branch_id", [ServerController::class, "getBranchID"]);
 Route::get("/sms/send_message/{to}/{message}", [SMSController::class, "message"]);
@@ -97,4 +106,28 @@ Route::get("/sinker_cloud/get_all/{branch_id}", [SinkerClod::class, "getAllTrans
 // NEW MESSAGING PROCESS
 Route::get("/messaging/send_message/{id}/{is_prio_message}", [MessagingController::class, "sendMessage"]);
 Route::get("/messaging/get_notification/{id}/{is_prio_message}", [MessagingController::class, "getNotification"]);
+Route::get("/messaging/get_waiting_time/{id}", [MessagingController::class, "getEstimateWaitingTime"]);
 
+
+// PUBLIC DAILY EMAILS
+// NOTIFICATION
+Route::get("/notifications/daily/{branch_id}/{date}", [NotificationController::class, "publicDaily"]);
+// PERFORMANCE
+Route::get("/performances/daily/{branch_id}/{date}", [PerformanceController::class, "publicDaily"]);
+// ALL
+Route::get("/alls/daily/{branch_id}/{date}", [AllTransactionController::class, "publicDaily"]);
+// DEPOSITS
+Route::get("/deposits/daily/{branch_id}/{date}", [CashDepositController::class, "publicDaily"]);
+// WITHDRAWAL
+Route::get("/withs/daily/{branch_id}/{date}", [CashWithController::class, "publicDaily"]);
+// ENCASHMENT
+Route::get("/encashments/daily/{branch_id}/{date}", [CashEncashmentController::class, "publicDaily"]);
+// BILLS PAYMENT
+Route::get("/bills/daily/{branch_id}/{date}", [BillsPaymentController::class, "publicDaily"]);
+// LOAN
+Route::get("/loans/daily/{branch_id}/{date}", [LoanTransactionController::class, "publicDaily"]);
+// NEW ACCOUNTS
+Route::get("/news/daily/{branch_id}/{date}", [NewAccountController::class, "publicDaily"]);
+
+// MAILER
+Route::get("/mailer/send/{branch_id}", [MailManController::class, "sendDailyReports"]);

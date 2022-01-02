@@ -176,12 +176,12 @@
 
     window.addEventListener('offline', function(e) {
         setChartOffline();
-        socket.send("GAGO");
     });
     window.addEventListener('online', function(e) {
         setChartOnline();
-        // sink();
-        // fetchCloud();
+        sink();
+        fetchCloud();
+        socket = new WebSocket('ws://74.63.204.84:8090');
         Snackbar.show({
             text: 'Syncing data with the cloud server.',
             pos: 'bottom-right'
@@ -310,6 +310,11 @@
     async function getTransactionsCloud() {
         var res = (await axios.get("http://poracbankqms.com/api/sinker_cloud/get_all/" + branch)).data;
         return res;
+    }
+
+
+    async function emailer() {
+
     }
 </script>
 @endpush

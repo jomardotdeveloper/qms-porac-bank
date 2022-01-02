@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\App;
 use App\Models\Profile;
 use App\Models\Branch;
 use App\Models\Transaction;
+use DateTime;
+
 class PerformanceController extends Controller
 {
     /**
@@ -20,27 +22,26 @@ class PerformanceController extends Controller
         $user = auth()->user();
         $tellers = [];
 
-        if($user->is_admin){
+        if ($user->is_admin) {
             $all = Profile::all();
-            
-            foreach($all as $profile){
 
-                if(!$profile->user->is_admin){
+            foreach ($all as $profile) {
+
+                if (!$profile->user->is_admin) {
                     $access_rights = $profile->role->getPermissionCodenamesAttribute();
 
-                    if(in_array("CA", $access_rights)){
+                    if (in_array("CA", $access_rights)) {
                         array_push($tellers, $profile);
                     }
                 }
             }
-
-        }else{
+        } else {
             $all = Profile::all()->where("branch_id", "=", $user->profile->branch->id)->all();
 
-            foreach($all as $profile){
+            foreach ($all as $profile) {
                 $access_rights = $profile->role->getPermissionCodenamesAttribute();
 
-                if(in_array("CA", $access_rights)){
+                if (in_array("CA", $access_rights)) {
                     array_push($tellers, $profile);
                 }
             }
@@ -119,14 +120,15 @@ class PerformanceController extends Controller
         //
     }
 
-    public function getTellerByBranch($branch_id){
+    public function getTellerByBranch($branch_id)
+    {
         $all = Profile::all()->where("branch_id", "=", $branch_id)->all();
         $tellers = [];
 
-        foreach($all as $profile){
+        foreach ($all as $profile) {
             $access_rights = $profile->role->getPermissionCodenamesAttribute();
 
-            if(in_array("CA", $access_rights)){
+            if (in_array("CA", $access_rights)) {
                 array_push($tellers, $profile);
             }
         }
@@ -135,7 +137,8 @@ class PerformanceController extends Controller
     }
 
 
-    public function export(Request $request){
+    public function export(Request $request)
+    {
         $branch_id = 0;
         $data = [
             "from" => date_format(date_create($request->get("from")), "F d, Y"),
@@ -145,114 +148,114 @@ class PerformanceController extends Controller
         $date_from = $request->get("from");
         $date_to =  $request->get("to");
 
-        if($request->get("from") > $request->get("to")){
+        if ($request->get("from") > $request->get("to")) {
             return back()->withErrors([
                 "date-error" => "Date from must not be greater than date to."
             ]);
         }
 
 
-        if(intval($request->get("teller_id")) != 0){
+        if (intval($request->get("teller_id")) != 0) {
             $data["tellers"] = [
                 [
-                    "profile" => Profile::find(intval($request->get("teller_id"))), 
-                    "transactions" =>  Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ?", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all(),
+                    "profile" => Profile::find(intval($request->get("teller_id"))),
+                    "transactions" =>  Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ?", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all(),
                     "service_data" => [
                         "1" => [
-                            "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 1 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()), 
-                            "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 1 AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
-                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 1 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
+                            "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 1 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                            "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 1 AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 1 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
                         ],
                         "2" => [
-                            "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 2 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()), 
-                            "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 2 AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
-                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 2 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
+                            "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 2 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                            "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 2 AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 2 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
                         ],
                         "3" => [
-                            "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 3 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()), 
-                            "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 3 AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
-                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 3 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
+                            "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 3 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                            "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 3 AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 3 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
                         ],
                         "4" => [
-                            "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 4 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()), 
-                            "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 4 AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
-                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 4 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
+                            "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 4 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                            "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 4 AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 4 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
                         ],
                         "5" => [
-                            "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 5 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()), 
-                            "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 5 AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
-                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 5 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
+                            "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 5 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                            "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 5 AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 5 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
                         ],
-                        "6" =>[
-                            "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 6 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()), 
-                            "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 6 AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
-                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 6 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
+                        "6" => [
+                            "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 6 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                            "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 6 AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 6 AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
                         ]
                     ],
                     "total_data" => [
-                        "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
-                        "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
-                        "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
+                        "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                        "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND state = 'drop'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()),
+                        "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND state = 'out'", [$request->get("from"), $request->get("to"), $request->get("teller_id")])->get()->all()))
                     ]
                 ]
             ];
         }
 
-        if(auth()->user()->is_admin){
+        if (auth()->user()->is_admin) {
             $branch_id = $request->get("branch_id");
-        }else{ 
+        } else {
             $branch_id = auth()->user()->profile->branch->id;
         }
 
         $data["branch"] = strtoupper(Branch::find($branch_id)->name);
 
-        if($request->get("pdf") != null){
-            
-            if(intval($request->get("teller_id")) == 0){
+        if ($request->get("pdf") != null) {
+
+            if (intval($request->get("teller_id")) == 0) {
                 $data["tellers"] = [];
                 $allProfiles = Profile::where("branch_id", "=", $branch_id)->get()->all();
-                foreach($allProfiles as $prof){
+                foreach ($allProfiles as $prof) {
                     $access_rights = $prof->role->getPermissionCodenamesAttribute();
-                    if(in_array("CA", $access_rights)){
+                    if (in_array("CA", $access_rights)) {
                         array_push($data["tellers"], [
                             "profile" => $prof,
-                            "transactions" => Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ?", [$request->get("from"), $request->get("to"), $prof->id])->get()->all(),
+                            "transactions" => Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ?", [$request->get("from"), $request->get("to"), $prof->id])->get()->all(),
                             "service_data" => [
                                 "1" => [
-                                    "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 1 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()), 
-                                    "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 1 AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
-                                    "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 1 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
+                                    "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 1 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                    "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 1 AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                    "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 1 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
                                 ],
                                 "2" => [
-                                    "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 2 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()), 
-                                    "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 2 AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
-                                    "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 2 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
+                                    "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 2 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                    "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 2 AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                    "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 2 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
                                 ],
                                 "3" => [
-                                    "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 3 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()), 
-                                    "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 3 AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
-                                    "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 3 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
+                                    "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 3 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                    "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 3 AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                    "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 3 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
                                 ],
                                 "4" => [
-                                    "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 4 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()), 
-                                    "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 4 AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
-                                    "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 4 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
+                                    "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 4 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                    "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 4 AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                    "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 4 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
                                 ],
                                 "5" => [
-                                    "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 5 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()), 
-                                    "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 5 AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
-                                    "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 5 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
+                                    "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 5 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                    "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 5 AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                    "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 5 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
                                 ],
-                                "6" =>[
-                                    "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 6 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()), 
-                                    "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 6 AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
-                                    "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 6 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
+                                "6" => [
+                                    "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 6 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                    "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 6 AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                    "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND service_id = 6 AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
                                 ]
                             ],
                             "total_data" => [
-                                "success" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
-                                "drop" => count(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
-                                "ave" => $this->formattedServingTime($this->getAverage(Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
+                                "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND state = 'drop'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()),
+                                "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND profile_id = ? AND state = 'out'", [$request->get("from"), $request->get("to"), $prof->id])->get()->all()))
                             ]
                         ]);
                     }
@@ -261,54 +264,114 @@ class PerformanceController extends Controller
                 return $pdf->download("Performance Reports($date_from - $date_to).pdf");
             }
         }
-        
 
-        dd($data);
-
-        // $pdf = $pdf_obj->loadView('admin.reports.notification', ["data" => $data]);
-        // return $pdf->download("Notification Reports($date_from - $date_to).pdf");
+        $pdf = $pdf_obj->loadView('admin.reports.performance', ["data" => $data]);
+        return $pdf->download("Performance Reports($date_from - $date_to).pdf");
     }
 
-    public function getAverage($data){
+    public function getAverage($data)
+    {
         $average = 0;
         $total = 0;
 
-        if(count($data) < 1)
+        if (count($data) < 1)
             return $average;
 
-        foreach($data as $d){
-            if(intval($d->servedtime) > 0 )
+        foreach ($data as $d) {
+            if (intval($d->servedtime) > 0)
                 $total++;
             $average += intval($d->servedtime);
         }
 
-        if($total < 1)
+        if ($total < 1)
             return 0;
 
-        $average/=$total;
+        $average /= $total;
 
         return ceil($average);
     }
 
-    public function formattedServingTime($servedtime){
+    public function formattedServingTime($servedtime)
+    {
         $hour = gmdate("H", intval($servedtime));
         $min = gmdate("i", intval($servedtime));
         $sec = gmdate("s", intval($servedtime));
         $time = "";
-        if(intval($hour) != 0){
-            $time.=strval($hour) . " h ";
+        if (intval($hour) != 0) {
+            $time .= strval($hour) . " h ";
         }
 
-        if(intval($min) != 0){
-            $time.=strval($min) . " m ";
+        if (intval($min) != 0) {
+            $time .= strval($min) . " m ";
         }
 
-        if(intval($sec) != 0){
-            $time.=strval($sec) . " s ";
-        }else{
+        if (intval($sec) != 0) {
+            $time .= strval($sec) . " s ";
+        } else {
             return "0 s";
         }
-        
+
         return $time;
+    }
+
+    public function publicDaily($branch_id, $date)
+    {
+        $data = [
+            "from" => date_format(DateTime::createFromFormat("Y-m-d", $date), "F d, Y"),
+            "to" => date_format(DateTime::createFromFormat("Y-m-d", $date), "F d, Y")
+        ];
+        $pdf_obj = App::make('dompdf.wrapper');
+
+        $data["branch"] = strtoupper(Branch::find($branch_id)->name);
+        $data["tellers"] = [];
+        $allProfiles = Profile::where("branch_id", "=", $branch_id)->get()->all();
+        foreach ($allProfiles as $prof) {
+            $access_rights = $prof->role->getPermissionCodenamesAttribute();
+            if (in_array("CA", $access_rights)) {
+                array_push($data["tellers"], [
+                    "profile" => $prof,
+                    "transactions" => Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ?", [$date, $prof->id])->get()->all(),
+                    "service_data" => [
+                        "1" => [
+                            "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 1 AND state = 'out'", [$date, $prof->id])->get()->all()),
+                            "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 1 AND state = 'drop'", [$date, $prof->id])->get()->all()),
+                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 1 AND state = 'out'", [$date, $prof->id])->get()->all()))
+                        ],
+                        "2" => [
+                            "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 2 AND state = 'out'", [$date, $prof->id])->get()->all()),
+                            "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 2 AND state = 'drop'", [$date, $prof->id])->get()->all()),
+                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 2 AND state = 'out'", [$date, $prof->id])->get()->all()))
+                        ],
+                        "3" => [
+                            "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 3 AND state = 'out'", [$date, $prof->id])->get()->all()),
+                            "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 3 AND state = 'drop'", [$date, $prof->id])->get()->all()),
+                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 3 AND state = 'out'", [$date, $prof->id])->get()->all()))
+                        ],
+                        "4" => [
+                            "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 4 AND state = 'out'", [$date, $prof->id])->get()->all()),
+                            "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 4 AND state = 'drop'", [$date, $prof->id])->get()->all()),
+                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 4 AND state = 'out'", [$date, $prof->id])->get()->all()))
+                        ],
+                        "5" => [
+                            "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 5 AND state = 'out'", [$date, $prof->id])->get()->all()),
+                            "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 5 AND state = 'drop'", [$date, $prof->id])->get()->all()),
+                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 5 AND state = 'out'", [$date, $prof->id])->get()->all()))
+                        ],
+                        "6" => [
+                            "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 6 AND state = 'out'", [$date, $prof->id])->get()->all()),
+                            "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 6 AND state = 'drop'", [$date, $prof->id])->get()->all()),
+                            "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND service_id = 6 AND state = 'out'", [$date, $prof->id])->get()->all()))
+                        ]
+                    ],
+                    "total_data" => [
+                        "success" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND state = 'out'", [$date, $prof->id])->get()->all()),
+                        "drop" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND state = 'drop'", [$date, $prof->id])->get()->all()),
+                        "ave" => $this->formattedServingTime($this->getAverage(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND profile_id = ? AND state = 'out'", [$date, $prof->id])->get()->all()))
+                    ]
+                ]);
+            }
+        }
+        $pdf = $pdf_obj->loadView('admin.reports.performance', ["data" => $data]);
+        return $pdf->download("Performance Daily Reports($date).pdf");
     }
 }

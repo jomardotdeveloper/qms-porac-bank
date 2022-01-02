@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\App;
 use App\Models\Branch;
 use App\Models\Transaction;
+use DateTime;
 
 class CashWithController extends Controller
 {
@@ -21,14 +22,14 @@ class CashWithController extends Controller
         $withs = [];
 
 
-        if($user->is_admin){
+        if ($user->is_admin) {
             $withs = Transaction::where("service_id", "=", 2)->where("state", "!=", "waiting")->where("state", "!=", "serving")->where("state", "!=", "drop")->get()->all();
-        }else{
+        } else {
             $withs = Transaction::where("branch_id", "=", $user->profile->branch->id)->where("service_id", "=", 2)->where("state", "!=", "waiting")->where("state", "!=", "serving")->where("state", "!=", "drop")->get()->all();
         }
 
 
-        return view("admin.cash-with.index",[
+        return view("admin.cash-with.index", [
             "withs" => $withs,
             "branches" => Branch::all()
         ]);
@@ -100,7 +101,8 @@ class CashWithController extends Controller
         //
     }
 
-    public function export(Request $request){
+    public function export(Request $request)
+    {
         $branch_id = 0;
         $data = [
             "from" => date_format(date_create($request->get("from")), "F d, Y"),
@@ -111,25 +113,39 @@ class CashWithController extends Controller
         $date_to =  $request->get("to");
 
 
-        if($request->get("from") > $request->get("to")){
+        if ($request->get("from") > $request->get("to")) {
             return back()->withErrors([
                 "date-error" => "Date from must not be greater than date to."
             ]);
         }
 
-        if(auth()->user()->is_admin){
+        if (auth()->user()->is_admin) {
             $branch_id = $request->get("branch_id");
-        }else{ 
+        } else {
             $branch_id = auth()->user()->profile->branch->id;
         }
 
         $data["branch"] = strtoupper(Branch::find($branch_id)->name);
 
-        if($request->get("pdf") != null){
-            $data["data"] = Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=2 AND branch_id=? AND state = 'out'", [$request->get("from"), $request->get("to"), $branch_id])->get()->all();
+        if ($request->get("pdf") != null) {
+            $data["data"] = Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=2 AND branch_id=? AND state = 'out'", [$request->get("from"), $request->get("to"), $branch_id])->get()->all();
             $pdf = $pdf_obj->loadView('admin.reports.with', ["data" => $data]);
             return $pdf->download("Cash Withdrawal Reports($date_from - $date_to).pdf");
         }
+    }
 
+
+    public function publicDaily($branch_id, $date)
+    {
+        $data = [
+            "from" => date_format(DateTime::createFromFormat("Y-m-d", $date), "F d, Y"),
+            "to" => date_format(DateTime::createFromFormat("Y-m-d", $date), "F d, Y")
+        ];
+        $pdf_obj = App::make('dompdf.wrapper');
+        $data["branch"] = strtoupper(Branch::find($branch_id)->name);
+
+        $data["data"] = Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND service_id=2 AND branch_id=? AND state = 'out'", [$date, $branch_id])->get()->all();
+        $pdf = $pdf_obj->loadView('admin.reports.with', ["data" => $data]);
+        return $pdf->download("Cash Withdrawal Daily Reports($date).pdf");
     }
 }

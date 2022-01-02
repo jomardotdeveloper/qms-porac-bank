@@ -10,15 +10,15 @@ use Illuminate\Queue\SerializesModels;
 class MyTestMail extends Mailable
 {
     use Queueable, SerializesModels;
-
+    public $mailData;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($mailData)
     {
-        //
+        $this->mailData = $mailData;
     }
 
     /**
@@ -28,7 +28,8 @@ class MyTestMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Mail from ItSolutionStuff.com')
-                    ->view('emails.test');
+        $obj = json_decode($this->mailData);
+        return $this->subject('Porac Bank Daily Reports')
+            ->view('emails.test', ["data" => $obj]);
     }
 }

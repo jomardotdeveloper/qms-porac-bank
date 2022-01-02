@@ -1,5 +1,6 @@
 <?php
 date_default_timezone_set('Asia/Manila');
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -47,26 +48,26 @@ Route::get('/', function () {
 })->name("frontend");
 
 Route::get('send-mail', function () {
-   
+    dd(date("Y-m-d"));
     $details = [
-        'title' => 'Mail from ItSolutionStuff.com',
-        'body' => 'This is for testing email using smtp'
+        'title' => 'Porac Bank Daily Reports',
+        'body' => 'Here are your daily reports'
     ];
-   
-    \Mail::to('remdoro.28@gmail.com')->send(new \App\Mail\MyTestMail($details));
-   
+
+    \Mail::to('remdoro.28@gmail.com')->send(new \App\Mail\MyTestMail("PUTAKA"));
+
     dd("Email is Sent.");
 });
 
-Route::get("/download", function(){
+Route::get("/download", function () {
     $attachment = Attachment::all()->where("is_active", "=", true)->first();
-    if($attachment){
+    if ($attachment) {
         return response()->download(public_path("app-debug.apk"), "PBQMS");
     }
     return redirect()->route("frontend");
 })->name("app.download");
 
-Route::post("/feedback", function(Request $request){
+Route::post("/feedback", function (Request $request) {
     $feedback = Feedback::create($request->all());
     $feedback->save();
     return Redirect::back()->withErrors(['msg' => 'Your feedback has been sent']);
@@ -86,64 +87,64 @@ Route::post("/logout", function (Request $request) {
     return redirect()->route("login.index");
 })->name("logout");
 
-Route::prefix("/backend")->middleware(["auth"])->group(function(){
-    Route::resource("branches", BranchController::class)->middleware("checkbranch"); 
-    Route::resource("roles", RoleController::class)->middleware("checkrole"); 
-    Route::resource("profiles", ProfileController::class)->middleware("checkuser");  
-    Route::resource("attachments", AttachmentController::class)->middleware("checkmobile");; 
-    Route::resource("accounts", AccountController::class)->middleware("checkaccount"); 
-    Route::resource("settings", SettingController::class)->middleware("checksetting");  
+Route::prefix("/backend")->middleware(["auth"])->group(function () {
+    Route::resource("branches", BranchController::class)->middleware("checkbranch");
+    Route::resource("roles", RoleController::class)->middleware("checkrole");
+    Route::resource("profiles", ProfileController::class)->middleware("checkuser");
+    Route::resource("attachments", AttachmentController::class)->middleware("checkmobile");;
+    Route::resource("accounts", AccountController::class)->middleware("checkaccount");
+    Route::resource("settings", SettingController::class)->middleware("checksetting");
     Route::resource("cutoffs", CutoffController::class);
     Route::resource("servers", ServerController::class);
     Route::resource("windows", WindowController::class);
     Route::resource("feedbacks", FeedbackController::class)->middleware("checkfeedback");
     Route::resource("my_profile", MyProfileController::class);
     Route::resource("dashboards", DashboardController::class);
-    Route::resource("controls", ControlController::class)->middleware("checkcontrol"); 
+    Route::resource("controls", ControlController::class)->middleware("checkcontrol");
 
     // NOTIFICATION REPORTS
-    Route::resource("notifications", NotificationController::class)->middleware("checkreport"); 
-    Route::post("notifications/export", [NotificationController::class, "export"])->name("notifications.export")->middleware("checkreport"); 
+    Route::resource("notifications", NotificationController::class)->middleware("checkreport");
+    Route::post("notifications/export", [NotificationController::class, "export"])->name("notifications.export")->middleware("checkreport");
 
     // PERFORMANCE REPORTS
-    Route::resource("performances", PerformanceController::class)->middleware("checkreport"); 
-    Route::get("/performances/tellers/{branch_id}", [PerformanceController::class, "getTellerByBranch"])->middleware("checkreport"); 
-    Route::post("performances/export", [PerformanceController::class, "export"])->name("performances.export")->middleware("checkreport"); 
+    Route::resource("performances", PerformanceController::class)->middleware("checkreport");
+    Route::get("/performances/tellers/{branch_id}", [PerformanceController::class, "getTellerByBranch"])->middleware("checkreport");
+    Route::post("performances/export", [PerformanceController::class, "export"])->name("performances.export")->middleware("checkreport");
 
     // CASH DEPOSIT REPORTS
-    Route::resource("deposits", CashDepositController::class)->middleware("checkreport"); 
-    Route::post("deposits/export", [CashDepositController::class, "export"])->name("deposits.export")->middleware("checkreport"); 
+    Route::resource("deposits", CashDepositController::class)->middleware("checkreport");
+    Route::post("deposits/export", [CashDepositController::class, "export"])->name("deposits.export")->middleware("checkreport");
 
     // CASH WITHDRAWAL REPORTS
-    Route::resource("withs", CashWithController::class)->middleware("checkreport"); 
-    Route::post("withs/export", [CashWithController::class, "export"])->name("withs.export")->middleware("checkreport"); 
+    Route::resource("withs", CashWithController::class)->middleware("checkreport");
+    Route::post("withs/export", [CashWithController::class, "export"])->name("withs.export")->middleware("checkreport");
 
 
     // CASH ENCASHMENT REPORTS
-    Route::resource("encashments", CashEncashmentController::class)->middleware("checkreport"); 
-    Route::post("encashments/export", [CashEncashmentController::class, "export"])->name("encashments.export")->middleware("checkreport"); 
+    Route::resource("encashments", CashEncashmentController::class)->middleware("checkreport");
+    Route::post("encashments/export", [CashEncashmentController::class, "export"])->name("encashments.export")->middleware("checkreport");
 
 
     // NEW ACCOUNT REPORTS
-    Route::resource("news", NewAccountController::class)->middleware("checkreport"); 
-    Route::post("news/export", [NewAccountController::class, "export"])->name("news.export")->middleware("checkreport"); 
+    Route::resource("news", NewAccountController::class)->middleware("checkreport");
+    Route::post("news/export", [NewAccountController::class, "export"])->name("news.export")->middleware("checkreport");
 
     // BILLS PAYMENT REPORTS
-    Route::resource("bills", BillsPaymentController::class)->middleware("checkreport"); 
-    Route::post("bills/export", [BillsPaymentController::class, "export"])->name("bills.export")->middleware("checkreport"); 
-    
-    // LOAN TRANSACTION REPORTS
-    Route::resource("loans", LoanTransactionController::class)->middleware("checkreport"); 
-    Route::post("loans/export", [LoanTransactionController::class, "export"])->name("loans.export")->middleware("checkreport"); 
-    
-    // ALL TRANSACTION REPORTS
-    Route::resource("alls", AllTransactionController::class)->middleware("checkreport"); 
-    Route::post("alls/export", [AllTransactionController::class, "export"])->name("alls.export")->middleware("checkreport"); 
-    
+    Route::resource("bills", BillsPaymentController::class)->middleware("checkreport");
+    Route::post("bills/export", [BillsPaymentController::class, "export"])->name("bills.export")->middleware("checkreport");
 
-    Route::resource("transactions", TransactionController::class)->middleware("checkreport"); 
-    Route::post("transactions/generate_demo_data", [TransactionController::class, "generate_demo_data"])->name("transaction.generate_demo_data"); 
-    Route::post("transactions/export", [TransactionController::class, "export"])->name("transaction.export"); 
+    // LOAN TRANSACTION REPORTS
+    Route::resource("loans", LoanTransactionController::class)->middleware("checkreport");
+    Route::post("loans/export", [LoanTransactionController::class, "export"])->name("loans.export")->middleware("checkreport");
+
+    // ALL TRANSACTION REPORTS
+    Route::resource("alls", AllTransactionController::class)->middleware("checkreport");
+    Route::post("alls/export", [AllTransactionController::class, "export"])->name("alls.export")->middleware("checkreport");
+
+
+    Route::resource("transactions", TransactionController::class)->middleware("checkreport");
+    Route::post("transactions/generate_demo_data", [TransactionController::class, "generate_demo_data"])->name("transaction.generate_demo_data");
+    Route::post("transactions/export", [TransactionController::class, "export"])->name("transaction.export");
     Route::post("accounts/import", [AccountController::class, "import"])->name("account.import");
     Route::get("attachments/{attachment}/download", [AttachmentController::class, "download"])->name("attachments.download");
     Route::get("attachments/{attachment}/active", [AttachmentController::class, "active"])->name("attachments.active");

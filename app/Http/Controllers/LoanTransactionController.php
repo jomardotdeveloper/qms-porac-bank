@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\App;
 use App\Models\Branch;
 use App\Models\Transaction;
 use App\Models\Loan;
-
+use DateTime;
 
 
 class LoanTransactionController extends Controller
@@ -24,14 +24,14 @@ class LoanTransactionController extends Controller
         $loans = [];
 
 
-        if($user->is_admin){
+        if ($user->is_admin) {
             $loans = Transaction::where("service_id", "=", 5)->where("state", "!=", "waiting")->where("state", "!=", "serving")->where("state", "!=", "drop")->get()->all();
-        }else{
+        } else {
             $loans = Transaction::where("branch_id", "=", $user->profile->branch->id)->where("service_id", "=", 5)->where("state", "!=", "waiting")->where("state", "!=", "serving")->where("state", "!=", "drop")->get()->all();
         }
 
 
-        return view("admin.loan.index",[
+        return view("admin.loan.index", [
             "loans" => $loans,
             "branches" => Branch::all(),
             "loan_types" => Loan::all()
@@ -104,7 +104,8 @@ class LoanTransactionController extends Controller
         //
     }
 
-    public function export(Request $request){
+    public function export(Request $request)
+    {
         $branch_id = 0;
         $filter = "";
         $data = [
@@ -116,38 +117,59 @@ class LoanTransactionController extends Controller
         $date_to =  $request->get("to");
 
 
-        if($request->get("from") > $request->get("to")){
+        if ($request->get("from") > $request->get("to")) {
             return back()->withErrors([
                 "date-error" => "Date from must not be greater than date to."
             ]);
         }
 
 
-        if(auth()->user()->is_admin){
+        if (auth()->user()->is_admin) {
             $branch_id = $request->get("branch_id");
-        }else{ 
+        } else {
             $branch_id = auth()->user()->profile->branch->id;
         }
 
-        if(intval($request->get("loan_id")) != 0){
+        if (intval($request->get("loan_id")) != 0) {
             $data["loan_type"] = Loan::find($request->get("loan_id"));
             $filter = " AND loan_id=" . $request->get("loan_id");
-        }else{
+        } else {
             $data["loans_data"] = [
-                "1" => count( Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=5 AND branch_id=? AND loan_id=1 AND state = 'out'", [$request->get("from"), $request->get("to"), $branch_id])->get()->all()),
-                "2" => count( Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=5 AND branch_id=? AND loan_id=2 AND state = 'out'", [$request->get("from"), $request->get("to"), $branch_id])->get()->all()),
-                "3" => count( Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=5 AND branch_id=? AND loan_id=3 AND state = 'out'", [$request->get("from"), $request->get("to"), $branch_id])->get()->all()),
-                "4" => count( Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=5 AND branch_id=? AND loan_id=4 AND state = 'out'", [$request->get("from"), $request->get("to"), $branch_id])->get()->all()),
-                "5" => count( Transaction::with([ "account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=5 AND branch_id=? AND loan_id=5 AND state = 'out'", [$request->get("from"), $request->get("to"), $branch_id])->get()->all())
+                "1" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=5 AND branch_id=? AND loan_id=1 AND state = 'out'", [$request->get("from"), $request->get("to"), $branch_id])->get()->all()),
+                "2" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=5 AND branch_id=? AND loan_id=2 AND state = 'out'", [$request->get("from"), $request->get("to"), $branch_id])->get()->all()),
+                "3" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=5 AND branch_id=? AND loan_id=3 AND state = 'out'", [$request->get("from"), $request->get("to"), $branch_id])->get()->all()),
+                "4" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=5 AND branch_id=? AND loan_id=4 AND state = 'out'", [$request->get("from"), $request->get("to"), $branch_id])->get()->all()),
+                "5" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=5 AND branch_id=? AND loan_id=5 AND state = 'out'", [$request->get("from"), $request->get("to"), $branch_id])->get()->all())
             ];
         }
 
         $data["branch"] = strtoupper(Branch::find($branch_id)->name);
 
-        if($request->get("pdf") != null){
-            $data["data"] = Transaction::with([ "account",  "bill"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=5 AND branch_id=? AND state = 'out' $filter", [$request->get("from"), $request->get("to"), $branch_id])->get()->all();
+        if ($request->get("pdf") != null) {
+            $data["data"] = Transaction::with(["account",  "bill"])->whereRaw("DATE(transactions.in) >= ? AND DATE(transactions.in) <= ? AND service_id=5 AND branch_id=? AND state = 'out' $filter", [$request->get("from"), $request->get("to"), $branch_id])->get()->all();
             $pdf = $pdf_obj->loadView('admin.reports.loan', ["data" => $data]);
             return $pdf->download("Loan Transaction Reports($date_from - $date_to).pdf");
         }
+    }
+
+    public function publicDaily($branch_id, $date)
+    {
+        $data = [
+            "from" => date_format(DateTime::createFromFormat("Y-m-d", $date), "F d, Y"),
+            "to" => date_format(DateTime::createFromFormat("Y-m-d", $date), "F d, Y")
+        ];
+        $pdf_obj = App::make('dompdf.wrapper');
+        $data["loans_data"] = [
+            "1" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND service_id=5 AND branch_id=? AND loan_id=1 AND state = 'out'", [$date, $branch_id])->get()->all()),
+            "2" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND service_id=5 AND branch_id=? AND loan_id=2 AND state = 'out'", [$date, $branch_id])->get()->all()),
+            "3" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND service_id=5 AND branch_id=? AND loan_id=3 AND state = 'out'", [$date, $branch_id])->get()->all()),
+            "4" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND service_id=5 AND branch_id=? AND loan_id=4 AND state = 'out'", [$date, $branch_id])->get()->all()),
+            "5" => count(Transaction::with(["account",  "service"])->whereRaw("DATE(transactions.in) = ? AND service_id=5 AND branch_id=? AND loan_id=5 AND state = 'out'", [$date, $branch_id])->get()->all())
+        ];
+
+        $data["branch"] = strtoupper(Branch::find($branch_id)->name);
+        $data["data"] = Transaction::with(["account",  "bill"])->whereRaw("DATE(transactions.in) = ? AND service_id=5 AND branch_id=? AND state = 'out' ", [$date, $branch_id])->get()->all();
+        $pdf = $pdf_obj->loadView('admin.reports.loan', ["data" => $data]);
+        return $pdf->download("Loan Transaction Daily Reports($date).pdf");
     }
 }
