@@ -50,7 +50,7 @@ class WebSocketServer extends Command
             ),
             8090
         );
-        $wsServer->enableKeepAlive($server->loop, 30);
+        $wsServer->enableKeepAlive($server->loop, 3);
         $server->run();
     }
 }
