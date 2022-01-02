@@ -41,15 +41,16 @@ class WebSocketServer extends Command
      */
     public function handle()
     {
+        $wsServer = new WsServer(
+            new WebsocketController()
+        );
         $server = IoServer::factory(
             new HttpServer(
-                new WsServer(
-                    new WebsocketController()
-                )
+                $wsServer
             ),
             8090
         );
-        $server->enableKeepAlive($server->loop, 30);
+        $wsServer->enableKeepAlive($server->loop, 30);
         $server->run();
     }
 }
