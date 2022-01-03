@@ -210,7 +210,6 @@ var app = new Vue({
         },
         ringq : function(){
             var self = this;
-
             if(self.waiting.length < 1 && self.serving == null){
                 alertError("Queue is empty!");
             }else if(self.serving == null){
@@ -270,6 +269,7 @@ var app = new Vue({
             }
             
             if(jsonObject["message"] == "newCustomer" && jsonObject["branch_id"] == $("#branch_id").val()){
+                loadData(self);
                 Snackbar.show({
                     text: 'A new customer has been entered your queue.',
                     pos: 'bottom-right'

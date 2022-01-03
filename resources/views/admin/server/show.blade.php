@@ -134,12 +134,12 @@
             setChartOffline();
         }
 
-        var interval = setInterval(function() {
-            resetEmail();
-            if (!emailHasSent) {
-                sendEmail();
-            }
-        }, 3000);
+        // var interval = setInterval(function() {
+        //     resetEmail();
+        //     if (!emailHasSent) {
+        //         sendEmail();
+        //     }
+        // }, 3000);
     }
 
 
@@ -229,6 +229,7 @@
 <script>
     socket.onmessage = function(e) {
         var jsonObject = jQuery.parseJSON(e.data);
+        console.log(e.data);
         jsonObject = jQuery.parseJSON(jsonObject["message"]);
         if (jsonObject["message"] == "serverCheckStatus" && jsonObject["branch_id"] == branch.toString()) {
             socket.send(JSON.stringify({
@@ -266,7 +267,7 @@
     localSocket.onmessage = function(e) {
         var jsonObject = jQuery.parseJSON(e.data);
         jsonObject = jQuery.parseJSON(jsonObject["message"]);
-
+        console.log(jsonObject);
         if (jsonObject["message"] == "newCustomer" && jsonObject["branch_id"] == branch) {
             if (window.navigator.onLine) {
                 sink();
@@ -278,9 +279,14 @@
             }
         }
 
-        if (jsonObject["message"] == "newUser" && jsonObject["branch_id"] == branch) {
+        if (jsonObject["message"] == "newUser") {
+
             if (window.navigator.onLine) {
-                sinkUser();
+                // sinkUser();
+                Snackbar.show({
+                    text: 'User sync',
+                    pos: 'bottom-right'
+                });
             } else {
                 Snackbar.show({
                     text: 'Failed to sync. Internet connection failure.',
@@ -301,8 +307,13 @@
         }
 
         if (jsonObject["message"] == "nextCustomer" && jsonObject["branch_id"] == branch) {
+            console.log("PUMASOK NAMAN DITO");
             if (window.navigator.onLine) {
                 sink();
+                socket.send(JSON.stringify({
+                    message: "nextCustomer",
+                    branch_id: branch
+                }));
             } else {
                 Snackbar.show({
                     text: 'Failed to sync. Internet connection failure.',
@@ -349,11 +360,6 @@
         var res = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_transactions", {
             transactions: await getTransactionsUnsink()
         })).data;
-
-        socket.send(JSON.stringify({
-            message: "nextCustomer",
-            branch_id: branch
-        }));
     }
 
     async function fetchCloud() {
