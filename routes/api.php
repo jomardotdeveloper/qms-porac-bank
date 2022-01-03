@@ -131,3 +131,11 @@ Route::get("/news/daily/{branch_id}/{date}", [NewAccountController::class, "publ
 
 // MAILER
 Route::get("/mailer/send/{branch_id}", [MailManController::class, "sendDailyReports"]);
+
+// USER SINKER
+Route::get("/sinker_local/get_all_users/{branch_id}", [SinkerLoc::class, "getAllUsers"]);
+Route::post("/sinker_cloud/sink_users", [SinkerClod::class, "sinkUser"]);
+
+//ACCOUNT SINKER
+Route::get("/sinker_local/get_all_accounts/{branch_id}", [SinkerLoc::class, "getAllAccounts"]);
+Route::post("/sinker_cloud/sink_accounts", [SinkerClod::class, "sinkAccounts"]);

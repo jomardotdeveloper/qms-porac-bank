@@ -70,8 +70,8 @@ var app = new Vue({
                     alertSuccess("Queue Start", "Ongoing Queue");
                     socket.send(JSON.stringify(socket_messages.nextCustomer));
                 }
-
-                autoMessage(self);
+                if(window.navigator.onLine)
+                    autoMessage(self);
             }
         },
         nextq : function (){
@@ -96,7 +96,8 @@ var app = new Vue({
                                 }
                                 startTimer();
                                 // automatedNotification(self);
-                                autoMessage(self);
+                                if(window.navigator.onLine)
+                                    autoMessage(self);
                                 socket.send(JSON.stringify(socket_messages.nextCustomer));
                             });
                         });
@@ -111,7 +112,8 @@ var app = new Vue({
                                 alertSuccess("Good job!", "Success");
                             }
                             // automatedNotification(self);
-                            autoMessage(self);
+                            if(window.navigator.onLine)
+                                autoMessage(self);
                             socket.send(JSON.stringify(socket_messages.nextCustomer));
                         });
                     });
@@ -142,7 +144,8 @@ var app = new Vue({
                                         alertSuccess("Good job!", "Success");
                                     }
                                     // automatedNotification(self);
-                                    autoMessage(self);
+                                    if(window.navigator.onLine)
+                                        autoMessage(self);
                                     socket.send(JSON.stringify(socket_messages.nextCustomer));
                                 });
                             });
@@ -157,7 +160,8 @@ var app = new Vue({
                                     alertSuccess("Good job!", "Success");
                                 }
                                 // automatedNotification(self);
-                                autoMessage(self);
+                                if(window.navigator.onLine)
+                                    autoMessage(self);
                                 socket.send(JSON.stringify(socket_messages.nextCustomer));
                             });
                         });
@@ -205,18 +209,24 @@ var app = new Vue({
 
         },
         ringq : function(){
-            // var self = this;
+            var self = this;
 
-            // if(self.waiting.length < 1 && self.serving == null){
-            //     alertError("Queue is empty!");
-            // }else if(self.serving == null){
-            //     alertError("No customer is being served. Please click the start button to start the queue.");
-            // }else{
-            //     sendMessage(self.serving.id, 0);
-            //     alertSuccess("Ring!", "Calling " + self.serving.token);
-            //     socket.send(JSON.stringify(socket_messages.ring));
-            // }
-            getMessagev2(51);
+            if(self.waiting.length < 1 && self.serving == null){
+                alertError("Queue is empty!");
+            }else if(self.serving == null){
+                alertError("No customer is being served. Please click the start button to start the queue.");
+            }else{
+                if(window.navigator.onLine){
+                    getMessagev2(self.serving.id, 0);
+                    sendMessageV2(self.serving.id, 0, function(res){
+                        if(parseInt(res["status"]) == 1)
+                            createNotificationLog(self.serving.id, res["log"]);
+                    });
+                }
+                
+                alertSuccess("Ring!", "Calling " + self.serving.token);
+                socket.send(JSON.stringify(socket_messages.ring));
+            }
             
         },
         notify : function(id) {
@@ -297,7 +307,7 @@ async function autoMessage(self){
         getMessagev2(self.waiting[i]["id"], 0);
         sendMessageV2(self.waiting[i]["id"], 0, function(res){
             if(parseInt(res["status"]) == 1)
-                createNotificationLog(ids[i], res["log"]);
+                createNotificationLog(self.waiting[i]["id"], res["log"]);
         });
 
         idx++;
@@ -314,7 +324,7 @@ async function getMessagev2(id, is_prio = 0){
     console.log(res);
     if(res["status"] == 1){
         socket.send(JSON.stringify({message : "pushNotif", log : res["log"], transaction_id : id, token : res["token"], datetime : res["datetime"], branch_id: res["branch_id"], service: res["service"]}));
-        createNotificationLogIsPush(id,res["log"]);
+        // createNotificationLogIsPush(id,res["log"]);
     }
 }
 
@@ -703,3 +713,17 @@ function tourstart(){
 if($("#is_done_tour").val().toString() == "0"){
     tourstart();    
 }
+
+
+window.addEventListener('offline', function(e) {
+    Snackbar.show({
+        text: 'SMS & Push notifications cannot be use due to network problem.',
+        pos: 'bottom-right'
+    });
+});
+window.addEventListener('online', function(e) {
+    Snackbar.show({
+        text: 'SMS & Push notifications are now ready.',
+        pos: 'bottom-right'
+    });
+});

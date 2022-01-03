@@ -124,6 +124,7 @@
     var needToSync = 1;
     var networkSpeedCache = 0;
     const maximum = 10;
+    var emailHasSent = false;
 
     function main() {
         var status = window.navigator.onLine;
@@ -132,7 +133,15 @@
         } else {
             setChartOffline();
         }
+
+        var interval = setInterval(function() {
+            resetEmail();
+            if (!emailHasSent) {
+                sendEmail();
+            }
+        }, 3000);
     }
+
 
     function setChartOnline() {
         var speed = navigator.connection.downlink;
@@ -174,19 +183,45 @@
         });
     }
 
+    function websocketRecon() {
+        socket = new WebSocket('ws://74.63.204.84:8090');
+        var myInterval = setInterval(function() {
+            if (socket.readyState == WebSocket.OPEN) {
+                var datas = {
+                    "message": "iambranch",
+                    "branch_id": branch
+                };
+                socket.send(JSON.stringify(datas));
+                clearInterval(myInterval);
+            }
+        }, 1000);
+    }
+
+    function websocketDiscon() {
+        socket.close();
+        socket = null;
+    }
+
+
+
+
     window.addEventListener('offline', function(e) {
         setChartOffline();
+        websocketDiscon();
     });
     window.addEventListener('online', function(e) {
         setChartOnline();
+        websocketRecon();
         sink();
         fetchCloud();
-        socket = new WebSocket('ws://74.63.204.84:8090');
+
         Snackbar.show({
             text: 'Syncing data with the cloud server.',
             pos: 'bottom-right'
         });
+
     });
+
 
 
     main();
@@ -219,7 +254,10 @@
             sinkNotifier();
         }
 
-        console.log(jsonObject);
+        if (jsonObject["message"] == "sinkNotifLog" && jsonObject["branch_id"] == branch) {
+
+        }
+
     }
 
 
@@ -232,6 +270,28 @@
         if (jsonObject["message"] == "newCustomer" && jsonObject["branch_id"] == branch) {
             if (window.navigator.onLine) {
                 sink();
+            } else {
+                Snackbar.show({
+                    text: 'Failed to sync. Internet connection failure.',
+                    pos: 'bottom-right'
+                });
+            }
+        }
+
+        if (jsonObject["message"] == "newUser" && jsonObject["branch_id"] == branch) {
+            if (window.navigator.onLine) {
+                sinkUser();
+            } else {
+                Snackbar.show({
+                    text: 'Failed to sync. Internet connection failure.',
+                    pos: 'bottom-right'
+                });
+            }
+        }
+
+        if (jsonObject["message"] == "newAccount" && jsonObject["branch_id"] == branch) {
+            if (window.navigator.onLine) {
+                sinkAccount();
             } else {
                 Snackbar.show({
                     text: 'Failed to sync. Internet connection failure.',
@@ -312,9 +372,110 @@
         return res;
     }
 
+    async function getAllUsers() {
+        var res = (await axios.get("/api/sinker_local/get_all_users/" + branch)).data;
+        return res;
+    }
+
+    async function sinkUser() {
+        var res = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_users", {
+            users: await getAllUsers()
+        })).data;
+    }
+
+    async function getAllAccounts() {
+        var res = (await axios.get("/api/sinker_local/get_all_accounts/" + branch)).data;
+        return res;
+    }
+
+    async function sinkAccount() {
+        var res = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_accounts", {
+            accounts: await getAllAccounts()
+        })).data;
+    }
+
+    async function getCutoff() {
+        var res = (await axios.get("/api/cutoffs/get_cutoff_data/" + branch)).data;
+        return res;
+    }
 
     async function emailer() {
+        var res = (await axios.get("/api/mailer/send/" + branch)).data;
+        return res;
+    }
 
+    async function sendEmail() {
+        var dateTimeNow = new Date();
+        var now = dateTimeNow.getDay();
+        var cutoffNow = await getCutoffOnDay(now);
+
+        if (dateTimeNow.getHours() == 0 && dateTimeNow.getMinutes() == 0) {
+            emailHasSent = false;
+        }
+
+
+        if (cutoffNow == null) {
+            var hour = dateTimeNow.getHours();
+            var minute = dateTimeNow.getMinutes();
+
+            if (hour >= 23) {
+                if (minute >= 0) {
+                    emailer();
+                    Snackbar.show({
+                        text: 'Sending emails',
+                        pos: 'bottom-right'
+                    });
+                    emailHasSent = true;
+                }
+            }
+        } else {
+            var splittedCutoff = cutoffNow.toString().split(":");
+            var hourCutoff = parseInt(splittedCutoff[0]);
+            var minuteCutoff = parseInt(splittedCutoff[1]);
+            var hour = dateTimeNow.getHours();
+            var minute = dateTimeNow.getMinutes();
+
+            if (hour >= hourCutoff) {
+                if (minute >= minuteCutoff) {
+                    emailer();
+                    Snackbar.show({
+                        text: 'Sending emails',
+                        pos: 'bottom-right'
+                    });
+                    emailHasSent = true;
+                }
+            }
+        }
+    }
+
+    async function getCutoffOnDay(idx) {
+        var cutOffs = (await getCutoff()).data;
+
+        if (idx == 0) {
+            return cutOffs.sd;
+        } else if (idx == 1) {
+            return cutOffs.m;
+        } else if (idx == 2) {
+            return cutOffs.t;
+        } else if (idx == 3) {
+            return cutOffs.w;
+        } else if (idx == 4) {
+            return cutOffs.th;
+        } else if (idx == 5) {
+            return cutOffs.f;
+        } else if (idx == 6) {
+            return cutOffs.s;
+        }
+
+        return null;
+
+    }
+
+    async function resetEmail() {
+        var dateTimeNow = new Date();
+        if (dateTimeNow.getHours() == 0 && dateTimeNow.getMinutes() == 0) {
+            emailHasSent = false;
+        }
     }
 </script>
 @endpush
