@@ -1092,9 +1092,9 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::find($id);
         $windows = $this->get_active_current1($transaction->branch->id);
-        $window_1 = $windows[1] == null ? "NONE" : $windows[1];
-        $window_2 = $windows[2] == null ? "NONE" : $windows[2];
-        $window_3 = $windows[3] == null ? "NONE" : $windows[3];
+        $window_1 = $windows[1] == null ? "NONE" : $windows[1]->token;
+        $window_2 = $windows[2] == null ? "NONE" : $windows[2]->token;
+        $window_3 = $windows[3] == null ? "NONE" : $windows[3]->token;
 
         $token = $transaction->token;
         $waitingTime = $this->getEstimateWaitingTime1($id);

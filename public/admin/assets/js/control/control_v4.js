@@ -60,15 +60,22 @@ var app = new Vue({
                         stopQueue(self);
                         stopTimer();
                         socket.send(JSON.stringify(socket_messages.nextCustomer));
+                        if(window.navigator.onLine){
+                            getMessagev2(self.serving.id, 0);
+                            sendMessageV2(self.serving.id, 0, function(res){
+                                if(parseInt(res["status"]) == 1)
+                                    createNotificationLog(self.serving.id, res["log"]);
+                            });
+                        }
                     });
                 }else{
                     startQueue(self, function(){
                         loadData(self);
+                        socket.send(JSON.stringify(socket_messages.nextCustomer));
                     });
 
                     startTimer();
                     alertSuccess("Queue Start", "Ongoing Queue");
-                    socket.send(JSON.stringify(socket_messages.nextCustomer));
                 }
                 if(window.navigator.onLine)
                     autoMessage(self);
@@ -93,6 +100,13 @@ var app = new Vue({
                                     alertSuccess("Next Customer!", self.current["token"]);
                                 }else{
                                     alertSuccess("Good job!", "Success");
+                                }
+                                if(window.navigator.onLine){
+                                    getMessagev2(self.serving.id, 0);
+                                    sendMessageV2(self.serving.id, 0, function(res){
+                                        if(parseInt(res["status"]) == 1)
+                                            createNotificationLog(self.serving.id, res["log"]);
+                                    });
                                 }
                                 startTimer();
                                 // automatedNotification(self);
@@ -142,6 +156,13 @@ var app = new Vue({
                                         alertSuccess("Next Customer!", self.current["token"]);
                                     }else{
                                         alertSuccess("Good job!", "Success");
+                                    }
+                                    if(window.navigator.onLine){
+                                        getMessagev2(self.serving.id, 0);
+                                        sendMessageV2(self.serving.id, 0, function(res){
+                                            if(parseInt(res["status"]) == 1)
+                                                createNotificationLog(self.serving.id, res["log"]);
+                                        });
                                     }
                                     // automatedNotification(self);
                                     if(window.navigator.onLine)
@@ -289,7 +310,8 @@ var app = new Vue({
 
 // NEW SMS NOTIFICATION METHOD
 async function sendMessageV2(id, isPrio = 0, callbackmethod=false){
-    var params = id.toString() + "/" + isPrio.toString();
+    var params = id + "/" + isPrio.toString();
+    console.log("/api/messaging/send_message/" + params);
     var res  = (await axios.get("/api/messaging/send_message/" + params)).data;
     
     if(callbackmethod != false){
@@ -302,10 +324,12 @@ async function autoMessage(self){
     var starting_point = setting_res["starting_point"];
     var ending_point = setting_res["ending_point"];
     var idx = 1;
-
-    for(var i = starting_point - 1; i <= self.waiting.length; i++){
-        getMessagev2(self.waiting[i]["id"], 0);
-        sendMessageV2(self.waiting[i]["id"], 0, function(res){
+    
+    for(var i = starting_point - 1; i < self.waiting.length; i++){
+        console.log("DITO SYA LODI");
+        console.log(self.waiting[i].id);
+        getMessagev2(self.waiting[i].id, 0);
+        sendMessageV2(self.waiting[i].id, 0, function(res){
             if(parseInt(res["status"]) == 1)
                 createNotificationLog(self.waiting[i]["id"], res["log"]);
         });
@@ -321,7 +345,7 @@ async function autoMessage(self){
 async function getMessagev2(id, is_prio = 0){
     var params = id.toString() + "/" + is_prio.toString();
     var res  = (await axios.get("/api/messaging/get_notification/" + params)).data;
-    console.log(res);
+    // console.log(res);
     if(res["status"] == 1){
         socket.send(JSON.stringify({message : "pushNotif", log : res["log"], transaction_id : id, token : res["token"], datetime : res["datetime"], branch_id: res["branch_id"], service: res["service"]}));
         // createNotificationLogIsPush(id,res["log"]);
@@ -608,7 +632,6 @@ var invrl = null;
 function startTimer(){
     invrl = setInterval(function(){
         time++;
-        console.log(time);
     }, 1000);
 }
 

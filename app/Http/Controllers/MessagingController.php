@@ -49,9 +49,9 @@ class MessagingController extends Controller
     {
         $transaction = Transaction::find($id);
         $windows = $this->get_active_current($transaction->branch->id);
-        $window_1 = $windows[1] == null ? "NONE" : $windows[1];
-        $window_2 = $windows[2] == null ? "NONE" : $windows[2];
-        $window_3 = $windows[3] == null ? "NONE" : $windows[3];
+        $window_1 = $windows[1] == null ? "NONE" : $windows[1]->token;
+        $window_2 = $windows[2] == null ? "NONE" : $windows[2]->token;
+        $window_3 = $windows[3] == null ? "NONE" : $windows[3]->token;
 
         $token = $transaction->token;
         $waitingTime = $this->getEstimateWaitingTime($id);
@@ -103,9 +103,9 @@ class MessagingController extends Controller
     {
         $transaction = Transaction::find($id);
         $windows = $this->get_active_current($transaction->branch->id);
-        $window_1 = $windows[1] == null ? "NONE" : $windows[1];
-        $window_2 = $windows[2] == null ? "NONE" : $windows[2];
-        $window_3 = $windows[3] == null ? "NONE" : $windows[3];
+        $window_1 = $windows[1] == null ? "NONE" : $windows[1]->token;
+        $window_2 = $windows[2] == null ? "NONE" : $windows[2]->token;
+        $window_3 = $windows[3] == null ? "NONE" : $windows[3]->token;
 
         $token = $transaction->token;
         $waitingTime = $this->getEstimateWaitingTime($id);
@@ -154,7 +154,7 @@ class MessagingController extends Controller
 
     public function getMessageFirst($window, $token)
     {
-        return "Hello, dear customer! You have reached the front of the Queue. Window $window is waiting for your queue number $token. Kindly proceed to Window $window to receive the service. Thank you.";
+        return "Hello, dear customer! Kindly proceed to Window $window to receive the service. Thank you.";
     }
 
     public function getMessagePrio($waitingTime, $window_1, $window_2, $window_3)
