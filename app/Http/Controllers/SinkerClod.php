@@ -7,11 +7,17 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Transaction;
 use App\Models\Account;
 use App\Models\Profile;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 class SinkerClod extends Controller
 {
+    public function getAllNotifications($branch_id)
+    {
+        return Notification::with(["transaction"])->whereRaw("branch_id = ? ", [$branch_id])->get()->all();
+    }
+
     public function sinkUser(Request $request)
     {
         $data = [];
@@ -50,6 +56,25 @@ class SinkerClod extends Controller
                 );
 
                 $userObj->save();
+            }
+        }
+    }
+
+    public function sinkNotification(Request $request)
+    {
+        $notifications = $request->get("notifications");
+        foreach ($notifications as $notification) {
+            $finder = Transaction::where("token", "=", $notification["transaction"]["token"])->where("in", "=", $notification["transaction"]["in"])->first();
+            $notifExists = $this->notificationExists($finder->id, $finder->in);
+
+            if (!$notifExists) {
+                $notification = Notification::create([
+                    "account_id" => $finder->account_id != null ? $finder->account_id : null,
+                    "message" => $notification["message"],
+                    "transaction_id" => $finder->id,
+                    "branch_id" => $finder->branch->id,
+                    "is_push" => $notification["is_push"]
+                ]);
             }
         }
     }

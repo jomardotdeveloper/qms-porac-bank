@@ -141,6 +141,11 @@ Route::get("/sinker_local/get_all_accounts/{branch_id}", [SinkerLoc::class, "get
 Route::post("/sinker_cloud/sink_accounts", [SinkerClod::class, "sinkAccounts"]);
 
 
+// NOTIFICATION SINKER
+// FROM LOCAL TO CLOUD
+Route::get("/sinker_local/get_all_notifs/{branch_id}", [SinkerLoc::class, "getAllNotifications"]);
+Route::post("/sinker_cloud/sink_notifs", [SinkerClod::class, "sinkNotification"]);
+
 // SAMPLE SMS / DROP SMS AND PUSH
 Route::get("/samplelangnaman/{to}/{message}", [MessagingController::class, "itextMoSend"]);
 Route::get("/messaging/drop/sms/{id}", [MessagingController::class, "messageDrop"]);

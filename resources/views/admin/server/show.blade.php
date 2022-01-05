@@ -167,6 +167,7 @@
         });
     }
 
+
     function setChartOffline() {
         chart.updateSeries([0]);
         chart.updateOptions({
@@ -212,8 +213,8 @@
     window.addEventListener('online', function(e) {
         setChartOnline();
         websocketRecon();
-        sink();
         fetchCloud();
+        sink();
 
         Snackbar.show({
             text: 'Syncing data with the cloud server.',
@@ -247,6 +248,10 @@
             socket.send(JSON.stringify(datas));
         }
 
+        if (jsonObject["message"] == "sinkNotLog" && jsonObject["branch_id"] == branch) {
+            sinkNotif();
+        }
+
         if (jsonObject["message"] == "newCustomer" && jsonObject["branch_id"] == branch) {
             fetchCloud();
         }
@@ -255,9 +260,7 @@
             sinkNotifier();
         }
 
-        if (jsonObject["message"] == "sinkNotifLog" && jsonObject["branch_id"] == branch) {
 
-        }
 
     }
 
@@ -321,6 +324,12 @@
                 });
             }
         }
+
+        if (jsonObject["message"] == "sinkNotif" && jsonObject["branch_id"] == branch) {
+            fetchNotif();
+        }
+
+
 
         if (jsonObject["message"] == "pushNotif" && jsonObject["branch_id"] == branch) {
             var notifData = {
@@ -400,6 +409,33 @@
         })).data;
     }
 
+
+    async function getCloudNotifs() {
+        var res = (await axios.get("http://poracbankqms.com/api/sinker_local/get_all_notifs/" + branch)).data;
+        return res;
+    }
+
+    async function getLocalNotifs() {
+        var res = (await axios.get("/api/sinker_local/get_all_notifs/" + branch)).data;
+        return res;
+    }
+
+
+    // SYNC CLOUD WITH LOCAL
+    async function sinkNotif() {
+        var res = (await axios.post("/api/sinker_cloud/sink_notifs", {
+            accounts: await getCloudNotifs()
+        })).data;
+    }
+
+
+    // SYNC LOCAL WITH CLOUD
+    async function fetchNotif() {
+        var res = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_notifs", {
+            accounts: await getLocalNotifs()
+        })).data;
+    }
+
     async function getCutoff() {
         var res = (await axios.get("/api/cutoffs/get_cutoff_data/" + branch)).data;
         return res;
@@ -409,6 +445,7 @@
         var res = (await axios.get("/api/mailer/send/" + branch)).data;
         return res;
     }
+
 
     async function sendEmail() {
         var dateTimeNow = new Date();
