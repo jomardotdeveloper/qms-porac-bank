@@ -8,9 +8,49 @@ use App\Models\Account;
 use App\Models\Window;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
+use Exception;
 
 class MessagingController extends Controller
 {
+    public function messageDrop($id)
+    {
+        $transaction = Transaction::find($id);
+        $token = $transaction->token;
+        $data = [];
+        $message = "Greetings! Due to your failure to appear inside the bank, your ticket number $token was discarded.";
+
+        if ($transaction->is_notifiable && $transaction->mobile_number != null) {
+            $sent = $this->itextMoSend($transaction->mobile_number, $message);
+            if (intval($sent) == 0) {
+                $data["status"] = 1;
+                $data["log"] = $message;
+            } else {
+                $data["status"] = 0;
+            }
+        } else {
+            $data["message"] = $transaction->token;
+            $data["status"] = 0;
+        }
+
+        return $data;
+    }
+
+    public function pushNotifDrop($id)
+    {
+        $transaction = Transaction::find($id);
+        $token = $transaction->token;
+        $data = [];
+        $message = "Greetings! Due to your failure to appear inside the bank, your ticket number $token was discarded.";
+        $data["status"] = 1;
+        $data["log"] = $message;
+        $data["token"] = $token;
+        $data["datetime"] = $transaction->in;
+        $data["service"] = $transaction->service->name;
+        $data["branch_id"] = $transaction->branch->id;
+
+        return $data;
+    }
+
     public function getOrder($id)
     {
         $transaction = Transaction::find($id);
@@ -30,7 +70,6 @@ class MessagingController extends Controller
                 }
             }
         }
-
 
         if ($this->hasServing($transaction->branch->id)) {
             return $count + 2;
@@ -135,7 +174,6 @@ class MessagingController extends Controller
                     $data["branch_id"] = $transaction->branch->id;
                 } else if ($transaction->state == "waiting") {
                     $message = $this->getMessageQueue($token, $order, $waitingTime, $window_1, $window_2, $window_3);
-                    $sent = $this->itextMoSend($transaction->mobile_number, $message);
                     $data["status"] = 1;
                     $data["log"] = $message;
                     $data["token"] = $token;
@@ -154,7 +192,7 @@ class MessagingController extends Controller
 
     public function getMessageFirst($window, $token)
     {
-        return "Hello, dear customer! Kindly proceed to Window $window to receive the service. Thank you.";
+        return "Hello, dear customer! Your queue number $token have reached the front of the Queue. Kindly proceed to Window $window to receive the service. Thank you.";
     }
 
     public function getMessagePrio($waitingTime, $window_1, $window_2, $window_3)
@@ -166,9 +204,6 @@ class MessagingController extends Controller
     {
         return "Hello customer! Thank you for your patience. Your queue number $token is $order in the queue and will be called in approximately $waitingTime minutes. This is the queue status: \nWindow 1 : $window_1 \nWindow 2 : $window_2 \nWindow 3 : $window_3\nThank you. ";
     }
-
-
-
 
     public function get_active_current($branch_id)
     {
@@ -227,13 +262,16 @@ class MessagingController extends Controller
         $client = new Client;
         $endpoint = 'https://www.itexmo.com/php_api/';
 
-        $res = $client->post($endpoint . 'api.php', ["form_params" => [
-            '1' => $to,
-            '2' => $message,
-            '3' => "ST-SAIRA416151_ILJ5C",
-            "passwd" => "%p5d)1]pq9"
-        ]]);
-
-        return $res->getBody()->getContents();
+        try {
+            $res = $client->post($endpoint . 'api.php', ["form_params" => [
+                '1' => $to,
+                '2' => $message,
+                '3' => "ST-SAIRA416151_ILJ5C",
+                "passwd" => "%p5d)1]pq9"
+            ]]);
+            return $res->getBody()->getContents();
+        } catch (Exception $e) {
+            return 1;
+        }
     }
 }

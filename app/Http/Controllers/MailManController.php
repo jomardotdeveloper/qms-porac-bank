@@ -26,7 +26,7 @@ class MailManController extends Controller
             ],
             "branch_name" => strtoupper($branch->name),
             "date" => date_format(date_create(date("Y-m-d")), "F d, Y"),
-            "base_url" => "http://poracbankqms.com/api/"
+            "base_url" => "http://127.0.0.1:8000/api/"
         ];
 
         $strData = json_encode($data);

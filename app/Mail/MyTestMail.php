@@ -29,6 +29,7 @@ class MyTestMail extends Mailable
     public function build()
     {
         $obj = json_decode($this->mailData);
+
         return $this->subject('Porac Bank Daily Reports')
             ->view('emails.test', ["data" => $obj]);
     }

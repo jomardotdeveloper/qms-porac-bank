@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use DateTime;
+use Exception;
 
 class TransactionController extends Controller
 {
@@ -1144,7 +1145,7 @@ class TransactionController extends Controller
 
     public function getMessageFirst1($window, $token)
     {
-        return "Hello, dear customer! You have reached the front of the Queue. Window $window is waiting for your queue number $token. Kindly proceed to Window $window to receive the service. Thank you.";
+        return "Hello, dear customer! Your queue number $token have reached the front of the Queue. Kindly proceed to Window $window to receive the service. Thank you.";
     }
 
     public function getMessagePrio1($waitingTime, $window_1, $window_2, $window_3)
@@ -1201,15 +1202,16 @@ class TransactionController extends Controller
         $client = new Client;
         $endpoint = 'https://www.itexmo.com/php_api/';
 
-        $res = $client->post($endpoint . 'api.php', ["form_params" => [
-            '1' => $to,
-            '2' => $message,
-            '3' => "ST-SAIRA416151_ILJ5C",
-            "passwd" => "%p5d)1]pq9"
-        ]]);
-
-
-
-        return $res->getBody()->getContents();
+        try {
+            $res = $client->post($endpoint . 'api.php', ["form_params" => [
+                '1' => $to,
+                '2' => $message,
+                '3' => "ST-SAIRA416151_ILJ5C",
+                "passwd" => "%p5d)1]pq9"
+            ]]);
+            return $res->getBody()->getContents();
+        } catch (Exception $e) {
+            return 1;
+        }
     }
 }

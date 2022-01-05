@@ -60,25 +60,46 @@ var app = new Vue({
                         stopQueue(self);
                         stopTimer();
                         socket.send(JSON.stringify(socket_messages.nextCustomer));
-                        if(window.navigator.onLine){
-                            getMessagev2(self.serving.id, 0);
-                            sendMessageV2(self.serving.id, 0, function(res){
-                                if(parseInt(res["status"]) == 1)
-                                    createNotificationLog(self.serving.id, res["log"]);
-                            });
-                        }
                     });
                 }else{
                     startQueue(self, function(){
-                        loadData(self);
-                        socket.send(JSON.stringify(socket_messages.nextCustomer));
+                        loadData(self, function(){
+                            socket.send(JSON.stringify(socket_messages.nextCustomer));
+                            if(window.navigator.onLine){
+                                getMessagev2(self.current.id, 0);
+                                sendMessageV2(self.current.id, 0, function(res){
+                                    if(parseInt(res["status"]) == 1)
+                                        createNotificationLog(self.current.id, res["log"]);
+                                });
+                                getSettingData(self, function(setting_res){
+                                    var starting_point = setting_res["starting_point"];
+                                    var ending_point = setting_res["ending_point"];
+                                    var idx = 1;
+                                    for(var i = starting_point - 1; i < self.waiting.length; i++){
+                                        console.log("HAHAHA");
+                                        getMessagev2(self.waiting[i].id, 0);
+                                        sendMessageV2(self.waiting[i].id, 0, function(res){
+                                            if(parseInt(res["status"]) == 1)
+                                                createNotificationLog(self.waiting[i].id, res["log"]);
+                                        });
+
+                                        idx++;
+
+                                        if(idx == ending_point){
+                                            break;
+                                        }
+                                    }
+                                });
+                                
+                            }
+                        });
+                        
                     });
 
                     startTimer();
                     alertSuccess("Queue Start", "Ongoing Queue");
                 }
-                if(window.navigator.onLine)
-                    autoMessage(self);
+
             }
         },
         nextq : function (){
@@ -109,7 +130,6 @@ var app = new Vue({
                                     });
                                 }
                                 startTimer();
-                                // automatedNotification(self);
                                 if(window.navigator.onLine)
                                     autoMessage(self);
                                 socket.send(JSON.stringify(socket_messages.nextCustomer));
@@ -125,9 +145,13 @@ var app = new Vue({
                             }else{
                                 alertSuccess("Good job!", "Success");
                             }
-                            // automatedNotification(self);
-                            if(window.navigator.onLine)
-                                autoMessage(self);
+                            if(window.navigator.onLine){
+                                getMessagev2(self.serving.id, 0);
+                                sendMessageV2(self.serving.id, 0, function(res){
+                                    if(parseInt(res["status"]) == 1)
+                                        createNotificationLog(self.serving.id, res["log"]);
+                                });
+                            }
                             socket.send(JSON.stringify(socket_messages.nextCustomer));
                         });
                     });
@@ -147,6 +171,11 @@ var app = new Vue({
             }else{
                 alertRevert(function(){
                     alertLoader();
+                    var currentId = self.current.id;
+                    if(window.navigator.onLine){
+                        sendMessageDrop(currentId);
+                        sendMessagePushDrop(currentId);
+                    }
                     if(self.waiting.length > 0){
                         dropQueue(self, function(){
                             startQueue(self, function(){
@@ -164,7 +193,6 @@ var app = new Vue({
                                                 createNotificationLog(self.serving.id, res["log"]);
                                         });
                                     }
-                                    // automatedNotification(self);
                                     if(window.navigator.onLine)
                                         autoMessage(self);
                                     socket.send(JSON.stringify(socket_messages.nextCustomer));
@@ -180,13 +208,19 @@ var app = new Vue({
                                 }else{
                                     alertSuccess("Good job!", "Success");
                                 }
-                                // automatedNotification(self);
-                                if(window.navigator.onLine)
-                                    autoMessage(self);
+                                if(window.navigator.onLine){
+                                    getMessagev2(self.serving.id, 0);
+                                    sendMessageV2(self.serving.id, 0, function(res){
+                                        if(parseInt(res["status"]) == 1)
+                                            createNotificationLog(self.serving.id, res["log"]);
+                                    });
+                                }
                                 socket.send(JSON.stringify(socket_messages.nextCustomer));
                             });
                         });
                     }
+                    
+                    
                     
                 });
                 
@@ -311,11 +345,25 @@ var app = new Vue({
 // NEW SMS NOTIFICATION METHOD
 async function sendMessageV2(id, isPrio = 0, callbackmethod=false){
     var params = id + "/" + isPrio.toString();
-    console.log("/api/messaging/send_message/" + params);
     var res  = (await axios.get("/api/messaging/send_message/" + params)).data;
-    
     if(callbackmethod != false){
         callbackmethod(res);
+    }
+}
+
+
+async function sendMessageDrop(id){
+    var res  = (await axios.get("/api/messaging/drop/sms/" + id.toString())).data;
+    console.log(res);
+    console.log(res);
+    if(parseInt(res["status"]) == 1)
+        createNotificationLog(id, res["log"]);
+}
+
+async function sendMessagePushDrop(id){
+    var res  = (await axios.get("/api/messaging/drop/push/" + id.toString())).data;
+    if(res["status"] == 1){
+        socket.send(JSON.stringify({message : "pushNotif", log : res["log"], transaction_id : id, token : res["token"], datetime : res["datetime"], branch_id: res["branch_id"], service: res["service"]}));
     }
 }
 
@@ -326,12 +374,10 @@ async function autoMessage(self){
     var idx = 1;
     
     for(var i = starting_point - 1; i < self.waiting.length; i++){
-        console.log("DITO SYA LODI");
-        console.log(self.waiting[i].id);
         getMessagev2(self.waiting[i].id, 0);
         sendMessageV2(self.waiting[i].id, 0, function(res){
             if(parseInt(res["status"]) == 1)
-                createNotificationLog(self.waiting[i]["id"], res["log"]);
+                createNotificationLog(self.waiting[i].id, res["log"]);
         });
 
         idx++;
@@ -459,6 +505,12 @@ async function sendMessage(id, is_transfer = 0, callbackmethod=false){
     
 }
 
+
+async function getSettingData(self, callback){
+    var setting_res =  (await axios.get("/api/settings/get/" + self.branch_id.toString())).data;
+
+    callback(setting_res);
+}
 
 async function loadData(self,  callbackmethod = false){
     var res = (await axios.get("/api/transactions/get/" + self.branch_id + "/" + self.window_id)).data;

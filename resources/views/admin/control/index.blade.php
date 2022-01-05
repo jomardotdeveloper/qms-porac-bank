@@ -15,39 +15,39 @@
 
 @section("content")
 <div id="app">
-    <input type="hidden" id="window_id" value="{{ auth()->user()->profile->window->id }}"/>
-    <input type="hidden" id="branch_id" value="{{ auth()->user()->profile->branch->id }}"/>
-    <input type="hidden" id="window_name" value="{{ auth()->user()->profile->window->name }}"/>
-    <input type="hidden" id="window_order" value="{{ auth()->user()->profile->window->order }}"/>
-    <input type="hidden" id="is_done_tour" value="{{ auth()->user()->profile->is_done_tour }}"/>
+    <input type="hidden" id="window_id" value="{{ auth()->user()->profile->window->id }}" />
+    <input type="hidden" id="branch_id" value="{{ auth()->user()->profile->branch->id }}" />
+    <input type="hidden" id="window_name" value="{{ auth()->user()->profile->window->name }}" />
+    <input type="hidden" id="window_order" value="{{ auth()->user()->profile->window->order }}" />
+    <input type="hidden" id="is_done_tour" value="{{ auth()->user()->profile->is_done_tour }}" />
     <div class="layout-top-spacing mb-2">
         <div class="row">
             <div class="col-md-12">
                 <div class="widget">
-                    <div class="d-flex align-items-center mb-3" >
+                    <div class="d-flex align-items-center mb-3">
                         <div class="mr-3">
                             <span class="quick-category-icon qc-primary rounded-circle">
                                 <i class="las la-user"></i>
                             </span>
                         </div>
                         <h5 class="font-size-14 mb-0 text-primary">
-                            {{ auth()->user()->profile->window->name }} 
+                            {{ auth()->user()->profile->window->name }}
                         </h5>
                     </div>
                     <div class="row">
                         <div class="col-4">
                             <p class="text-muted text-truncate mb-2">User</p>
-                            <h5 class="mb-0"  id="my_user">{{ auth()->user()->profile->full_name }}</h5>
+                            <h5 class="mb-0" id="my_user">{{ auth()->user()->profile->full_name }}</h5>
                         </div>
                         <div class="col-4">
                             <p class="text-muted text-truncate mb-2">Successful Transactions</p>
-                            <h5 class="mb-0"  id="total_success">
+                            <h5 class="mb-0" id="total_success">
                                 @{{ total_success }}
                             </h5>
                         </div>
                         <div class="col-4">
                             <p class="text-muted text-truncate mb-2">Dropped Transactions</p>
-                            <h5 class="mb-0"  id="total_drop">
+                            <h5 class="mb-0" id="total_drop">
                                 @{{ total_drop }}
                             </h5>
                         </div>
@@ -62,7 +62,7 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-2">   
+        <div class="row mt-2">
             <div class="col-md-12">
                 <div class="widget ">
                     <div class="d-flex align-items-center mb-3">
@@ -73,9 +73,9 @@
                         </div>
                         <h5 class="font-size-14 mb-0 text-primary">Current Serving</h5>
                     </div>
-                    
+
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-3" v-if="current != null && current.full_name != null">
                             <p class="text-muted text-truncate mb-2">Full name</p>
                             <h5 class="mb-0" id="cur_fullname" v-if="current != null && current.account != null"> @{{ current.account.first_name + " " + current.account.middle_name + " " + current.account.last_name }} </h5>
                             <h5 class="mb-0" id="cur_fullname" v-else> NONE </h5>
@@ -86,9 +86,8 @@
                             <h5 class="mb-0" id="cur_token" v-else>NONE</h5>
                         </div>
                         <div class="col-3">
-                            <p class="text-muted text-truncate mb-2">Account Number</p>
+                            <p class="text-muted text-truncate mb-2" v-if="current != null && current.account != null">Account Number</p>
                             <h5 class="mb-0" id="cur_account_number" v-if="current != null && current.account != null"> @{{ current.account.account_number }}</h5>
-                            <h5 class="mb-0" id="cur_token" v-else>NONE</h5>
                         </div>
                         <div class="col-3">
                             <p class="text-muted text-truncate mb-2">Customer Type</p>
@@ -102,22 +101,22 @@
                         <div class="col-3">
                             <p class="text-muted text-truncate mb-2">Service</p>
                             <h5 class="mb-0" id="cur_customer_type" v-if="current != null"> @{{ current.service.name }}</h5>
-                            <h5 class="mb-0"  id="cur_service" v-else>NONE</h5>
+                            <h5 class="mb-0" id="cur_service" v-else>NONE</h5>
                         </div>
                         <div class="col-3" v-if="current != null && current.amount != null ">
                             <p class="text-muted text-truncate mb-2">Amount</p>
                             <h5 class="mb-0" id="cur_customer_type" v-if="current != null"> @{{ current.amount }}</h5>
-                            <h5 class="mb-0"  id="cur_amount" v-else>NONE</h5>
+                            <h5 class="mb-0" id="cur_amount" v-else>NONE</h5>
                         </div>
                         <div class="col-3" v-if="current != null && current.loan != null ">
                             <p class="text-muted text-truncate mb-2">Loan</p>
                             <h5 class="mb-0" id="cur_customer_type" v-if="current != null"> @{{ current.loan.name }}</h5>
-                            <h5 class="mb-0"  id="cur_amount" v-else>NONE</h5>
+                            <h5 class="mb-0" id="cur_amount" v-else>NONE</h5>
                         </div>
                         <div class="col-3" v-if="current != null && current.bill != null ">
                             <p class="text-muted text-truncate mb-2">Bill</p>
                             <h5 class="mb-0" id="cur_customer_type" v-if="current != null"> @{{ current.bill.name }}</h5>
-                            <h5 class="mb-0"  id="cur_amount" v-else>NONE</h5>
+                            <h5 class="mb-0" id="cur_amount" v-else>NONE</h5>
                         </div>
                     </div>
                 </div>
@@ -136,14 +135,14 @@
                     </div>
                     <div class="row">
                         <div class="col-6" v-if="next != null && next.account != null">
-                            <p class="text-muted text-truncate mb-2" >Full name</p>
-                            <h5 class="mb-0"  id="next_fullname" v-if="next != null">@{{ next.account.first_name + " " + next.account.middle_name + " " + next.account.last_name }}</h5>
-                            <h5 class="mb-0"  id="next_fullname" v-else>NONE</h5>
+                            <p class="text-muted text-truncate mb-2">Full name</p>
+                            <h5 class="mb-0" id="next_fullname" v-if="next != null">@{{ next.account.first_name + " " + next.account.middle_name + " " + next.account.last_name }}</h5>
+                            <h5 class="mb-0" id="next_fullname" v-else>NONE</h5>
                         </div>
                         <div class="col-6">
                             <p class="text-muted text-truncate mb-2">Token</p>
                             <h5 class="mb-0" id="next_token" v-if="next != null">@{{ next.token }}</h5>
-                            <h5 class="mb-0"  id="next_fullname" v-else>NONE</h5>
+                            <h5 class="mb-0" id="next_fullname" v-else>NONE</h5>
                         </div>
                     </div>
                 </div>
@@ -186,17 +185,17 @@
             </div>
             <div class="col-2">
                 <button type="button" class="btn btn-danger btn-lg h-100 w-100" id="dropCustomer" v-on:click="dropq">
-                    <span class="btn-label"  style="background:transparent;"><i class="las la-trash"></i></span>Drop
+                    <span class="btn-label" style="background:transparent;"><i class="las la-trash"></i></span>Drop
                 </button>
             </div>
             <div class="col-2 ">
                 <button type="button" class="btn btn-warning btn-lg h-100 w-100 " id="ring" v-on:click="ringq">
-                    <span class="btn-label "  style="background:transparent;"><i class="las la-bell"></i></span>Ring
+                    <span class="btn-label " style="background:transparent;"><i class="las la-bell"></i></span>Ring
                 </button>
             </div>
             <div class="col-2">
                 <button type="button" class="btn btn-secondary btn-lg h-100 w-100 " id="help" onclick="tourstart()">
-                    <span class="btn-label "  style="background:transparent;"><i class="las la-question"></i></span>Help
+                    <span class="btn-label " style="background:transparent;"><i class="las la-question"></i></span>Help
                 </button>
             </div>
             <!-- <div class="col-2">
@@ -206,12 +205,12 @@
             </div> -->
             <div class="col-2">
                 <button type="button" class="btn btn-info btn-lg h-100 w-100" id="lst" data-toggle="modal" data-target="#listOfCustomer">
-                    <span class="btn-label"  style="background:transparent;"><i class="las la-clipboard-list"></i></span>List
+                    <span class="btn-label" style="background:transparent;"><i class="las la-clipboard-list"></i></span>List
                 </button>
             </div>
             <div class="col-2">
-                <button type="button"  v-bind:class="{ 'btn btn-success btn-lg h-100 w-100': !is_ongoing, 'btn btn-danger btn-lg h-100 w-100': is_ongoing }"  class="" id="startQueue" v-on:click="startq">
-                    <span class="btn-label"  style="background:transparent;"><i v-bind:class="{ 'las la-play-circle': !is_ongoing, 'las la-stop-circle': is_ongoing }"  class=""></i></span>
+                <button type="button" v-bind:class="{ 'btn btn-success btn-lg h-100 w-100': !is_ongoing, 'btn btn-danger btn-lg h-100 w-100': is_ongoing }" class="" id="startQueue" v-on:click="startq">
+                    <span class="btn-label" style="background:transparent;"><i v-bind:class="{ 'las la-play-circle': !is_ongoing, 'las la-stop-circle': is_ongoing }" class=""></i></span>
                     <template v-if="!is_ongoing">
                         Start
                     </template>
@@ -283,7 +282,7 @@
     </div>
 
     <!-- SWITCH MODAL -->
-    <div id="switchModal" class="modal animated fadeInDown" role="dialog" >
+    <div id="switchModal" class="modal animated fadeInDown" role="dialog">
         <div class="modal-dialog modal-lg">
             <!-- Modal content-->
             <div class="modal-content">
@@ -295,8 +294,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Switch to Window 
-                        <span class="text-danger">*</span></label>
+                        <label>Switch to Window
+                            <span class="text-danger">*</span></label>
                         <select class="form-control basic" name="window_id" id="window_select" required>
                             @foreach($windows as $window)
                             <option value="{{ $window->id }}">{{ $window->name }}</option>
@@ -305,7 +304,7 @@
                     </div>
                     <div class="form-group">
                         <label>Customers
-                        <span class="text-danger">*</span></label>
+                            <span class="text-danger">*</span></label>
                         <select class="form-control multiple" multiple="multiple" name="transactions[]" id="transactions" required>
                             <option v-for="option in switch_options" v-bind:value="option.id">
                                 @{{ option.token }}
