@@ -424,7 +424,7 @@
     // SYNC CLOUD WITH LOCAL
     async function sinkNotif() {
         var res = (await axios.post("/api/sinker_cloud/sink_notifs", {
-            accounts: await getCloudNotifs()
+            notifications: await getCloudNotifs()
         })).data;
     }
 
@@ -432,7 +432,7 @@
     // SYNC LOCAL WITH CLOUD
     async function fetchNotif() {
         var res = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_notifs", {
-            accounts: await getLocalNotifs()
+            notifications: await getLocalNotifs()
         })).data;
     }
 
