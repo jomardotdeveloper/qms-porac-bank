@@ -1,4 +1,5 @@
 var socket  = new WebSocket('ws://127.0.0.1:8090');
+// var cloudSocket = new WebSocket("")
 var cacheTime = 0;
 // 74.63.204.84
 const states = {
@@ -145,13 +146,7 @@ var app = new Vue({
                             }else{
                                 alertSuccess("Good job!", "Success");
                             }
-                            if(window.navigator.onLine){
-                                getMessagev2(self.serving.id, 0);
-                                sendMessageV2(self.serving.id, 0, function(res){
-                                    if(parseInt(res["status"]) == 1)
-                                        createNotificationLog(self.serving.id, res["log"]);
-                                });
-                            }
+                            
                             socket.send(JSON.stringify(socket_messages.nextCustomer));
                         });
                     });
@@ -208,13 +203,7 @@ var app = new Vue({
                                 }else{
                                     alertSuccess("Good job!", "Success");
                                 }
-                                if(window.navigator.onLine){
-                                    getMessagev2(self.serving.id, 0);
-                                    sendMessageV2(self.serving.id, 0, function(res){
-                                        if(parseInt(res["status"]) == 1)
-                                            createNotificationLog(self.serving.id, res["log"]);
-                                    });
-                                }
+                            
                                 socket.send(JSON.stringify(socket_messages.nextCustomer));
                             });
                         });

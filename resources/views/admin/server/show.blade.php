@@ -213,7 +213,7 @@
     window.addEventListener('online', function(e) {
         setChartOnline();
         websocketRecon();
-        fetchCloud();
+        // fetchCloud();
         sink();
 
         Snackbar.show({
@@ -460,7 +460,7 @@
     }
 
     // console.log();
-    getCloudNotifs()
+    // getCloudNotifs()
     async function sendEmail() {
         var dateTimeNow = new Date();
         var now = dateTimeNow.getDay();
