@@ -249,11 +249,13 @@
         }
 
         if (jsonObject["message"] == "sinkNotLog" && jsonObject["branch_id"] == branch) {
-            sinkNotif();
+
         }
 
         if (jsonObject["message"] == "newCustomer" && jsonObject["branch_id"] == branch) {
-            fetchCloud();
+            fetchCloud(function() {
+                sinkNotif();
+            });
         }
 
         if (jsonObject["message"] == "sink" && jsonObject["branch_id"] == branch) {
@@ -312,11 +314,13 @@
         if (jsonObject["message"] == "nextCustomer" && jsonObject["branch_id"] == branch) {
             console.log("PUMASOK NAMAN DITO");
             if (window.navigator.onLine) {
-                sink();
-                socket.send(JSON.stringify({
-                    message: "nextCustomer",
-                    branch_id: branch
-                }));
+                sink(function() {
+                    socket.send(JSON.stringify({
+                        message: "nextCustomer",
+                        branch_id: branch
+                    }));
+                });
+
             } else {
                 Snackbar.show({
                     text: 'Failed to sync. Internet connection failure.',
@@ -365,13 +369,17 @@
         })).data;
     }
 
-    async function sink() {
+    async function sink(callbackmethod = false) {
         var res = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_transactions", {
             transactions: await getTransactionsUnsink()
         })).data;
+
+        if (callbackmethod != false) {
+            callbackmethod();
+        }
     }
 
-    async function fetchCloud() {
+    async function fetchCloud(callback = false) {
         var res = (await axios.post("/api/sinker_local/sink_transactions", {
             transactions: await getTransactionsCloud()
         })).data;
@@ -380,6 +388,10 @@
             message: "newCustomer",
             branch_id: branch
         }));
+
+        if (callback != false) {
+            callback();
+        }
     }
 
     async function getTransactionsCloud() {
@@ -412,6 +424,7 @@
 
     async function getCloudNotifs() {
         var res = (await axios.get("http://poracbankqms.com/api/sinker_local/get_all_notifs/" + branch)).data;
+        console.log(res);
         return res;
     }
 
@@ -446,7 +459,8 @@
         return res;
     }
 
-
+    // console.log();
+    getCloudNotifs()
     async function sendEmail() {
         var dateTimeNow = new Date();
         var now = dateTimeNow.getDay();

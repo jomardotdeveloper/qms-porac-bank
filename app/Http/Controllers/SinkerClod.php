@@ -59,6 +59,13 @@ class SinkerClod extends Controller
             }
         }
     }
+    // 1614-865-69-860458-8
+
+    public function notificationExists($transaction_id, $datetime)
+    {
+        $data = Notification::where("transaction_id", $transaction_id)->where("datetime", $datetime)->get()->all();
+        return count($data) > 0;
+    }
 
     public function sinkNotification(Request $request)
     {
@@ -66,6 +73,7 @@ class SinkerClod extends Controller
         foreach ($notifications as $notification) {
             $finder = Transaction::where("token", "=", $notification["transaction"]["token"])->where("in", "=", $notification["transaction"]["in"])->first();
             $notifExists = $this->notificationExists($finder->id, $finder->in);
+
 
             if (!$notifExists) {
                 $notification = Notification::create([
