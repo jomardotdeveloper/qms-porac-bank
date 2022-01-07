@@ -727,6 +727,7 @@ class UserSeeder extends Seeder
             if (!isset($user["is_manager"]) && !isset($user["is_server"]) && !isset($user["is_it"])) {
                 if ($isFirst) {
                     $user1->profile->services()->attach([6]);
+                    $isFirst = false;
                 } else {
                     $user1->profile->services()->attach([1, 2, 3, 4, 5, 6]);
                 }
