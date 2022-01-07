@@ -215,17 +215,17 @@ class ProfileController extends Controller
             $profile = User::where("username", "=", $user["username"])->get()->all();
 
             if(count($profile) > 0){
-                $finderUser = User::find($profile[0]->id);
-                $finder = Profile::where("user_id", "=", $profile[0]->user_id);
-                $finderUser->password = $user["user"]["password"];
-                $finderUser->save();
+                // $finderUser = User::find($profile[0]->id);
+                // $finder = Profile::where("user_id", "=", $profile[0]->user_id);
+                // $finderUser->password = $user["user"]["password"];
+                // $finderUser->save();
 
-                $finder->first_name = $user["first_name"];
-                $finder->last_name = $user["last_name"];
-                $finder->middle_name = isset($user["middle_name"]) ? $user["middle_name"] : null;
-                $finder->role_id = $user["role_id"];
-                $finder->branch_id = $user["branch_id"];
-                $finder->save();
+                // $finder->first_name = $user["first_name"];
+                // $finder->last_name = $user["last_name"];
+                // $finder->middle_name = isset($user["middle_name"]) ? $user["middle_name"] : null;
+                // $finder->role_id = $user["role_id"];
+                // $finder->branch_id = $user["branch_id"];
+                // $finder->save();
             }else{
                 $userObj = User::create([
                     "username" => $user["user"]["username"],
