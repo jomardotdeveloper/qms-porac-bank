@@ -144,6 +144,7 @@
         var res = (await axios.post("http://poracbankqms.com/api/profile/sink", {
             user: user
         })).data;
+        return res;
     }
 
     async function sink() {
