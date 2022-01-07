@@ -729,7 +729,7 @@ class UserSeeder extends Seeder
                     $user1->profile->services()->attach([6]);
                     $isFirst = false;
                 } else {
-                    $user1->profile->services()->attach([1, 2, 3, 4, 5, 6]);
+                    $user1->profile->services()->attach([1, 2, 3, 4, 5]);
                 }
             }
         }
