@@ -212,11 +212,11 @@ class ProfileController extends Controller
         {
             $user = $user[0];
             $profile = User::where("username", "=", $user["user"]["username"])->get()->all();
-            return $profile;
+
             if(count($profile) > 0){
                 $finderUser = User::find($profile[0]->id);
                 $finder = Profile::where("user_id", "=", $profile[0]->id);
-                $finderUser->password = $user["user"]["password"];
+                $finderUser->password = "123";
                 $finderUser->save();
 
                 $finder->first_name = $user["first_name"];
@@ -228,7 +228,7 @@ class ProfileController extends Controller
             }else{
                 $userObj = User::create([
                     "username" => $user["user"]["username"],
-                    "password" => $user["user"]["password"],
+                    "password" => "123",
                     "is_admin" => false
                 ]);
                 $userObj->profile()->save(
