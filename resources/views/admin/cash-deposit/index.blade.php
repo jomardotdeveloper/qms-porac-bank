@@ -58,10 +58,10 @@
                                             <td>{{ $deposit->account->account_number }}</td>
                                             <td>{{ $deposit->token }}</td>
                                             <td>{{ date_format(date_create($deposit->in), 'F d, Y') }}</td>
-                                            <td><span style="font-family: DejaVu Sans; sans-serif;">&#8369;</span>{{ $deposit->amount }}</td>
+                                            <td><span style="font-family: DejaVu Sans; sans-serif;">&#8369;</span>{{ number_format(intval($deposit->amount)) }}</td>
                                         </tr>
                                         @endforeach
-                                    </tbody>
+                                    </tbody >
                                     <tfoot>
                                         <tr>
                                             @if(auth()->user()->is_admin)

@@ -22,6 +22,7 @@ use App\Http\Controllers\CashEncashmentController;
 use App\Http\Controllers\BillsPaymentController;
 use App\Http\Controllers\LoanTransactionController;
 use App\Http\Controllers\NewAccountController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AllTransactionController;
 use App\Http\Controllers\MailManController;
 use App\Http\Controllers\SinkerLoc;
@@ -150,3 +151,9 @@ Route::post("/sinker_cloud/sink_notifs", [SinkerClod::class, "sinkNotification"]
 Route::get("/samplelangnaman/{to}/{message}", [MessagingController::class, "itextMoSend"]);
 Route::get("/messaging/drop/sms/{id}", [MessagingController::class, "messageDrop"]);
 Route::get("/messaging/drop/push/{id}", [MessagingController::class, "pushNotifDrop"]);
+
+
+// FOR SINKING USER (UPDATES)
+
+Route::get("/profile/get_current/{id}", [ProfileController::class, "getCurrent"]);
+Route::post("/profile/sink", [ProfileController::class, "sinkData"]);

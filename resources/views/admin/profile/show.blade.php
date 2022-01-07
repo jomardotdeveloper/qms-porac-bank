@@ -17,6 +17,7 @@
     <div class="col-md-12">
         <div class="row">
             <div class="container p-0">
+                <input type="hidden" id="profile_id" value="{{ $profile->id }}"/>
                 <button class="btn btn-success" onclick="sink()">Sync</button>
                 <div class="row layout-top-spacing">
                     <div class="col-lg-12 layout-spacing">
@@ -126,20 +127,29 @@
 @endsection
 @push("custom-scripts")
 <script src="/admin/plugins/select2/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     $(".basic").select2();
     $(".multiple").select2();
 </script>
 <script>
-    var branch = $("#branch_id").val();
-    var localSocket = new WebSocket('ws://127.0.0.1:8090');
+    var profile = $("#profile_id").val();
 
-    function sink() {
-        var datas = {
-            "message": "newUser",
-            "branch_id": branch
-        };
-        localSocket.send(JSON.stringify(datas));
+    async function getCurrent() {
+        var res = (await axios.get("/api/profile/get_current/" + profile)).data;
+        return res;
     }
+
+    async function action_sync(user){
+        var res = (await axios.post("http://poracbankqms.com/api/profile/sink", {
+            user: user
+        })).data;
+    }
+
+    async function sink() {
+        var current = await getCurrent();
+        action_sync(current);
+    }
+    
 </script>
 @endpush

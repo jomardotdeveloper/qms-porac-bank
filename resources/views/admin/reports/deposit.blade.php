@@ -8,7 +8,7 @@
 <h3 style="margin-top:-.1rem;">CASH DEPOSIT REPORTS</h3>
 
 @if($data["from"] == $data["to"])
-<h4 style="margin-top:-1rem; ">DATE: <span style="font-weight:normal;">{{ $data["from"] }}</span></h4>
+<h4 style="margin-top:-1rem; ">AS OF: <span style="font-weight:normal;">{{ $data["from"] }}</span></h4>
 @endif
 
 @if($data["from"] != $data["to"])
@@ -32,13 +32,13 @@
         @endif
         <td>{{ $deposit->token }}</td>
         <td>{{ $deposit->account->account_number }}</td>
-        <td><span style="font-family: DejaVu Sans; sans-serif;">&#8369;</span>{{ $deposit->amount }}</td>
+        <td><span style="font-family: DejaVu Sans; sans-serif;">&#8369;</span>{{ number_format(intval($deposit->amount)) }}</td>
         @php($total_amount += intval($deposit->amount))
     </tr>
     @endforeach
 </table>
 <h2>SUMMARY</h2>
 <hr style="margin-top: -1rem;"/>
-<h4 style="margin-top:-.1rem; ">TOTAL AMOUNT: <span style="font-weight:normal;"><span style="font-family: DejaVu Sans; sans-serif;">&#8369;</span>{{ $total_amount }}</span></h4>
+<h4 style="margin-top:-.1rem; ">TOTAL AMOUNT: <span style="font-weight:normal;"><span style="font-family: DejaVu Sans; sans-serif;">&#8369;</span>{{ number_format($total_amount) }}</span></h4>
 <h4 style="margin-top:-1rem; ">TOTAL NUMBER OF TRANSACTIONS: <span style="font-weight:normal;">{{ count($data["data"]) }}</span></h4>
 @endsection

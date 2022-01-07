@@ -13,7 +13,7 @@
 <h3 style="margin-top:-.1rem;">PERFORMANCE REPORTS</h3>
 
 @if($data["from"] == $data["to"])
-<h4 style="margin-top:-1rem; ">DATE: <span style="font-weight:normal;">{{ $data["from"] }}</span></h4>
+<h4 style="margin-top:-1rem; ">AS OF: <span style="font-weight:normal;">{{ $data["from"] }}</span></h4>
 @endif
 
 @if($data["from"] != $data["to"])
