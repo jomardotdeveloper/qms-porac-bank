@@ -213,38 +213,38 @@ class ProfileController extends Controller
             $user = $user[0];
             $profile = User::where("username", "=", $user["user"]["username"])->get()->all();
 
-            // if(count($profile) > 0){
-            //     $finderUser = User::find($profile[0]->id);
-            //     $finder = Profile::where("user_id", "=", $profile[0]->user_id);
-            //     $finderUser->password = $user["user"]["password"];
-            //     $finderUser->save();
+            if(count($profile) > 0){
+                $finderUser = User::find($profile[0]->id);
+                $finder = Profile::where("user_id", "=", $profile[0]->id);
+                $finderUser->password = $user["user"]["password"];
+                $finderUser->save();
 
-            //     $finder->first_name = $user["first_name"];
-            //     $finder->last_name = $user["last_name"];
-            //     $finder->middle_name = isset($user["middle_name"]) ? $user["middle_name"] : null;
-            //     $finder->role_id = $user["role_id"];
-            //     $finder->branch_id = $user["branch_id"];
-            //     $finder->save();
-            // }else{
-            //     $userObj = User::create([
-            //         "username" => $user["user"]["username"],
-            //         "password" => $user["user"]["password"],
-            //         "is_admin" => false
-            //     ]);
-            //     $userObj->profile()->save(
-            //         new Profile([
-            //             "first_name" => $user["first_name"],
-            //             "last_name" =>  $user["last_name"],
-            //             "middle_name" => isset($user["middle_name"]) ? $user["middle_name"] : null,
-            //             "user_id" => $userObj->id,
-            //             "role_id" => $user["role_id"],
-            //             "branch_id" => $user["branch_id"],
-            //             "is_sync" => true
-            //         ])
-            //     );
+                $finder->first_name = $user["first_name"];
+                $finder->last_name = $user["last_name"];
+                $finder->middle_name = isset($user["middle_name"]) ? $user["middle_name"] : null;
+                $finder->role_id = $user["role_id"];
+                $finder->branch_id = $user["branch_id"];
+                $finder->save();
+            }else{
+                $userObj = User::create([
+                    "username" => $user["user"]["username"],
+                    "password" => $user["user"]["password"],
+                    "is_admin" => false
+                ]);
+                $userObj->profile()->save(
+                    new Profile([
+                        "first_name" => $user["first_name"],
+                        "last_name" =>  $user["last_name"],
+                        "middle_name" => isset($user["middle_name"]) ? $user["middle_name"] : null,
+                        "user_id" => $userObj->id,
+                        "role_id" => $user["role_id"],
+                        "branch_id" => $user["branch_id"],
+                        "is_sync" => true
+                    ])
+                );
 
-            //     $userObj->save();
-            // }
+                $userObj->save();
+            }
         }
         
     }
