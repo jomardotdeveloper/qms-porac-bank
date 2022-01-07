@@ -30,9 +30,9 @@
                                 <div class="widget-content widget-content-area">
                                     @if($errors->any())
                                     <div class="alert alert-danger mb-4" role="alert">
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"> 
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                             <i class="las la-times"></i>
-                                        </button> 
+                                        </button>
                                         <ul>
                                             @foreach($errors->all() as $error)
                                             <li>{{ $error }}</li>
@@ -43,22 +43,29 @@
                                     <div class="row">
                                         <div class="col-xl-6 col-md-6 col-sm-6 col-6">
                                             <div class="form-group">
-                                                <label>Name 
-                                                <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" name="name" value="{{ $branch->name }}" placeholder="Enter Name" required/>
+                                                <label>Name
+                                                    <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="name" value="{{ $branch->name }}" placeholder="Enter Name" required />
                                             </div>
                                         </div>
                                         <div class="col-xl-6 col-md-6 col-sm-6 col-6">
                                             <div class="form-group">
-                                                <label>Product Key 
-                                                <span class="text-danger">*</span></label>
-                                                <input type="text" class="form-control" name="product_key" value="{{ $branch->product_key }}" placeholder="Enter Product Key" disabled/>
+                                                <label>Product Key
+                                                    <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" name="product_key" value="{{ $branch->product_key }}" placeholder="Enter Product Key" disabled />
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-6 col-md-6 col-sm-6 col-6">
+                                            <div class="form-group">
+                                                <label>Email
+                                                    <span class="text-danger">*</span></label>
+                                                <input type="email" class="form-control" name="email" value="{{ $branch->email }}" placeholder="Enter Email" required />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="widget-footer text-right">
-                                    <input type="submit" value="Save changes" class="btn btn-primary mr-2"/>
+                                    <input type="submit" value="Save changes" class="btn btn-primary mr-2" />
                                 </div>
                             </form>
                         </div>

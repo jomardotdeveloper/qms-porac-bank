@@ -9,6 +9,7 @@ use App\Models\Server;
 use App\Models\Window;
 use App\Models\Cutoff;
 use Illuminate\Support\Facades\DB;
+
 class BranchController extends Controller
 {
     /**
@@ -42,6 +43,7 @@ class BranchController extends Controller
         $validated = $request->validate([
             "name" => "required",
             "product_key" => "unique:branches|required",
+            "email" => "required"
         ]);
 
         $branch = Branch::create($validated);
@@ -118,27 +120,29 @@ class BranchController extends Controller
         return redirect()->route("branches.index", ["branches" => Branch::all()]);
     }
 
-    public function get_branch_data($product_key){
+    public function get_branch_data($product_key)
+    {
         $branch = Branch::all()->where("product_key", "=", $product_key)->first();
         $data = [];
-        
-        if($branch){
+
+        if ($branch) {
             $data = [
                 "success" => 1,
                 "id" => $branch->id,
                 "name" => $branch->name
             ];
-        }else{
+        } else {
             $data = [
                 "success" => 0,
                 "message" => "Product key doesn't exists."
             ];
         }
-        
+
         echo json_encode($data);
     }
 
-    public function all(){
+    public function all()
+    {
         echo json_encode(DB::table('branches')->orderBy('name', 'ASC')->get()->all());
     }
 }

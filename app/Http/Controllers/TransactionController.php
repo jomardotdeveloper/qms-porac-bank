@@ -296,7 +296,7 @@ class TransactionController extends Controller
     public function getAheadCustomer1($id)
     {
         $transaction = Transaction::find($id);
-        $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting'", [$transaction->branch->id])->get()->all();
+        $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting' AND service_id IN (1,2,3,4,5)", [$transaction->branch->id])->get()->all();
         $count = 0;
 
 
@@ -1215,11 +1215,40 @@ class TransactionController extends Controller
             return $number . $ends[$number % 10];
     }
 
+    public function getAheadCustomerNa1($id)
+    {
+        $transaction = Transaction::find($id);
+        $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting' AND service_id=6", [$transaction->branch->id])->get()->all();
+        $count = 0;
+
+
+        foreach ($transactions as $t) {
+            if ($transaction->order > $t->order) {
+                $count++;
+            } else if ($transaction->order < $t->order) {
+                if ($t->account_id != null) {
+                    $account = Account::find($t->account_id);
+                    if ($account->customer_type == "priority") {
+                        $count++;
+                    }
+                }
+            }
+        }
+
+        return $count;
+    }
+
     public function getEstimateWaitingTime1($id)
     {
         $transaction = Transaction::find($id);
         $burst_time = $this->getBurstTime1($transaction->service->id, $transaction->branch->id);
-        $numberOfAheadCustomer = $this->getAheadCustomer1($id);
+        $numberOfAheadCustomer = 0;
+        if ($transaction->id == 6) {
+            $numberOfAheadCustomer = $this->getAheadCustomerNa1($id);
+        } else {
+            $numberOfAheadCustomer = $this->getAheadCustomer1($id);
+        }
+
         $waiting_time = $burst_time * $numberOfAheadCustomer;
 
         return $waiting_time;

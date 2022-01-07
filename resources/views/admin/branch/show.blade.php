@@ -27,16 +27,23 @@
                                 <div class="row">
                                     <div class="col-xl-6 col-md-6 col-sm-6 col-6">
                                         <div class="form-group">
-                                            <label>Name 
-                                            <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="name" value="{{ $branch->name }}" placeholder="Enter Name" disabled/>
+                                            <label>Name
+                                                <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="name" value="{{ $branch->name }}" placeholder="Enter Name" disabled />
                                         </div>
                                     </div>
                                     <div class="col-xl-6 col-md-6 col-sm-6 col-6">
                                         <div class="form-group">
-                                            <label>Product Key 
-                                            <span class="text-danger">*</span></label>
-                                            <input type="text" class="form-control" name="product_key" value="{{ $branch->product_key }}" placeholder="Enter Product Key" disabled/>
+                                            <label>Product Key
+                                                <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" name="product_key" value="{{ $branch->product_key }}" placeholder="Enter Product Key" disabled />
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-md-6 col-sm-6 col-6">
+                                        <div class="form-group">
+                                            <label>Email
+                                                <span class="text-danger">*</span></label>
+                                            <input type="email" class="form-control" name="email" value="{{ $branch->email }}" placeholder="Enter Email" disabled />
                                         </div>
                                     </div>
                                 </div>
