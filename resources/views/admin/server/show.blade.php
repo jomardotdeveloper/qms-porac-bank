@@ -284,32 +284,32 @@
             }
         }
 
-        if (jsonObject["message"] == "newUser") {
+        // if (jsonObject["message"] == "newUser") {
 
-            if (window.navigator.onLine) {
-                // sinkUser();
-                Snackbar.show({
-                    text: 'User sync',
-                    pos: 'bottom-right'
-                });
-            } else {
-                Snackbar.show({
-                    text: 'Failed to sync. Internet connection failure.',
-                    pos: 'bottom-right'
-                });
-            }
-        }
+        //     if (window.navigator.onLine) {
+        //         // sinkUser();
+        //         Snackbar.show({
+        //             text: 'User sync',
+        //             pos: 'bottom-right'
+        //         });
+        //     } else {
+        //         Snackbar.show({
+        //             text: 'Failed to sync. Internet connection failure.',
+        //             pos: 'bottom-right'
+        //         });
+        //     }
+        // }
 
-        if (jsonObject["message"] == "newAccount" && jsonObject["branch_id"] == branch) {
-            if (window.navigator.onLine) {
-                sinkAccount();
-            } else {
-                Snackbar.show({
-                    text: 'Failed to sync. Internet connection failure.',
-                    pos: 'bottom-right'
-                });
-            }
-        }
+        // if (jsonObject["message"] == "newAccount" && jsonObject["branch_id"] == branch) {
+        //     if (window.navigator.onLine) {
+        //         sinkAccount();
+        //     } else {
+        //         Snackbar.show({
+        //             text: 'Failed to sync. Internet connection failure.',
+        //             pos: 'bottom-right'
+        //         });
+        //     }
+        // }
 
         if (jsonObject["message"] == "nextCustomer" && jsonObject["branch_id"] == branch) {
             console.log("PUMASOK NAMAN DITO");
@@ -399,27 +399,27 @@
         return res;
     }
 
-    async function getAllUsers() {
-        var res = (await axios.get("/api/sinker_local/get_all_users/" + branch)).data;
-        return res;
-    }
+    // async function getAllUsers() {
+    //     var res = (await axios.get("/api/sinker_local/get_all_users/" + branch)).data;
+    //     return res;
+    // }
 
-    async function sinkUser() {
-        var res = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_users", {
-            users: await getAllUsers()
-        })).data;
-    }
+    // async function sinkUser() {
+    //     var res = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_users", {
+    //         users: await getAllUsers()
+    //     })).data;
+    // }
 
-    async function getAllAccounts() {
-        var res = (await axios.get("/api/sinker_local/get_all_accounts/" + branch)).data;
-        return res;
-    }
+    // async function getAllAccounts() {
+    //     var res = (await axios.get("/api/sinker_local/get_all_accounts/" + branch)).data;
+    //     return res;
+    // }
 
-    async function sinkAccount() {
-        var res = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_accounts", {
-            accounts: await getAllAccounts()
-        })).data;
-    }
+    // async function sinkAccount() {
+    //     var res = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_accounts", {
+    //         accounts: await getAllAccounts()
+    //     })).data;
+    // }
 
 
     async function getCloudNotifs() {

@@ -78,6 +78,28 @@ class MessagingController extends Controller
         return $count + 1;
     }
 
+    public function getAheadCustomer($id){
+        $transaction = Transaction::find($id);
+        $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting'", [$transaction->branch->id])->get()->all();
+        $count = 0;
+
+
+        foreach ($transactions as $t) {
+            if ($transaction->order > $t->order) {
+                $count++;
+            } else if ($transaction->order < $t->order) {
+                if ($t->account_id != null) {
+                    $account = Account::find($t->account_id);
+                    if ($account->customer_type == "priority") {
+                        $count++;
+                    }
+                }
+            }
+        }
+
+        return $count;
+    }
+
     public function hasServing($branch_id)
     {
         $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND state = 'serving'", [$branch_id])->get()->all();
@@ -231,7 +253,7 @@ class MessagingController extends Controller
     {
         $transaction = Transaction::find($id);
         $burst_time = $this->getBurstTime($transaction->service->id, $transaction->branch->id);
-        $numberOfAheadCustomer = $this->getOrder($id);
+        $numberOfAheadCustomer = $this->getAheadCustomer($id);
         $waiting_time = $burst_time * $numberOfAheadCustomer;
 
         return $waiting_time;
