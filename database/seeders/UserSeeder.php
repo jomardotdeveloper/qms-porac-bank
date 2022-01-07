@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Profile;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
+
 class UserSeeder extends Seeder
 {
     /**
@@ -687,19 +688,24 @@ class UserSeeder extends Seeder
         }';
 
         $data = json_decode($data, true)["json_file"];
-
-        foreach($data as $user){
+        $isFirst = false;
+        $cacheBranch = 0;
+        foreach ($data as $user) {
             $role = Role::all()->where("branch_id", "=", $user["branch_id"])->skip(1)->first();
-            
 
-            if(isset($user["is_manager"])){ 
+            if ($cacheBranch != intval($user["branch_id"])) {
+                $isFirst = true;
+                $cacheBranch = intval($user["branch_id"]);
+            }
+
+            if (isset($user["is_manager"])) {
                 $role = Role::all()->where("branch_id", "=", $user["branch_id"])->where("name", "=", "Manager")->first();
-            }else if(isset($user["is_server"])){
+            } else if (isset($user["is_server"])) {
                 $role = Role::all()->where("branch_id", "=", $user["branch_id"])->where("name", "=", "Server")->first();
-            }else if(isset($user["is_it"])){
+            } else if (isset($user["is_it"])) {
                 $role = Role::all()->where("branch_id", "=", $user["branch_id"])->where("name", "=", "IT")->first();
             }
-            
+
 
             $user1 = User::create([
                 "username" => $user["username"],
@@ -718,14 +724,13 @@ class UserSeeder extends Seeder
                 ])
             );
 
-            if(!isset($user["is_manager"]) && !isset($user["is_server"]) && !isset($user["is_it"]))
-                $user1->profile->services()->attach([1,2,3,4,5,6]);
+            if (!isset($user["is_manager"]) && !isset($user["is_server"]) && !isset($user["is_it"])) {
+                if ($isFirst) {
+                    $user1->profile->services()->attach([6]);
+                } else {
+                    $user1->profile->services()->attach([1, 2, 3, 4, 5, 6]);
+                }
+            }
         }
-
-
-
-        
-
-        
     }
 }
