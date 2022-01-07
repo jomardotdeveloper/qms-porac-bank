@@ -17,6 +17,7 @@ class CreateBranches extends Migration
             $table->id();
             $table->string("product_key")->unique();
             $table->string("name");
+            $table->string("email")->default("qmsporacbank@gmail.com");
             $table->timestamps();
         });
     }

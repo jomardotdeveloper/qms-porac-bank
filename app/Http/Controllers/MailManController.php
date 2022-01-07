@@ -30,6 +30,6 @@ class MailManController extends Controller
         ];
 
         $strData = json_encode($data);
-        \Mail::to('qmsporacbank@gmail.com')->send(new \App\Mail\MyTestMail($strData));
+        \Mail::to($branch->email)->send(new \App\Mail\MyTestMail($strData));
     }
 }

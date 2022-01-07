@@ -721,37 +721,37 @@ id: "app",
 steps: [
     {
     title: "Start Control",
-    content: "This is the control to start the Queue. Hotkey is alt + 6. ",
+    content: "This is the control to start the Queue. The hotkey is alt + 6. ",
     target: document.getElementById("startQueue"),
     placement: "left"
     },
     {
     title: "List Control",
-    content: "To see all the customer in your queue click the list or use the hotkey alt + 5. ",
+    content: "Click the list or use the hotkey alt + 5 to see all of the customers in the queue. ",
     target: document.getElementById("lst"),
     placement: "left"
     },
     {
     title: "Help Control",
-    content: "If you are still not familiar with the hotkeys you can click help button or use the hotkey alt + 4.",
+    content: "If you still aren't familiar with the hotkeys, you can use the help button or the hotkey alt + 4.",
     target: document.getElementById("help"),
     placement: "left"
     },
     {
     title: "Ring Control",
-    content: "If customer still not in your service area, you can click the link to trigger the voice of the digital signage tv. Hotkey is alt + 3.",
+    content: "If the customer is still outside of your service area, you can click the link to trigger the voice of the digital signage TV. Alt + 3 is the hotkey.",
     target: document.getElementById("ring"),
     placement: "left"
     },
     {
     title: "Drop Control",
-    content: "If customer did not appear in the service area for a while, you can drop the customer. Hotkey is alt + 2.",
+    content: "If a customer does not appear in the service area for an extended time, you may drop the customer. Alt + 2 is the hotkey.",
     target: document.getElementById("dropCustomer"),
     placement: "left"
     },
     {
     title: "Next Control",
-    content: "For a successful transaction and to serve the next customer, you can click the next button or use the hotkey alt + 1.",
+    content: "You can click the next button or use the hotkey alt + 1 to complete the transaction and serve the next customer.",
     target: document.getElementById("nextCustomer"),
     placement: "top"
     }
