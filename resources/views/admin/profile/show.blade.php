@@ -148,7 +148,8 @@
 
     async function sink() {
         var current = await getCurrent();
-        action_sync(current);
+        var x = await action_sync(current);
+        console.log(x);
     }
     
 </script>
