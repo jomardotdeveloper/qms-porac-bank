@@ -26,9 +26,9 @@ class SinkerLoc extends Controller
         return Profile::with(["user"])->whereRaw("branch_id = ? ", [$branch_id])->get()->all();
     }
 
-    public function getAllAccounts($branch_id)
+    public function getAllAccounts()
     {
-        return Account::where("branch_id", $branch_id)->get()->all();
+        return Account::all();
     }
 
     public function getAllNotifications($branch_id)

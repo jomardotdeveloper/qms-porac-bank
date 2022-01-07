@@ -138,7 +138,7 @@ Route::get("/sinker_local/get_all_users/{branch_id}", [SinkerLoc::class, "getAll
 Route::post("/sinker_cloud/sink_users", [SinkerClod::class, "sinkUser"]);
 
 //ACCOUNT SINKER
-Route::get("/sinker_local/get_all_accounts/{branch_id}", [SinkerLoc::class, "getAllAccounts"]);
+Route::get("/sinker_local/get_all_accounts/", [SinkerLoc::class, "getAllAccounts"]);
 Route::post("/sinker_cloud/sink_accounts", [SinkerClod::class, "sinkAccounts"]);
 
 

@@ -25,6 +25,7 @@
                         <div class="widget-content widget-content-area br-6">
                             @if($errors->any())
                                 @if(isset($errors->get("msg_from_imports")[0]))
+                                    <input type="hidden" id="needsToSink" value="1"/>
                                     @if($errors->get("denied")[0] > 0)
                                         <div class="alert alert-danger mb-4" role="alert">
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"> 
@@ -50,6 +51,7 @@
                                         </div>
                                     @endif
                                 @else
+                                <input type="hidden" id="needsToSink" value="0"/>
                                 <div class="alert alert-danger mb-4" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"> 
                                         <i class="las la-times"></i>
@@ -61,6 +63,8 @@
                                     </ul>
                                 </div>
                                 @endif
+                            @else
+                            <input type="hidden" id="needsToSink" value="0"/>
                             @endif
                             <h4 class="table-header">All Accounts</h4>
                             <div class="table-responsive mb-4">
@@ -289,5 +293,23 @@
             $(this).toggleClass("toggle-clicked");
         } );
     } );
+</script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    var needsToSink = parseInt($("#needsToSink").val()) == 1;
+    async function getAllAccounts() {
+        var res = (await axios.get("/api/sinker_local/get_all_accounts/")).data;
+        return res;
+    }
+
+    async function sinkAccount() {
+        var res = (await axios.post("http://poracbankqms.com/api/sinker_cloud/sink_accounts", {
+            accounts: await getAllAccounts()
+        })).data;
+    }
+
+    sinkAccount();
+
+
 </script>
 @endpush
