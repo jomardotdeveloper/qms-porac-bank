@@ -208,9 +208,9 @@ class ProfileController extends Controller
 
     public function sinkData(Request $request){
         $user = $request->get("user");
-        return count($user);
-        // if(count($user) > 0)
-        // {
+        // return count($user);
+        if(count($user) > 0)
+        {
         //     return $user;
         //     // $user = $user[0];
         //     // // $profile = User::where("username", "=", $user["username"])->get()->all();
@@ -247,7 +247,7 @@ class ProfileController extends Controller
 
         //     //     $userObj->save();
         //     // }
-        // }
+        }
         
     }
 
