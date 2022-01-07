@@ -210,7 +210,7 @@ class ProfileController extends Controller
         $user = $request->get("user");
 
 
-        $profile = User::where("username", "=", $user["username"])->get()->all();
+        // $profile = User::where("username", "=", $user["username"])->get()->all();
 
         // if(count($profile) > 0){
         //     // [0]->profile
