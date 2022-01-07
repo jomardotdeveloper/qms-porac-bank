@@ -249,7 +249,7 @@
         }
 
         if (jsonObject["message"] == "sinkNotLog" && jsonObject["branch_id"] == branch) {
-
+            sinkNotif();
         }
 
         if (jsonObject["message"] == "newCustomer" && jsonObject["branch_id"] == branch) {

@@ -289,7 +289,8 @@ class TransactionController extends Controller
     {
     }
 
-    public function getAheadCustomer1($id){
+    public function getAheadCustomer1($id)
+    {
         $transaction = Transaction::find($id);
         $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting'", [$transaction->branch->id])->get()->all();
         $count = 0;
@@ -1177,7 +1178,12 @@ class TransactionController extends Controller
 
     public function getMessageQueue1($token, $order, $waitingTime, $window_1, $window_2, $window_3)
     {
-        return "Hello customer! Thank you for your patience. Your queue number $token is $order in the queue and will be called in approximately $waitingTime minutes. This is the queue status: \nWindow 1 : $window_1 \nWindow 2 : $window_2 \nWindow 3 : $window_3\nThank you. ";
+        if ($waitingTime == 0) {
+            return "Hello customer! Thank you for your patience. Your queue number $token is $order in the queue. This is the queue status: \nWindow 1 : $window_1 \nWindow 2 : $window_2 \nWindow 3 : $window_3\nThank you. ";
+        } else {
+            return "Hello customer! Thank you for your patience. Your queue number $token is $order in the queue and will be called in approximately $waitingTime minutes. This is the queue status: \nWindow 1 : $window_1 \nWindow 2 : $window_2 \nWindow 3 : $window_3\nThank you. ";
+        }
+        // return "Hello customer! Thank you for your patience. Your queue number $token is $order in the queue and will be called in approximately $waitingTime minutes. This is the queue status: \nWindow 1 : $window_1 \nWindow 2 : $window_2 \nWindow 3 : $window_3\nThank you. ";
     }
 
 
