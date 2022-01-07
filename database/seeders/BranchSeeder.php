@@ -186,6 +186,10 @@ class BranchSeeder extends Seeder
 
         $branch9 = Branch::create(["name" => "MEXICO", "product_key" => "11291911"]);
         $setting1 = Setting::create([
+
+            "branch_id" => $branch9->id
+        ]);
+        $cutoff = Cutoff::create([
             "m" => "12:00",
             "t" => "12:00",
             "w" => "12:00",
@@ -195,7 +199,6 @@ class BranchSeeder extends Seeder
             "sd" => "12:00",
             "branch_id" => $branch9->id
         ]);
-        $cutoff = Cutoff::create(["branch_id" => $branch9->id]);
         $window1_1 = Window::create(["name" => "Window 1", "order" => 1, "branch_id" => $branch9->id]);
         $window2_1 = Window::create(["name" => "Window 2", "order" => 2, "branch_id" => $branch9->id]);
         $window3_1 = Window::create(["name" => "Window 3", "order" => 3, "branch_id" => $branch9->id]);
@@ -208,6 +211,10 @@ class BranchSeeder extends Seeder
 
         $branch10 = Branch::create(["name" => "FLORIDA", "product_key" => "11291912"]);
         $setting1 = Setting::create([
+
+            "branch_id" => $branch10->id
+        ]);
+        $cutoff = Cutoff::create([
             "m" => "12:00",
             "t" => "12:00",
             "w" => "12:00",
@@ -217,7 +224,6 @@ class BranchSeeder extends Seeder
             "sd" => "12:00",
             "branch_id" => $branch10->id
         ]);
-        $cutoff = Cutoff::create(["branch_id" => $branch10->id]);
         $window1_1 = Window::create(["name" => "Window 1", "order" => 1, "branch_id" => $branch10->id]);
         $window2_1 = Window::create(["name" => "Window 2", "order" => 2, "branch_id" => $branch10->id]);
         $window3_1 = Window::create(["name" => "Window 3", "order" => 3, "branch_id" => $branch10->id]);
@@ -229,6 +235,10 @@ class BranchSeeder extends Seeder
 
         $branch11 = Branch::create(["name" => "PLARIDEL, AC", "product_key" => "11291913"]);
         $setting1 = Setting::create([
+
+            "branch_id" => $branch11->id
+        ]);
+        $cutoff = Cutoff::create([
             "m" => "12:00",
             "t" => "12:00",
             "w" => "12:00",
@@ -238,7 +248,6 @@ class BranchSeeder extends Seeder
             "sd" => "12:00",
             "branch_id" => $branch11->id
         ]);
-        $cutoff = Cutoff::create(["branch_id" => $branch11->id]);
         $window1_1 = Window::create(["name" => "Window 1", "order" => 1, "branch_id" => $branch11->id]);
         $window2_1 = Window::create(["name" => "Window 2", "order" => 2, "branch_id" => $branch11->id]);
         $window3_1 = Window::create(["name" => "Window 3", "order" => 3, "branch_id" => $branch11->id]);
@@ -250,6 +259,10 @@ class BranchSeeder extends Seeder
 
         $branch12 = Branch::create(["name" => "CONCEPCION", "product_key" => "11291914"]);
         $setting1 = Setting::create([
+
+            "branch_id" => $branch12->id
+        ]);
+        $cutoff = Cutoff::create([
             "m" => "12:00",
             "t" => "12:00",
             "w" => "12:00",
@@ -259,7 +272,6 @@ class BranchSeeder extends Seeder
             "sd" => "12:00",
             "branch_id" => $branch12->id
         ]);
-        $cutoff = Cutoff::create(["branch_id" => $branch12->id]);
         $window1_1 = Window::create(["name" => "Window 1", "order" => 1, "branch_id" => $branch12->id]);
         $window2_1 = Window::create(["name" => "Window 2", "order" => 2, "branch_id" => $branch12->id]);
         $window3_1 = Window::create(["name" => "Window 3", "order" => 3, "branch_id" => $branch12->id]);
@@ -271,6 +283,10 @@ class BranchSeeder extends Seeder
 
         $branch13 = Branch::create(["name" => "TARLAC", "product_key" => "11291915"]);
         $setting1 = Setting::create([
+
+            "branch_id" => $branch13->id
+        ]);
+        $cutoff = Cutoff::create([
             "m" => "12:00",
             "t" => "12:00",
             "w" => "12:00",
@@ -280,7 +296,6 @@ class BranchSeeder extends Seeder
             "sd" => "12:00",
             "branch_id" => $branch13->id
         ]);
-        $cutoff = Cutoff::create(["branch_id" => $branch13->id]);
         $window1_1 = Window::create(["name" => "Window 1", "order" => 1, "branch_id" => $branch13->id]);
         $window2_1 = Window::create(["name" => "Window 2", "order" => 2, "branch_id" => $branch13->id]);
         $window3_1 = Window::create(["name" => "Window 3", "order" => 3, "branch_id" => $branch13->id]);
