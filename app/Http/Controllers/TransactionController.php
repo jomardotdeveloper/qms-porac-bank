@@ -299,19 +299,31 @@ class TransactionController extends Controller
         $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting' AND service_id IN (1,2,3,4,5)", [$transaction->branch->id])->get()->all();
         $count = 0;
 
+        $x = [$transaction];
 
-        foreach ($transactions as $t) {
-            if ($transaction->order > $t->order) {
-                $count++;
-            } else if ($transaction->order < $t->order) {
-                if ($t->account_id != null) {
-                    $account = Account::find($t->account_id);
-                    if ($account->customer_type == "priority") {
+        if ($transaction->account->customer_type == "priority") {
+            foreach ($transactions as $t) {
+                if ($transaction->order > $t->order) {
+                    $x = Transaction::find($t->id);
+                    if ($x->account->customer_type == "priority") {
+                        $count++;
+                    }
+                }
+            }
+        } else {
+            foreach ($transactions as $t) {
+                if ($transaction->order > $t->order) {
+                    $count++;
+                } else {
+                    $x = Transaction::find($t->id);
+                    if ($x->account->customer_type == "priority") {
                         $count++;
                     }
                 }
             }
         }
+
+
 
         return $count;
     }
@@ -1085,27 +1097,32 @@ class TransactionController extends Controller
     public function getOrder1($id)
     {
         $transaction = Transaction::find($id);
-        $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting'", [$transaction->branch->id])->get()->all();
+        $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting' AND service_id IN (1,2,3,4,5)", [$transaction->branch->id])->get()->all();
         $count = 0;
 
 
-        foreach ($transactions as $t) {
-            if ($transaction->order > $t->order) {
-                $count++;
-            } else if ($transaction->order < $t->order) {
-                if ($t->account_id != null) {
-                    $account = Account::find($t->account_id);
-                    if ($account->customer_type == "priority") {
+        if ($transaction->account->customer_type == "priority") {
+            foreach ($transactions as $t) {
+                if ($transaction->order > $t->order) {
+                    $x = Transaction::find($t->id);
+                    if ($x->account->customer_type == "priority") {
+                        $count++;
+                    }
+                }
+            }
+        } else {
+            foreach ($transactions as $t) {
+                if ($transaction->order > $t->order) {
+                    $count++;
+                } else {
+                    $x = Transaction::find($t->id);
+                    if ($x->account->customer_type == "priority") {
                         $count++;
                     }
                 }
             }
         }
 
-
-        if ($this->hasServing1($transaction->branch->id)) {
-            return $count + 2;
-        }
 
         return $count + 1;
     }
@@ -1114,6 +1131,23 @@ class TransactionController extends Controller
     {
         $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND state = 'serving'", [$branch_id])->get()->all();
         return count($transactions) > 0;
+    }
+
+    public function getOrderNa1($id)
+    {
+        $transaction = Transaction::find($id);
+        $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting' AND service_id=6", [$transaction->branch->id])->get()->all();
+        $count = 0;
+
+
+        foreach ($transactions as $t) {
+            if ($transaction->order > $t->order) {
+                $count++;
+            }
+        }
+
+
+        return $count + 1;
     }
 
     public function sendMessage1($id, $isPrioMessage)
@@ -1126,7 +1160,13 @@ class TransactionController extends Controller
 
         $token = $transaction->token;
         $waitingTime = $this->getEstimateWaitingTime1($id);
-        $order = $this->ordinal1($this->getOrder1($id));
+        $order = $this->ordinal1(0);
+
+        if ($transaction->service->id == 6) {
+            $order = $this->ordinal1($this->getOrderNa1($id));
+        } else {
+            $order = $this->ordinal1($this->getOrder1($id));
+        }
 
         $data = [];
 
@@ -1221,19 +1261,12 @@ class TransactionController extends Controller
         $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting' AND service_id=6", [$transaction->branch->id])->get()->all();
         $count = 0;
 
-
         foreach ($transactions as $t) {
             if ($transaction->order > $t->order) {
                 $count++;
-            } else if ($transaction->order < $t->order) {
-                if ($t->account_id != null) {
-                    $account = Account::find($t->account_id);
-                    if ($account->customer_type == "priority") {
-                        $count++;
-                    }
-                }
             }
         }
+
 
         return $count;
     }
