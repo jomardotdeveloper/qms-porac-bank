@@ -44,6 +44,7 @@ use Illuminate\Http\Request;
 */
 
 Route::get('/', function () {
+    // dd(intval("05"));
     return view("frontend");
 })->name("frontend");
 

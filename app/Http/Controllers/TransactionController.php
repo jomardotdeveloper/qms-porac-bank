@@ -234,6 +234,7 @@ class TransactionController extends Controller
     public function isCutoff($branch_id)
     {
         $cutoff = Cutoff::where("branch_id", "=", $branch_id)->first();
+        // dd();
         $is_cutoff = false;
         $now = intval(date("w"));
 
@@ -260,9 +261,12 @@ class TransactionController extends Controller
     public function isCutoffByDay($value)
     {
         $now = new DateTime('NOW');
-        $form = $now->format("h:i");
+        $form = $now->format("H:i");
         $splitted_now = explode(":", $form);
         $splitted_val = null;
+
+        // dd($form);
+        // dd($value);
 
         if ($value == null) {
             return false;

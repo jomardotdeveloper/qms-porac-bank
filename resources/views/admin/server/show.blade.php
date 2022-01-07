@@ -117,7 +117,7 @@
     var isOnline = false;
     var branch = $("#branch_id").val();
     var socket = new WebSocket('ws://74.63.204.84:8090');
-    var localSocket = new WebSocket('ws://127.0.0.1:8090');
+    var localSocket = new WebSocket('ws://192.168.254.103:8090');
     var hasNoConnection = false;
     var mtimer = 1;
     // 1,2,3
@@ -134,12 +134,12 @@
             setChartOffline();
         }
 
-        // var interval = setInterval(function() {
-        //     resetEmail();
-        //     if (!emailHasSent) {
-        //         sendEmail();
-        //     }
-        // }, 3000);
+        var interval = setInterval(function() {
+            resetEmail();
+            if (!emailHasSent) {
+                sendEmail();
+            }
+        }, 3000);
     }
 
 

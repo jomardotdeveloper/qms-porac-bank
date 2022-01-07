@@ -72,7 +72,7 @@ class MessagingController extends Controller
         }
 
         if ($this->hasServing($transaction->branch->id)) {
-            return $count + 2;
+            return $count + 1;
         }
 
         return $count + 1;

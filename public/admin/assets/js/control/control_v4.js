@@ -1,4 +1,4 @@
-var socket  = new WebSocket('ws://127.0.0.1:8090');
+var socket  = new WebSocket('ws://192.168.254.103:8090');
 // var cloudSocket = new WebSocket("")
 var cacheTime = 0;
 // 74.63.204.84
