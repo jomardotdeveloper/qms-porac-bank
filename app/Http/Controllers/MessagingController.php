@@ -84,7 +84,6 @@ class MessagingController extends Controller
         $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting' AND service_id IN (1,2,3,4,5)", [$transaction->branch->id])->get()->all();
         $count = 0;
 
-
         foreach ($transactions as $t) {
             if ($transaction->order > $t->order) {
                 $count++;
@@ -106,7 +105,6 @@ class MessagingController extends Controller
         $transaction = Transaction::find($id);
         $transactions = DB::table("transactions")->whereRaw("DATE(transactions.in) = CURDATE() AND branch_id = ? AND state = 'waiting' AND service_id=6", [$transaction->branch->id])->get()->all();
         $count = 0;
-
 
         foreach ($transactions as $t) {
             if ($transaction->order > $t->order) {
@@ -282,7 +280,7 @@ class MessagingController extends Controller
         $transaction = Transaction::find($id);
         $burst_time = $this->getBurstTime($transaction->service->id, $transaction->branch->id);
         $numberOfAheadCustomer = 0;
-        if ($transaction->id == 6) {
+        if ($transaction->service->id == 6) {
             $numberOfAheadCustomer = $this->getAheadCustomerNa($id);
         } else {
             $numberOfAheadCustomer = $this->getAheadCustomer($id);

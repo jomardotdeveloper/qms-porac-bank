@@ -1243,7 +1243,7 @@ class TransactionController extends Controller
         $transaction = Transaction::find($id);
         $burst_time = $this->getBurstTime1($transaction->service->id, $transaction->branch->id);
         $numberOfAheadCustomer = 0;
-        if ($transaction->id == 6) {
+        if ($transaction->service->id == 6) {
             $numberOfAheadCustomer = $this->getAheadCustomerNa1($id);
         } else {
             $numberOfAheadCustomer = $this->getAheadCustomer1($id);
