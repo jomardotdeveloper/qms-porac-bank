@@ -212,7 +212,7 @@ class ProfileController extends Controller
         if(count($user) > 0)
         {
             $user = $user[0];
-            $profile = User::where("username", "=", $user["username"])->get()->all();
+            // $profile = User::where("username", "=", $user["username"])->get()->all();
 
             if(count($profile) > 0){
                 // $finderUser = User::find($profile[0]->id);
