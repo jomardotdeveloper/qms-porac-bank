@@ -208,7 +208,7 @@ class ProfileController extends Controller
 
     public function sinkData(Request $request){
         $user = $request->get("user");
-        // return count($user);
+        return $user[0];
         if(count($user) > 0)
         {
         //     return $user;
