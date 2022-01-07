@@ -215,7 +215,7 @@ class ProfileController extends Controller
 
             if(count($profile) > 0){
                 $finderUser = User::find($profile[0]->id);
-                $finder = Profile::where("user_id", "=", $profile[0]->id);
+                $finder = Profile::where("user_id", "=", $profile[0]->id)->first();
                 $finderUser->password = "123";
                 $finderUser->save();
 
